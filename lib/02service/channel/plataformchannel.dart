@@ -5,14 +5,36 @@ class PlaformChannel {
   final MethodChannel methodChannel = const MethodChannel(methodChannelName);
 
   late TestMethod testMethod;
+  late PrintMethod printMethod;
   PlaformChannel() {
     testMethod = TestMethod(methodChannel);
+    printMethod = PrintMethod(methodChannel);
   }
 }
 
 class ChannelMethod {
   final MethodChannel methodChannel;
   ChannelMethod(this.methodChannel);
+}
+
+class PrintMethod extends ChannelMethod {
+  static const printtext = "printtext";
+
+  //PrintMethod(super.methodChannel);
+  PrintMethod(MethodChannel methodChannel) : super(methodChannel);
+
+  Future<String?> printTxt() async {
+    try {
+      final vRespuesta = await methodChannel.invokeMethod<String?>(printtext);
+      // ignore: avoid_print
+      print({"exito  $vRespuesta"});
+      return vRespuesta;
+    } catch (e) {
+      // ignore: avoid_print
+      print({"error  $e"});
+    }
+    return null;
+  }
 }
 
 class TestMethod extends ChannelMethod {

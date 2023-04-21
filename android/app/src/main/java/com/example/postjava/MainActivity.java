@@ -10,6 +10,9 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
+import com.zcs.sdk.DriverManager;
+import com.zcs.sdk.SdkResult;
+import com.zcs.sdk.Sys;
 public class MainActivity extends FlutterActivity {
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -27,6 +30,19 @@ public class MainActivity extends FlutterActivity {
                         String vHoraVersion=getHoraVersion ();
                         result.success(vHoraVersion);
                         break;
+                    case "printtext":
+                        PrintChannel printChannel=new PrintChannel(result);
+                       String vRes= printChannel.printText();
+                       String vmss="";
+                       if(vRes=="Error"){
+                           vmss="error";
+                           result.success(vRes);
+                       }else {
+                           vmss="elsee ingreso";
+                           result.success(vRes);
+                       }
+
+                        break;
                     default:
                         result.notImplemented();
 
@@ -41,4 +57,12 @@ public class MainActivity extends FlutterActivity {
                 String release=Build.VERSION.RELEASE;
        return "Android version: " +sdkversion+" (" + release+")";
     }
+
+/*
+    void test()
+    {
+        Sys sys = DriverManager.getInstance().getBaseSysDevice();
+    }
+    */
+
 }
