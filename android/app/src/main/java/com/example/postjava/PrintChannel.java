@@ -1,6 +1,7 @@
 package com.example.postjava;
 
 import android.text.Layout;
+import android.util.Log;
 import android.widget.Toast;
 
 import io.flutter.plugin.common.MethodChannel;
@@ -30,6 +31,7 @@ public class PrintChannel {
         String vRespuesta;
         mDriverManager = DriverManager.getInstance();
         if(mDriverManager==null){ vRespuesta="drive"; return vRespuesta;}
+        Log.d("pengzhan","zcs_model_code = ");
         mPrinter = mDriverManager.getPrinter();
         if(mPrinter==null){ vRespuesta="mPrinter"; return vRespuesta;}
         int printStatus = mPrinter.getPrinterStatus();

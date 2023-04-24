@@ -7,18 +7,24 @@ import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 import com.zcs.sdk.DriverManager;
 import com.zcs.sdk.SdkResult;
 import com.zcs.sdk.Sys;
+import com.zcs.sdk.fingerprint.FingerprintManager;
+
 public class MainActivity extends FlutterActivity {
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger messenger= flutterEngine.getDartExecutor().getBinaryMessenger();
         String methodChannelName = "com.prodem/mc";
+        String eventChannelName="com.prodem/emc";
+        FingerChannelEvent fingerChannelEvent= new FingerChannelEvent();
+
 
         MethodChannel methodChannel= new MethodChannel(messenger,methodChannelName);
 
@@ -43,12 +49,22 @@ public class MainActivity extends FlutterActivity {
                        }
 
                         break;
+                    case "starFinger":
+                     String vresFinger=   fingerChannelEvent.initFinger();
+                        result.success(vresFinger);
+                        break;
+                    case "EndFinger":
+
+                        break;
                     default:
                         result.notImplemented();
 
                 }
             }
         });
+
+        //capturando los eventos del finger
+        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelName).setStreamHandler(fingerChannelEvent);
 
     }
 

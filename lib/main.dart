@@ -35,7 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() async {
     final resul = PlaformChannel();
-    final vres = await resul.printMethod.printTxt();
+    //final vres = await resul.printMethod.printTxt();
+    final vres = await resul.fingerChannel.inicilizaFinger();
     //resul.testMethod.horaVersionChannel();
     // ignore: avoid_print
     print(vres.toString());

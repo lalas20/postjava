@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:postjava/02service/channel/fingerchannel.dart';
 
 class PlaformChannel {
   static const methodChannelName = "com.prodem/mc";
@@ -6,9 +7,11 @@ class PlaformChannel {
 
   late TestMethod testMethod;
   late PrintMethod printMethod;
+  late FingerChannel fingerChannel;
   PlaformChannel() {
     testMethod = TestMethod(methodChannel);
     printMethod = PrintMethod(methodChannel);
+    fingerChannel = FingerChannel(methodChannel);
   }
 }
 
@@ -20,7 +23,6 @@ class ChannelMethod {
 class PrintMethod extends ChannelMethod {
   static const printtext = "printtext";
 
-  //PrintMethod(super.methodChannel);
   PrintMethod(MethodChannel methodChannel) : super(methodChannel);
 
   Future<String?> printTxt() async {
