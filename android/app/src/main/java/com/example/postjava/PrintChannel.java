@@ -18,12 +18,46 @@ import com.zcs.sdk.print.PrnTextStyle;
 public class PrintChannel {
     private DriverManager mDriverManager;
     private Printer mPrinter;
-    MethodChannel.Result result;
 
-    PrintChannel(MethodChannel.Result pResult )
+    PrintChannel()
     {
 
-        this.result=pResult;
+    }
+
+    public String printTextMessage(String pText){
+        String vRespuesta;
+        mDriverManager = DriverManager.getInstance();
+        if(mDriverManager==null){ vRespuesta="drive"; return vRespuesta;}
+        Log.d("pengzhan","zcs_model_code = ");
+        mPrinter = mDriverManager.getPrinter();
+        if(mPrinter==null){ vRespuesta="mPrinter"; return vRespuesta;}
+        int printStatus = mPrinter.getPrinterStatus();
+        if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+            vRespuesta="Error";
+        } else {
+            PrnStrFormat format = new PrnStrFormat();
+            format.setTextSize(30);
+            format.setAli(Layout.Alignment.ALIGN_CENTER);
+            format.setStyle(PrnTextStyle.BOLD);
+            format.setFont(PrnTextFont.SANS_SERIF);
+            mPrinter.setPrintAppendString("POS example", format);
+            format.setTextSize(25);
+            format.setStyle(PrnTextStyle.NORMAL);
+            format.setAli(Layout.Alignment.ALIGN_NORMAL);
+            mPrinter.setPrintAppendString(" ", format);
+            mPrinter.setPrintAppendString("MERCHANGT NAME:" + " Test ", format);
+            format.setTextSize(25);
+            mPrinter.setPrintAppendString(pText, format);
+            mPrinter.setPrintAppendString(" ", format);
+            mPrinter.setPrintAppendString(" -----------------------------", format);
+
+            mPrinter.setPrintAppendString(" ", format);
+            mPrinter.setPrintAppendString(" ", format);
+
+            printStatus = mPrinter.setPrintStart();
+            vRespuesta="ejecucion del print " + printStatus;
+        }
+        return  vRespuesta;
     }
 
 

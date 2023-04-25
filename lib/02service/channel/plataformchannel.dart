@@ -22,12 +22,27 @@ class ChannelMethod {
 
 class PrintMethod extends ChannelMethod {
   static const printtext = "printtext";
+  static const printtextMessage = "printMessage";
 
   PrintMethod(MethodChannel methodChannel) : super(methodChannel);
 
   Future<String?> printTxt() async {
     try {
       final vRespuesta = await methodChannel.invokeMethod<String?>(printtext);
+      // ignore: avoid_print
+      print({"exito  $vRespuesta"});
+      return vRespuesta;
+    } catch (e) {
+      // ignore: avoid_print
+      print({"error  $e"});
+    }
+    return null;
+  }
+
+  Future<String?> printTxtMessage(String pTexto) async {
+    try {
+      final vRespuesta =
+          await methodChannel.invokeMethod<String?>(printtextMessage, pTexto);
       // ignore: avoid_print
       print({"exito  $vRespuesta"});
       return vRespuesta;

@@ -27,17 +27,18 @@ public class MainActivity extends FlutterActivity {
 
 
         MethodChannel methodChannel= new MethodChannel(messenger,methodChannelName);
+        PrintChannel printChannel=new PrintChannel();
 
         methodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+
                 switch (call.method){
                     case "horaversion":
                         String vHoraVersion=getHoraVersion ();
                         result.success(vHoraVersion);
                         break;
                     case "printtext":
-                        PrintChannel printChannel=new PrintChannel(result);
                        String vRes= printChannel.printText();
                        String vmss="";
                        if(vRes=="Error"){
@@ -47,7 +48,18 @@ public class MainActivity extends FlutterActivity {
                            vmss="elsee ingreso";
                            result.success(vRes);
                        }
-
+                        break;
+                    case "printMessage":
+                        String pTxt= (String) call.arguments;
+                        String vResPrint= printChannel.printTextMessage(pTxt);
+                        String vmssPrin="";
+                        if(vResPrint=="Error"){
+                            vmssPrin="error";
+                            result.success(vResPrint);
+                        }else {
+                            vmssPrin="elsee ingreso";
+                            result.success(vResPrint);
+                        }
                         break;
                     case "starFinger":
                      String vresFinger=   fingerChannelEvent.initFinger();
