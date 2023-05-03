@@ -32,7 +32,7 @@ public class MainActivity extends FlutterActivity {
         methodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-
+                String vResFinger="";
                 switch (call.method){
                     case "horaversion":
                         String vHoraVersion=getHoraVersion ();
@@ -51,22 +51,23 @@ public class MainActivity extends FlutterActivity {
                         break;
                     case "printMessage":
                         String pTxt= (String) call.arguments;
-                        String vResPrint= printChannel.printTextMessage(pTxt);
+                        vResFinger= printChannel.printTextMessage(pTxt);
                         String vmssPrin="";
-                        if(vResPrint=="Error"){
+                        if(vResFinger=="Error"){
                             vmssPrin="error";
-                            result.success(vResPrint);
+                            result.success(vResFinger);
                         }else {
                             vmssPrin="elsee ingreso";
-                            result.success(vResPrint);
+                            result.success(vResFinger);
                         }
                         break;
                     case "starFinger":
-                     String vresFinger=   fingerChannelEvent.initFinger();
-                        result.success(vresFinger);
+                        vResFinger=   fingerChannelEvent.initFinger();
+                        result.success(vResFinger);
                         break;
-                    case "EndFinger":
-
+                    case "captureFingerISO":
+                        fingerChannelEvent.initCapturaIso();
+                        result.success("initCapturaIso");
                         break;
                     default:
                         result.notImplemented();

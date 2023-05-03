@@ -38,8 +38,13 @@ public class FingerChannelEvent implements EventChannel.StreamHandler, Fingerpri
         mFingerprintManager = DriverManager.getInstance().getFingerprintManager();
         mFingerprintManager.addFignerprintListener(this);
         mFingerprintManager.init();
-        mFingerprintManager.captureAndGetFeature();
+        //mFingerprintManager.captureAndGetFeature();
         return  "00:La lectura fue correcta";
+    }
+
+    void initCapturaIso()
+    {
+       mFingerprintManager.captureAndGetISOFeature();
     }
 
 
@@ -80,7 +85,7 @@ public class FingerChannelEvent implements EventChannel.StreamHandler, Fingerpri
 
     @Override
     public void onGetImageISOFeature(int i, byte[] bytes) {
-        Log.d("event","onGetImageISOFeature");
+        Log.d("event","onGetImageISOFeature desde java");
         if (i == SdkResult.SDK_OK) {
             isoFeatureTmp = bytes;
             if(fingerEventSink!=null)
