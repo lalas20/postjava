@@ -13,7 +13,7 @@ class FingerChannel extends ChannelMethod {
 
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
-  Stream<String> capturFinger() {
+  Stream<String> capturFingerEvent() {
     fingerStream = eventChannelFinger
         .receiveBroadcastStream()
         .map<String>((event) => event);

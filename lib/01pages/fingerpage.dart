@@ -30,11 +30,9 @@ class _FingerPageState extends State<FingerPage> {
     });
   }
 
-  void capturFinger() {
-    final res = resul.fingerChannel.capturFinger();
-    setState(() {
-      txtProcess.text = res as String;
-    });
+  Stream<String> capturFingerEvent() {
+    final res = resul.fingerChannel.capturFingerEvent();
+    return res;
   }
 
   @override
@@ -47,6 +45,16 @@ class _FingerPageState extends State<FingerPage> {
             TextField(
               controller: txtInicial,
               readOnly: true,
+            ),
+            StreamBuilder(
+              builder: ((BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasData) {
+                  return Text('data: $snapshot.data');
+                } else {
+                  return const Text('sin data');
+                }
+              }),
+              stream: capturFingerEvent(),
             ),
             TextField(
               controller: txtProcess,
