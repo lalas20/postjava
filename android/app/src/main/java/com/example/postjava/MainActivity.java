@@ -1,8 +1,11 @@
 package com.example.postjava;
 
 import android.os.Build;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -17,6 +20,14 @@ import com.zcs.sdk.Sys;
 import com.zcs.sdk.fingerprint.FingerprintManager;
 
 public class MainActivity extends FlutterActivity {
+   /*
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    */
+
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);

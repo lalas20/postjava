@@ -17,7 +17,7 @@ import com.zcs.sdk.util.StringUtils;
 import io.flutter.embedding.engine.systemchannels.KeyEventChannel;
 import io.flutter.plugin.common.EventChannel;
 
-public class FingerChannelEvent implements EventChannel.StreamHandler, FingerprintListener {
+public class FingerChannelEvent implements  EventChannel.StreamHandler, FingerprintListener {
 
 
     private FingerprintManager mFingerprintManager;
@@ -27,6 +27,9 @@ public class FingerChannelEvent implements EventChannel.StreamHandler, Fingerpri
     private byte[] isoFeatureTmp;
 
     private EventChannel.EventSink fingerEventSink;
+
+    //private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
+
 
 
     String initFinger() {
@@ -81,6 +84,8 @@ public class FingerChannelEvent implements EventChannel.StreamHandler, Fingerpri
                 fingerEventSink.success(isoFeatureTmp);
             }
         }
+        else
+        fingerEventSink.error("00","revisar error",result);
     }
 
     @Override
@@ -90,15 +95,24 @@ public class FingerChannelEvent implements EventChannel.StreamHandler, Fingerpri
             isoFeatureTmp = bytes;
             if(fingerEventSink!=null)
             {
+                Log.d("event","captura");
+                Log.d("event",StringUtils.convertBytesToHex(isoFeatureTmp));
                 fingerEventSink.success(isoFeatureTmp);
             }
+            else
+            {
+                fingerEventSink.error("00","fingerEventSink null",i);
+            }
+
         }
+        else
+            fingerEventSink.error("00","revisar error",i);
 
     }
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
-        Log.d("event","onListen");
+        Log.d("event","onListen add");
         fingerEventSink=events;
 
     }

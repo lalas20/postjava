@@ -4,7 +4,7 @@ import 'package:postjava/02service/channel/plataformchannel.dart';
 class FingerChannel extends ChannelMethod {
   static const starFinger = "starFinger";
   static const captureFingerISOname = "captureFingerISO";
-  Stream<String> fingerStream = const Stream.empty();
+  Stream<Uint8List> fingerStream = const Stream.empty();
 
   /*finger */
   static const eventChannelNameFinge = "com.prodem/emc";
@@ -13,10 +13,16 @@ class FingerChannel extends ChannelMethod {
 
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
-  Stream<String> capturFingerEvent() {
-    fingerStream = eventChannelFinger
-        .receiveBroadcastStream()
-        .map<String>((event) => event);
+  Stream<Uint8List> capturFingerEvent() {
+    fingerStream =
+        eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
+      print('event => $event');
+      return event;
+    });
+
+    //final respuesta = fingerStream as Uint8List;
+
+    //print(bytes);
 
     // ignore: avoid_print
     print({"fingerStream desde flutter:  $fingerStream"});

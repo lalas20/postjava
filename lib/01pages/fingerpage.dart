@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../02service/channel/plataformchannel.dart';
@@ -16,7 +18,7 @@ class _FingerPageState extends State<FingerPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    // implement initState
     super.initState();
     //final resul = PlaformChannel();
     resul.fingerChannel.inicilizaFinger();
@@ -30,8 +32,9 @@ class _FingerPageState extends State<FingerPage> {
     });
   }
 
-  Stream<String> capturFingerEvent() {
+  Stream<Uint8List> capturFingerEvent() {
     final res = resul.fingerChannel.capturFingerEvent();
+    print("res; $res");
     return res;
   }
 
@@ -47,9 +50,10 @@ class _FingerPageState extends State<FingerPage> {
               readOnly: true,
             ),
             StreamBuilder(
-              builder: ((BuildContext context, AsyncSnapshot<String> snapshot) {
+              builder:
+                  ((BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
                 if (snapshot.hasData) {
-                  return Text('data: $snapshot.data');
+                  return Text('data strieam: $snapshot.data');
                 } else {
                   return const Text('sin data');
                 }
