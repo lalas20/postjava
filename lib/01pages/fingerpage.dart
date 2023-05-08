@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -38,6 +39,12 @@ class _FingerPageState extends State<FingerPage> {
     return res;
   }
 
+  StreamSubscription capturFingerEventSubcription() {
+    final res = resul.fingerChannel.capturFingerEventSubcription();
+    print("res; $res");
+    return res;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -51,7 +58,7 @@ class _FingerPageState extends State<FingerPage> {
             ),
             StreamBuilder(
               builder:
-                  ((BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+                  ((BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
                   return Text('data strieam: $snapshot.data');
                 } else {

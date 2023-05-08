@@ -20,13 +20,12 @@ import com.zcs.sdk.Sys;
 import com.zcs.sdk.fingerprint.FingerprintManager;
 
 public class MainActivity extends FlutterActivity {
-   /*
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
-    */
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -50,15 +49,15 @@ public class MainActivity extends FlutterActivity {
                         result.success(vHoraVersion);
                         break;
                     case "printtext":
-                       String vRes= printChannel.printText();
-                       String vmss="";
-                       if(vRes=="Error"){
-                           vmss="error";
-                           result.success(vRes);
-                       }else {
-                           vmss="elsee ingreso";
-                           result.success(vRes);
-                       }
+                        String vRes= printChannel.printText();
+                        String vmss="";
+                        if(vRes=="Error"){
+                            vmss="error";
+                            result.success(vRes);
+                        }else {
+                            vmss="elsee ingreso";
+                            result.success(vRes);
+                        }
                         break;
                     case "printMessage":
                         String pTxt= (String) call.arguments;
@@ -78,6 +77,7 @@ public class MainActivity extends FlutterActivity {
                         break;
                     case "captureFingerISO":
                         fingerChannelEvent.initCapturaIso();
+                        fingerChannelEvent.sendEvent();
                         result.success("initCapturaIso");
                         break;
                     default:
@@ -94,8 +94,8 @@ public class MainActivity extends FlutterActivity {
 
     String getHoraVersion(){
         int sdkversion=Build.VERSION.SDK_INT;
-                String release=Build.VERSION.RELEASE;
-       return "Android version: " +sdkversion+" (" + release+")";
+        String release=Build.VERSION.RELEASE;
+        return "Android version: " +sdkversion+" (" + release+")";
     }
 
 /*
