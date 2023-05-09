@@ -19,6 +19,8 @@ import com.zcs.sdk.fingerprint.FingerprintManager;
 import com.zcs.sdk.fingerprint.Result;
 import com.zcs.sdk.util.StringUtils;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import io.flutter.embedding.engine.systemchannels.KeyEventChannel;
 import io.flutter.plugin.common.EventChannel;
 
@@ -52,7 +54,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     void initCapturaIso()
     {
-       mFingerprintManager.captureAndGetISOFeature();
+       mFingerprintManager.captureAndGetISOFeature(5);
     }
 
 
@@ -104,6 +106,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
             {
                 Log.d("event","captura");
                 Log.d("event",StringUtils.convertBytesToHex(isoFeatureTmp));
+                //Log.d("event", Base64.decode(bytes));
                 //fingerEventSink.success(isoFeatureTmp);
             }
             else
