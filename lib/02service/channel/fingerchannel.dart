@@ -25,10 +25,16 @@ class FingerChannel extends ChannelMethod {
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
   Stream<Uint8List> capturFingerEvent() {
-    fingerStream =
-        eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
-      return event;
-    });
+    fingerStream = const Stream.empty();
+    try {
+      fingerStream =
+          eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
+        return event;
+      });
+      return fingerStream;
+    } catch (e) {
+      print('Error $e');
+    }
     return fingerStream;
   }
 
