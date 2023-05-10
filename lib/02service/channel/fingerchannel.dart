@@ -25,21 +25,12 @@ class FingerChannel extends ChannelMethod {
 
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
-  Stream<List<String>> capturFingerEvent() {
-    fingerStreamTXT =
-        eventChannelFinger.receiveBroadcastStream().map<List<String>>((event) {
-      print("event capturFingerEvent:::: $event");
+  Stream<Uint8List> capturFingerEvent() {
+    fingerStream =
+        eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
       return event;
     });
-    return fingerStreamTXT;
-  }
-
-  void capturFingerEventFuture() {
-    final res = eventChannelFinger.receiveBroadcastStream().listen((event) {
-      print('capturFingerEventFuture: $event');
-    });
-
-    print('res: $res');
+    return fingerStream;
   }
 
   // Stream<Uint8List> capturFingerEvent() {
