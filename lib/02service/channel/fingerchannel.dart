@@ -14,6 +14,7 @@ class FingerChannel extends ChannelMethod {
   static const starFinger = "starFinger";
   static const captureFingerISOname = "captureFingerISO";
   Stream<Uint8List> fingerStream = const Stream.empty();
+  Stream<List<String>> fingerStreamTXT = const Stream.empty();
 
   late StreamSubscription fingerStreamSubcription;
 
@@ -24,13 +25,30 @@ class FingerChannel extends ChannelMethod {
 
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
-  Stream<Uint8List> capturFingerEvent() {
-    fingerStream =
-        eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
+  Stream<List<String>> capturFingerEvent() {
+    fingerStreamTXT =
+        eventChannelFinger.receiveBroadcastStream().map<List<String>>((event) {
+      print("event capturFingerEvent:::: $event");
       return event;
     });
-    return fingerStream;
+    return fingerStreamTXT;
   }
+
+  void capturFingerEventFuture() {
+    final res = eventChannelFinger.receiveBroadcastStream().listen((event) {
+      print('capturFingerEventFuture: $event');
+    });
+
+    print('res: $res');
+  }
+
+  // Stream<Uint8List> capturFingerEvent() {
+  //   fingerStream =
+  //       eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
+  //     return event;
+  //   });
+  //   return fingerStream;
+  // }
 
   Future<String?> captureFingerISO() async {
     try {
@@ -64,8 +82,8 @@ class FingerChannel extends ChannelMethod {
           groupName: '', key: 'TypeAuthentication', value: 'IdentityCard')
     ];
     final pCredential = Credential(
-        user: '6148817LP',
-        password: huella,
+        user: '5961581',
+        password: pFinger,
         channel: 3,
         aditionalItems: vListaItem);
     final pCredentialVerifyUser = CredentialVerifyUser(credential: pCredential);

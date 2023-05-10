@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -44,11 +43,18 @@ class _FingerPageState extends State<FingerPage> {
     });
   }
 
-  Stream<Uint8List> capturFingerEvent() {
+  Stream<List<String>> capturFingerEvent() {
     final res = resul.fingerChannel.capturFingerEvent();
+
     print("res; $res");
     return res;
   }
+
+  // Stream<Uint8List> capturFingerEvent() {
+  //   final res = resul.fingerChannel.capturFingerEvent();
+  //   print("res; $res");
+  //   return res;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +68,18 @@ class _FingerPageState extends State<FingerPage> {
               readOnly: true,
             ),
             StreamBuilder(
-              builder: ((BuildContext context, AsyncSnapshot snapshot) {
+              builder: ((BuildContext context,
+                  AsyncSnapshot<List<String>> snapshot) {
                 if (snapshot.hasData) {
-                  Uint8List data8 = Uint8List.fromList(snapshot.data);
+                  print(snapshot.data);
+
+                  // Uint8List data8 = Uint8List.fromList(snapshot.data);
 
                   //final aux = convertBytesToHex(data8);
-                  //print("data8: ");
-                  print(data8);
-                  vHuella = base64.encode(snapshot.data);
+                  print("data8: ");
+                  //print(data8);
+                  vHuella =
+                      "con huella"; //snapshot.data; //base64.encode(snapshot.data);
 
                   return Text(vHuella);
                 } else {

@@ -8,8 +8,25 @@ class CardPage extends StatefulWidget {
 }
 
 class _CardPageState extends State<CardPage> {
+  TextEditingController txtLectura = TextEditingController();
+
+  void _readyCard() {}
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Material(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: txtLectura,
+            ),
+            ElevatedButton(
+                onPressed: _readyCard, child: const Text('lee captura')),
+          ],
+        ),
+      ),
+    );
   }
 }

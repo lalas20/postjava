@@ -1,6 +1,7 @@
 package com.example.postjava;
 import static com.zcs.sdk.util.PowerHelper.getSystemProperty;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,17 +22,25 @@ import com.zcs.sdk.util.StringUtils;
 
 import org.bouncycastle.util.encoders.Base64;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.flutter.embedding.engine.systemchannels.KeyEventChannel;
 import io.flutter.plugin.common.EventChannel;
 
 public class FingerChannelEvent implements  EventChannel.StreamHandler, FingerprintListener  {
 
+    DriverManager mDriverManager= DriverManager.getInstance();
+
     private Handler handler =new Handler(Looper.getMainLooper());
-    private FingerprintManager mFingerprintManager;
+    private FingerprintManager mFingerprintManager =mDriverManager.getFingerprintManager();           ;
     private int mFingerId = 0;
     private int mTimeout = 3;
     private byte[] featureTmp;
     private byte[] isoFeatureTmp;
+
+    private String isoFeatureTmpTxt;
 
 
 
@@ -45,7 +54,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         if(zcs_model_code.equals("zcspt003") || zcs_model_code.equals("zcspt012")) {
             return "01:El dispositivo no admite lectura de huella";
         }
-        mFingerprintManager = DriverManager.getInstance().getFingerprintManager();
+        mFingerprintManager = mDriverManager.getFingerprintManager();
         mFingerprintManager.addFignerprintListener(this);
         mFingerprintManager.init();
         //mFingerprintManager.captureAndGetFeature();
@@ -80,6 +89,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     }
 
+    @SuppressLint("SuspiciousIndentation")
     @Override
     public void onGetImageFeature(int result, byte[] feature) {
         Log.d("event","onGetImageFeature ");
@@ -97,17 +107,19 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     @Override
     public void onGetImageISOFeature(int i, byte[] bytes) {
-        Log.d("event","onGetImageISOFeature desde java");
+       // Log.d("event","onGetImageISOFeature desde java");
 
         if (i == SdkResult.SDK_OK) {
+            //Log.d("event","captura cadena txt");
             isoFeatureTmp = bytes;
-
+            isoFeatureTmpTxt=StringUtils.convertBytesToHex(bytes);
+            //Log.d("event",isoFeatureTmpTxt.toString());
             if(fingerEventSink!=null)
             {
-                Log.d("event","captura");
-                Log.d("event",StringUtils.convertBytesToHex(isoFeatureTmp));
+               // Log.d("event","captura");
+                //Log.d("event",StringUtils.convertBytesToHex(isoFeatureTmp));
                 //Log.d("event", Base64.decode(bytes));
-                //fingerEventSink.success(isoFeatureTmp);
+                //fingerEventSink.success(isoFeatureTmpTxt);
             }
             else
             {
@@ -117,50 +129,25 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         }
         else
             isoFeatureTmp=null; //fingerEventSink.error("00","revisar error",i);
-
-       /*
-        Runnable r= new Runnable() {
-            @Override
-            public void run() {
-
-                    if (i == SdkResult.SDK_OK) {
-                        isoFeatureTmp = bytes;
-
-                        if(fingerEventSink!=null)
-                        {
-                            Log.d("event","captura");
-                            Log.d("event",StringUtils.convertBytesToHex(isoFeatureTmp));
-                            fingerEventSink.success(isoFeatureTmp);
-                        }
-                        else
-                        {
-                            fingerEventSink.error("00","fingerEventSink null",i);
-                        }
-
-                    }
-                    else
-                        fingerEventSink.error("00","revisar error",i);
-                }
-
-        };
-        */
     }
 
     public void sendEvent(){
-        if(isoFeatureTmp!=null && fingerEventSink!=null){
-            fingerEventSink.success(isoFeatureTmp);
+        Log.d("event","sendEvent");
+        if(isoFeatureTmpTxt!=null && fingerEventSink!=null){
+        //if(isoFeatureTmp!=null && fingerEventSink!=null){
+            Log.d("event","sendEvent 127: " + isoFeatureTmpTxt);
+            fingerEventSink.success(isoFeatureTmpTxt);
         }
         else {
+            Log.d("event","sendEvent 131");
             fingerEventSink.error("00","fingerEventSink null",0);
         }
-
     }
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
-        Log.d("event","onListen add");
+        //Log.d("event","onListen add");
         if(events==null) return;
-
         fingerEventSink=events;
     }
 
@@ -169,9 +156,24 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     @Override
     public void onCancel(Object arguments) {
-        Log.d("event","onCancel");
+        //Log.d("event","onCancel");
         fingerEventSink=null;
         mFingerprintManager.removeFignerprintListener(this);
 
+    }
+
+    List<String> converBytelistString(byte[] bytess)
+    {
+        byte[] bytes = { 72, 101, 108, 108, 111 }; // arreglo de bytes de ejemplo
+        List<String> stringList = new ArrayList<>();
+
+        for (byte b : bytes) {
+            String s = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                s = new String(new byte[] { b }, StandardCharsets.UTF_8);
+            }
+            stringList.add(s);
+        }
+        return stringList;
     }
 }
