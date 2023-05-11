@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:postjava/02service/channel/plataformchannel.dart';
@@ -13,9 +14,9 @@ import 'package:postjava/03dominio/user/result.dart';
 class FingerChannel extends ChannelMethod {
   static const starFinger = "starFinger";
   static const captureFingerISOname = "captureFingerISO";
-  Stream<List<Uint8List>> fingerStream = const Stream.empty();
-  Stream<List<String>> fingerStreamTXT = const Stream.empty();
 
+  Stream<String> vHuellares = const Stream.empty();
+  String vResult = '';
   late StreamSubscription fingerStreamSubcription;
 
   /*finger */
@@ -43,34 +44,28 @@ class FingerChannel extends ChannelMethod {
     return buffer.toString();
   }
 
-  Stream<List<Uint8List>> capturFingerEvent() {
-    // fingerStream = eventChannelFinger
-    //     .receiveBroadcastStream()
-    //     .map<List<Uint8List>>((event) {
-    //   return event;
-    // });
-    String vResult;
+  Stream<String> capturFingerEvent() {
+    final controller = StreamController<String>.broadcast();
+
     fingerStreamSubcription =
         eventChannelFinger.receiveBroadcastStream().listen((event) {
-      print(event.runtimeType);
-      print("event::=> $event");
       Uint8List original = Uint8List.fromList(event);
-      print("original::=> $original");
-      vResult = convertBytesToHex(original);
+      vResult = base64.encode(original);
       print("vResult::=> $vResult");
+      controller.add(vResult);
       // ignore: void_checks
-      return event;
+      // return event;
     });
-    return fingerStream;
+    if (vResult.isNotEmpty) {
+      vHuellares = controller.stream;
+    }
+
+    return vHuellares;
   }
 
-  // Stream<Uint8List> capturFingerEvent() {
-  //   fingerStream =
-  //       eventChannelFinger.receiveBroadcastStream().map<Uint8List>((event) {
-  //     return event;
-  //   });
-  //   return fingerStream;
-  // }
+  dispose() {
+    vResult = '';
+  }
 
   Future<String?> captureFingerISO() async {
     try {
@@ -104,7 +99,7 @@ class FingerChannel extends ChannelMethod {
           groupName: '', key: 'TypeAuthentication', value: 'IdentityCard')
     ];
     final pCredential = Credential(
-        user: '5961581',
+        user: '5961581LP',
         password: pFinger,
         channel: 3,
         aditionalItems: vListaItem);

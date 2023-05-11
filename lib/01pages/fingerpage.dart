@@ -1,10 +1,7 @@
 // ignore_for_file: avoid_print
 
-import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-
 import '../02service/channel/plataformchannel.dart';
 
 class FingerPage extends StatefulWidget {
@@ -29,10 +26,18 @@ class _FingerPageState extends State<FingerPage> {
     txtInicial.text = "Ejecutando";
   }
 
+  @override
+  void dispose() {
+    resul.fingerChannel.dispose();
+    super.dispose();
+  }
+  //
+
   void _getFinger() async {
     final res = await resul.fingerChannel.captureFingerISO();
     setState(() {
       txtProcess.text = res ?? "sin revisión";
+      //resul.fingerChannel.vResult = '';
     });
   }
 
@@ -41,19 +46,6 @@ class _FingerPageState extends State<FingerPage> {
     setState(() {
       txtRespuesta.text = res.verifyUserResult!.message.toString();
     });
-  }
-
-  // Stream<List<String>> capturFingerEvent() {
-  //   final res = resul.fingerChannel.capturFingerEvent();
-
-  //   print("res; $res");
-  //   return res;
-  // }
-
-  Stream<List<Uint8List>> capturFingerEvent() {
-    final res = resul.fingerChannel.capturFingerEvent();
-    print("res; $res");
-    return res;
   }
 
   @override
@@ -68,25 +60,15 @@ class _FingerPageState extends State<FingerPage> {
               readOnly: true,
             ),
             StreamBuilder(
-              builder: ((BuildContext context,
-                  AsyncSnapshot<List<Uint8List>> snapshot) {
+              builder: ((BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.hasData) {
-                  print(snapshot.data);
-
-                  // Uint8List data8 = Uint8List.fromList(snapshot.data);
-
-                  //final aux = convertBytesToHex(data8);
-                  print("data8: ");
-                  //print(data8);
-                  vHuella =
-                      "con huella"; //snapshot.data; //base64.encode(snapshot.data);
-
+                  vHuella = snapshot.data ?? '';
                   return Text(vHuella);
                 } else {
                   return const Text('sin data');
                 }
               }),
-              stream: capturFingerEvent(),
+              stream: resul.fingerChannel.capturFingerEvent(),
             ),
             TextField(
               controller: txtProcess,

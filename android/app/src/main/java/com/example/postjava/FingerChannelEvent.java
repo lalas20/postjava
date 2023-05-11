@@ -66,7 +66,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
             if (count > TOTAL_COUNT) {
                 vEntre=false;
 
-
+                if(fingerEventSink==null)
                 fingerEventSink.endOfStream(); // ends the stream
             } else {
                 if(isoFeatureTmp!=null)
@@ -141,7 +141,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     @Override
     public void onGetImageISOFeature(int i, byte[] bytes) {
-       // Log.d("event","onGetImageISOFeature desde java");
+        Log.d("event","onGetImageISOFeature desde java");
 
         if (i == SdkResult.SDK_OK) {
             //Log.d("event","captura cadena txt");
@@ -167,21 +167,30 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     public void sendEvent(){
         Log.d("event","sendEvent");
+
         //if(isoFeatureTmpTxt!=null && fingerEventSink!=null){
         if(isoFeatureTmp!=null && fingerEventSink!=null){
             Log.d("event","sendEvent 127: " + isoFeatureTmp);
             fingerEventSink.success(isoFeatureTmp);
         }
         else {
-            Log.d("event","sendEvent 131");
+            if(isoFeatureTmp==null){
+                Log.d("sendEvent","isoFeatureTmp vacio");
+            }
+            if(fingerEventSink==null){
+                Log.d("sendEvent","fingerEventSink vacio");
+            }
+
+            if(fingerEventSink!=null)
             fingerEventSink.error("00","fingerEventSink null",0);
         }
     }
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
-        //Log.d("event","onListen add");
+
         if(events==null) return;
+        Log.d("onListen","onListen add");
         fingerEventSink=events;
     }
 

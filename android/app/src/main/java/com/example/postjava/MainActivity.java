@@ -33,7 +33,10 @@ public class MainActivity extends FlutterActivity {
         BinaryMessenger messenger= flutterEngine.getDartExecutor().getBinaryMessenger();
         String methodChannelName = "com.prodem/mc";
         String eventChannelName="com.prodem/emc";
+
         FingerChannelEvent fingerChannelEvent= new FingerChannelEvent();
+
+        CardChannel cardChannel=new CardChannel();
 
 
         MethodChannel methodChannel= new MethodChannel(messenger,methodChannelName);
@@ -44,6 +47,14 @@ public class MainActivity extends FlutterActivity {
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
                 String vResFinger="";
                 switch (call.method){
+                    case "researchICC":
+                        cardChannel.researchICC();
+                        result.success("researchICC");
+                        break;
+                    case "starCard":
+                        cardChannel.init();
+                        result.success("starCard iniciado");
+                        break;
                     case "horaversion":
                         String vHoraVersion=getHoraVersion ();
                         result.success(vHoraVersion);

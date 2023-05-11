@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:postjava/02service/channel/card_channel.dart';
 
 class CardPage extends StatefulWidget {
   const CardPage({super.key});
@@ -10,7 +11,15 @@ class CardPage extends StatefulWidget {
 class _CardPageState extends State<CardPage> {
   TextEditingController txtLectura = TextEditingController();
 
-  void _readyCard() {}
+  @override
+  void initState() {
+    super.initState();
+    CardChannel.instance.init();
+  }
+
+  void _researchICC() {
+    CardChannel.instance.infosearchICC();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class _CardPageState extends State<CardPage> {
               controller: txtLectura,
             ),
             ElevatedButton(
-                onPressed: _readyCard, child: const Text('lee captura')),
+                onPressed: _researchICC, child: const Text('lee captura')),
           ],
         ),
       ),
