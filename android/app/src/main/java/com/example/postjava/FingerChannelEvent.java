@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import io.flutter.embedding.engine.systemchannels.KeyEventChannel;
 import io.flutter.plugin.common.EventChannel;
 
@@ -33,10 +35,12 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     DriverManager mDriverManager= DriverManager.getInstance();
 
-    private Handler handler =new Handler(Looper.getMainLooper());
+    private Handler mHandler =new Handler(Looper.getMainLooper());
+
     private FingerprintManager mFingerprintManager =mDriverManager.getFingerprintManager();           ;
     private int mFingerId = 0;
     private int mTimeout = 3;
+    private  int count=0;
     private byte[] featureTmp;
     private byte[] isoFeatureTmp;
 
@@ -46,6 +50,32 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     private EventChannel.EventSink fingerEventSink;
 
+
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            int TOTAL_COUNT = 10;
+            boolean vEntre=false;
+            if(fingerEventSink==null){
+                Log.d("runable", "run: finger evenvacio");
+            }
+            else {
+                if(isoFeatureTmp!=null)
+                fingerEventSink.success(isoFeatureTmp);
+            }
+            if (count > TOTAL_COUNT) {
+                vEntre=false;
+
+
+                fingerEventSink.endOfStream(); // ends the stream
+            } else {
+                if(isoFeatureTmp!=null)
+                fingerEventSink.success(isoFeatureTmp);
+            }
+            count++;
+        }
+
+    };
 
 
     String initFinger() {
@@ -57,13 +87,17 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         mFingerprintManager = mDriverManager.getFingerprintManager();
         mFingerprintManager.addFignerprintListener(this);
         mFingerprintManager.init();
-        //mFingerprintManager.captureAndGetFeature();
+
+         new Handler(Looper.getMainLooper()).postDelayed(
+                 runnable,2000
+         );
+
         return  "00:La lectura fue correcta";
     }
 
     void initCapturaIso()
     {
-       mFingerprintManager.captureAndGetISOFeature(5);
+       mFingerprintManager.captureAndGetISOFeature(2);
     }
 
 
@@ -133,10 +167,10 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     public void sendEvent(){
         Log.d("event","sendEvent");
-        if(isoFeatureTmpTxt!=null && fingerEventSink!=null){
-        //if(isoFeatureTmp!=null && fingerEventSink!=null){
-            Log.d("event","sendEvent 127: " + isoFeatureTmpTxt);
-            fingerEventSink.success(isoFeatureTmpTxt);
+        //if(isoFeatureTmpTxt!=null && fingerEventSink!=null){
+        if(isoFeatureTmp!=null && fingerEventSink!=null){
+            Log.d("event","sendEvent 127: " + isoFeatureTmp);
+            fingerEventSink.success(isoFeatureTmp);
         }
         else {
             Log.d("event","sendEvent 131");

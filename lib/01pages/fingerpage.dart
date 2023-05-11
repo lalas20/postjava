@@ -43,18 +43,18 @@ class _FingerPageState extends State<FingerPage> {
     });
   }
 
-  Stream<List<String>> capturFingerEvent() {
-    final res = resul.fingerChannel.capturFingerEvent();
-
-    print("res; $res");
-    return res;
-  }
-
-  // Stream<Uint8List> capturFingerEvent() {
+  // Stream<List<String>> capturFingerEvent() {
   //   final res = resul.fingerChannel.capturFingerEvent();
+
   //   print("res; $res");
   //   return res;
   // }
+
+  Stream<List<Uint8List>> capturFingerEvent() {
+    final res = resul.fingerChannel.capturFingerEvent();
+    print("res; $res");
+    return res;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class _FingerPageState extends State<FingerPage> {
             ),
             StreamBuilder(
               builder: ((BuildContext context,
-                  AsyncSnapshot<List<String>> snapshot) {
+                  AsyncSnapshot<List<Uint8List>> snapshot) {
                 if (snapshot.hasData) {
                   print(snapshot.data);
 
