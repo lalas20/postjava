@@ -77,14 +77,20 @@ public class CardChannel extends PreferenceFragment  {
         }
         ifSearch = true;
         while (ifSearch) {
+            Log.d(TAG, "readICCard: 80");
             int i = mICCard.getIcCardStatus(CardSlotNoEnum.SDK_ICC_USERCARD);
+            Log.d(TAG, "readICCard i==>"+i);
             if (i == SdkResult.SDK_ICC_NO_CARD) {
+                Log.d(TAG, "readICCard SdkResult.SDK_ICC_NO_CARD:"+SdkResult.SDK_ICC_NO_CARD);
                 break;
             }
         }
+        Log.d(TAG, "readICCard 88:");
         if (ifSearch) {
+            Log.d(TAG, "readICCard 90:");
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
         }
+        Log.d(TAG, "readICCard 91:");
     }
     void readICCard(CardSlotNoEnum slotNo) {
         int icCardReset = mICCard.icCardReset(slotNo);
