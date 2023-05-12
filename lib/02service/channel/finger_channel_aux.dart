@@ -11,7 +11,7 @@ import 'package:postjava/03dominio/user/credential.dart';
 import 'package:postjava/03dominio/user/credential_verify_user.dart';
 import 'package:postjava/03dominio/user/result.dart';
 
-class FingerChannel extends ChannelMethod {
+class FingerChannelAux extends ChannelMethod {
   static const starFinger = "starFinger";
   static const captureFingerISOname = "captureFingerISO";
 
@@ -24,7 +24,7 @@ class FingerChannel extends ChannelMethod {
   final EventChannel eventChannelFinger =
       const EventChannel(eventChannelNameFinge);
 
-  FingerChannel(MethodChannel methodChannel) : super(methodChannel);
+  FingerChannelAux(MethodChannel methodChannel) : super(methodChannel);
 
   String convertBytesToHex(Uint8List bytes) {
     StringBuffer buffer = StringBuffer();
@@ -72,10 +72,10 @@ class FingerChannel extends ChannelMethod {
       final vRespuesta =
           await methodChannel.invokeMethod<String?>(captureFingerISOname);
 
-      print({"exito  captureFingerISO==>> $vRespuesta"});
+      print({"exito  $vRespuesta"});
       return "exito: $vRespuesta";
     } catch (e) {
-      print({"error ==>> $e"});
+      print({"error  $e"});
     }
     return null;
   }

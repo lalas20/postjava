@@ -87,8 +87,9 @@ public class MainActivity extends FlutterActivity {
                         result.success(vResFinger);
                         break;
                     case "captureFingerISO":
-                        fingerChannelEvent.initCapturaIso();
+                        //fingerChannelEvent.initCapturaIso();
                         fingerChannelEvent.sendEvent();
+                        fingerChannelEvent.initCapturaIso();
                         result.success("initCapturaIso");
                         break;
                     default:

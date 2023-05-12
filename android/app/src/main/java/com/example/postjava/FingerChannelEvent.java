@@ -40,7 +40,9 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
     private FingerprintManager mFingerprintManager =mDriverManager.getFingerprintManager();           ;
     private int mFingerId = 0;
     private int mTimeout = 3;
-    private  int count=0;
+    private  int count=1;
+    private  int maxcount=1;
+
     private byte[] featureTmp;
     private byte[] isoFeatureTmp;
 
@@ -50,7 +52,42 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     private EventChannel.EventSink fingerEventSink;
 
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("runable", "run: 56");
+            if (count > maxcount) {
+                Log.d("runable", "run: 58");
 
+                fingerEventSink.endOfStream();
+                onCancel(null);
+            } else {
+                initCapturaIso();
+                if(fingerEventSink==null)
+                {
+                    Log.d("es null", "run: fingerEventSink null");
+                }
+                else {
+                    Log.d("tiene data", "run: fingerEventSink");
+                    if(isoFeatureTmp==null){
+                        Log.d("es null", "run: isoFeatureTmp es null");
+                    }
+                    else {
+                        Log.d("tiene data", "run: isoFeatureTmp");
+                        fingerEventSink.success(isoFeatureTmp);
+                    }
+                }
+
+                Log.d("runable", "run: 62");
+            }
+            count++;
+            Log.d("runable", "run: count" +count);
+            mHandler.postDelayed(this, 1000);
+        }
+
+    };
+
+/*
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -76,7 +113,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         }
 
     };
-
+*/
 
     String initFinger() {
         String zcs_model_code = getSystemProperty("ro.zcs.platform.tag");
@@ -88,16 +125,14 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         mFingerprintManager.addFignerprintListener(this);
         mFingerprintManager.init();
 
-         new Handler(Looper.getMainLooper()).postDelayed(
-                 runnable,2000
-         );
+
 
         return  "00:La lectura fue correcta";
     }
 
     void initCapturaIso()
     {
-       mFingerprintManager.captureAndGetISOFeature(2);
+       mFingerprintManager.captureAndGetISOFeature();
     }
 
 
@@ -167,9 +202,11 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
     public void sendEvent(){
         Log.d("event","sendEvent");
+        count=1;
+        maxcount=2;
 
         //if(isoFeatureTmpTxt!=null && fingerEventSink!=null){
-        if(isoFeatureTmp!=null && fingerEventSink!=null){
+       /* if(isoFeatureTmp!=null && fingerEventSink!=null){
             Log.d("event","sendEvent 127: " + isoFeatureTmp);
             fingerEventSink.success(isoFeatureTmp);
         }
@@ -183,15 +220,16 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
 
             if(fingerEventSink!=null)
             fingerEventSink.error("00","fingerEventSink null",0);
-        }
+        }*/
     }
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
-
+        Log.d("onListen","onListen 213");
         if(events==null) return;
         Log.d("onListen","onListen add");
         fingerEventSink=events;
+        runnable.run();
     }
 
 
@@ -202,6 +240,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         //Log.d("event","onCancel");
         fingerEventSink=null;
         mFingerprintManager.removeFignerprintListener(this);
+        mHandler.removeCallbacks(runnable);
 
     }
 
