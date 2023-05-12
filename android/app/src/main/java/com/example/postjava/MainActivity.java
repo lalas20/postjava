@@ -3,6 +3,7 @@ package com.example.postjava;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,14 +84,20 @@ public class MainActivity extends FlutterActivity {
                         }
                         break;
                     case "starFinger":
+                        Log.d("starFinger", "onMethodCall: 87");
                         vResFinger=   fingerChannelEvent.initFinger();
                         result.success(vResFinger);
                         break;
                     case "captureFingerISO":
-                        //fingerChannelEvent.initCapturaIso();
+                        Log.d("Finger", "onMethodCall: 92");
                         fingerChannelEvent.sendEvent();
-                        fingerChannelEvent.initCapturaIso();
+                        //fingerChannelEvent.initCapturaIso();
                         result.success("initCapturaIso");
+                        break;
+                    case "disposeFinger":
+                        Log.d("Finger", "disposeFinger: 98");
+                        fingerChannelEvent.closeFinger();
+                        result.success("disposeFinger");
                         break;
                     default:
                         result.notImplemented();

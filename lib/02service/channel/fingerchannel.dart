@@ -14,10 +14,11 @@ import 'package:postjava/03dominio/user/result.dart';
 class FingerChannel extends ChannelMethod {
   static const starFinger = "starFinger";
   static const captureFingerISOname = "captureFingerISO";
+  static const disposeFinger = "disposeFinger";
 
   Stream<String> vHuellares = const Stream.empty();
-  String vResult = '';
   late StreamSubscription fingerStreamSubcription;
+  String vResult = '';
 
   /*finger */
   static const eventChannelNameFinge = "com.prodem/emc";
@@ -58,13 +59,26 @@ class FingerChannel extends ChannelMethod {
     });
     if (vResult.isNotEmpty) {
       vHuellares = controller.stream;
+    } else {
+      controller.add('sin huekla');
+      vHuellares = controller.stream;
     }
 
     return vHuellares;
   }
 
-  dispose() {
+  dispose() async {
     vResult = '';
+    try {
+      final vRespuesta =
+          await methodChannel.invokeMethod<String?>(disposeFinger);
+
+      print({"exito  captureFingerISO==>> $vRespuesta"});
+      return "exito: $vRespuesta";
+    } catch (e) {
+      print({"error ==>> $e"});
+    }
+    return null;
   }
 
   Future<String?> captureFingerISO() async {

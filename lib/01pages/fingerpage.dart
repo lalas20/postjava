@@ -22,7 +22,7 @@ class _FingerPageState extends State<FingerPage> {
     // implement initState
     super.initState();
     //final resul = PlaformChannel();
-    resul.fingerChannel.inicilizaFinger();
+    //resul.fingerChannel.inicilizaFinger();
     txtInicial.text = "Ejecutando";
   }
 
