@@ -21,6 +21,10 @@ class _CardPageState extends State<CardPage> {
     CardChannel.instance.infosearchICC();
   }
 
+  void _searchMagnetCard() {
+    CardChannel.instance.searchMagnetCard();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -32,7 +36,13 @@ class _CardPageState extends State<CardPage> {
               controller: txtLectura,
             ),
             ElevatedButton(
-                onPressed: _researchICC, child: const Text('lee captura')),
+              onPressed: _researchICC,
+              child: const Text('lee captura'),
+            ),
+            ElevatedButton(
+              onPressed: _searchMagnetCard,
+              child: const Text('tarjeta Magnetica '),
+            ),
           ],
         ),
       ),

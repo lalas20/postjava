@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">ZcsSdkDemo</string>
+
+    <string name="demo_title">Zcs SDK Demo</string>
+
+    <string name="pref_print">Print</string>
+    <string name="pref_card">Card</string>
+
+    <string name="pref_paper_print">Common print paper</string>
+    <string name="pref_print_text">Print Text</string>
+    <string name="pref_print_qrcode">Print QRcode</string>
+    <string name="pref_print_barcode">Print Barcode</string>
+    <string name="pref_print_bitmap">Print Bitmap</string>
+    <string name="pref_label_print">Label sticker</string>
+    <string name="pref_print_label">Print Label</string>
+
+    <string name="pref_print_without_sdk">Print without SDK</string>
+    <string name="pref_print_service">Print service</string>
+    <string name="pref_print_with_android_service">Print with android print service</string>
+    <string name="pref_print_with_bluetooth">Bluetooth  print</string>
+    <string name="pref_connect_bluetooth">Connect bluetooth</string>
+    <string name="pref_print_text_with_bluetooth">Print text</string>
+
+    <string name="pref_IC_card">IC card</string>
+    <string name="msg_ic_card">Please insert IC card</string>
+    <string name="pref_psam_card">PSAM</string>
+    <string name="msg_psam_card">Reading PSAM</string>
+    <string name="pref_magnetic_card">Magnetic card</string>
+    <string name="msg_magnet_card">Please swipe magnetic card</string>
+    <string name="pref_contactless_card">Contactless card</string>
+    <string name="msg_contactless_card">Please swing contactless card</string>
+
+    <string name="waiting">Waiting...</string>
+</resources>

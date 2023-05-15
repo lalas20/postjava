@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="IC_card_key"
+        android:title="@string/pref_IC_card"/>
+
+    <Preference
+        android:key="psam_card_key"
+        android:title="@string/pref_psam_card"/>
+
+    <Preference
+        android:key="magnetic_card_key"
+        android:title="@string/pref_magnetic_card"/>
+
+    <Preference
+        android:key="contactless_card_key"
+        android:title="@string/pref_contactless_card"/>
+</PreferenceScreen>

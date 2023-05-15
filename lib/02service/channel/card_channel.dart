@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 class CardChannel {
   static const starCard = "starCard";
   static const researchICC = "researchICC";
+  static const searchMagnetCardName = "searchMagnetCard";
 
   CardChannel._internal();
   static final CardChannel _instance = CardChannel._internal();
@@ -34,6 +35,18 @@ class CardChannel {
       final resul = await _channel.invokeMethod(researchICC);
       print('resul:=> $resul');
       rpt = 'ingreso';
+    } catch (e) {
+      rpt = e.toString();
+    }
+    return rpt;
+  }
+
+  Future<String> searchMagnetCard() async {
+    String rpt = '';
+    try {
+      final resul = await _channel.invokeMethod(searchMagnetCardName);
+      print('searchMagnetCard:=> $resul');
+      rpt = 'searchMagnetCard';
     } catch (e) {
       rpt = e.toString();
     }

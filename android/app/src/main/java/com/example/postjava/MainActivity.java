@@ -1,5 +1,6 @@
 package com.example.postjava;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -37,7 +38,7 @@ public class MainActivity extends FlutterActivity {
 
         FingerChannelEvent fingerChannelEvent= new FingerChannelEvent();
 
-        CardChannel cardChannel=new CardChannel();
+        CardIcChannel cardChannel=new CardIcChannel();
 
 
         MethodChannel methodChannel= new MethodChannel(messenger,methodChannelName);
@@ -48,13 +49,16 @@ public class MainActivity extends FlutterActivity {
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
                 String vResFinger="";
                 switch (call.method){
+                    case "searchMagnetCard":
+                        cardChannel.searchMagnetCard();
+                        result.success("searchMagnetCard");
                     case "researchICC":
-                        cardChannel.researchICC();
+                        cardChannel.searchICCard();
                         result.success("researchICC");
                         break;
                     case "starCard":
-                        cardChannel.init();
                         result.success("starCard iniciado");
+                        Log.d("onMethodCall", "starCard: 63");
                         break;
                     case "horaversion":
                         String vHoraVersion=getHoraVersion ();
