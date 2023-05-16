@@ -31,13 +31,69 @@ import com.zcs.sdk.card.RfCard;
 import com.zcs.sdk.listener.OnSearchCardListener;
 import com.zcs.sdk.util.StringUtils;
 
-public class CardIcChannel {
+import io.flutter.plugin.common.EventChannel;
+
+public class CardIcChannel implements EventChannel.StreamHandler {
 
     private static final String TAG = "CardFragment";
     private static final String KEY_IC_CARD = "IC_card_key";
-    private static final int READ_TIMEOUT = 10 * 1000;
+    private static final int READ_TIMEOUT = 1 * 1000;
     private DriverManager mDriverManager;
     private CardReaderManager mCardReadManager;
+    private ICCard icCard;
+    private MagCard magCard;
+
+
+    private String infoCardTxt="";
+    private EventChannel.EventSink cardEventSink;
+    private  int count=1;
+    private  int maxcount=2;
+    private Handler mHandler =new Handler(Looper.getMainLooper());
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("runable", "run: 56");
+            if (count > maxcount) {
+                Log.d("runable", "run: 58");
+                if(cardEventSink!=null) {
+                    Log.d("runable", "cardEventSink 59");
+                    cardEventSink.endOfStream();
+                }
+                Log.d("runable", "cardEventSink 62");
+                onCancel(null);
+            } else {
+                if(cardEventSink==null)
+                {
+                    Log.d("runable", "cardEventSink null");
+                }
+                else {
+                    Log.d("runable", "run: cardEventSink tiene algo");
+                    if(infoCardTxt.isEmpty()){
+                        Log.d("runable", "run: infoCardTxt es null");
+                    }
+                    else {
+                        Log.d("runable", "run: infoCardTxt");
+                        cardEventSink.success(infoCardTxt);
+                    }
+                }
+
+                Log.d("runable", "run: 62");
+            }
+            count++;
+            Log.d("runable", "run: count" +count);
+            if (count < maxcount) {
+                mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
+            }
+            else {
+                if(cardEventSink!=null) {
+                    Log.d("runable", "cardEventSink 59");
+                    cardEventSink.endOfStream();
+                }
+                onCancel(null);
+            }
+            mHandler.postDelayed(this, 2000);
+        }
+    };
 
     public void initCardID(){
         Log.d(TAG, "initCardID: 42");
@@ -52,11 +108,15 @@ public class CardIcChannel {
         Log.d(TAG, "initCardID: 45");
     }
     public void searchICCard() {
-        Log.d(TAG, "searchICCard: INICIAL");
+        Log.d("searchICCard", "100");
+        count=1;
+        maxcount=3;
         initCardID();
         mCardReadManager.cancelSearchCard();
-        mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
-        Log.d(TAG, "searchICCard: 64");
+        mHandler.removeCallbacks(runnable);
+        //mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
+        Log.d("searchICCard", "106");
+        runnable.run();
     }
 
     private OnSearchCardListener mICCardSearchCardListener = new OnSearchCardListener() {
@@ -68,6 +128,7 @@ public class CardIcChannel {
 
             Log.d("IC CARD", cardInfoToString(cardInfoEntity));
             Log.d("IC CARD", "onCardInfo: 92");
+            //runnable.run();
         }
 
         @Override
@@ -87,7 +148,7 @@ public class CardIcChannel {
     public static final byte[] APDU_SEND_IC = {0x00, (byte) 0xA4, 0x04, 0x00, 0x0E, 0x31, 0x50, 0x41, 0x59, 0x2E, 0x53, 0x59, 0x53, 0x2E, 0x44, 0x44, 0x46, 0x30, 0x31, 0X00};
     private void readICCard() {
         Log.d("readICCard", "readICCard: 106");
-        ICCard icCard = mCardReadManager.getICCard();
+        icCard = mCardReadManager.getICCard();
         Log.d("readICCard", "readICCard: 115");
         int result = icCard.icCardReset(CardSlotNoEnum.SDK_ICC_USERCARD);
         Log.d("readICCard", "117");
@@ -102,6 +163,8 @@ public class CardIcChannel {
                 Log.d("readICCard", StringUtils.convertBytesToHex(recvData));
                 final String apduRecv = StringUtils.convertBytesToHex(recvData).substring(0, recvLen[0] * 2);
                 Log.d("readICCard", "apduRecv===>: "+apduRecv);
+                infoCardTxt=apduRecv;
+              //cardEventSink.success(apduRecv);
             } else {
                 showReadICCardErrorDialog(result);
                 Log.d("readICCard", "130");
@@ -111,10 +174,20 @@ public class CardIcChannel {
             Log.d("readICCard", "134");
         }
         icCard.icCardPowerDown(CardSlotNoEnum.SDK_ICC_USERCARD);
-        Log.d("readICCard", "137");
+       /* Log.d("readICCard", "137");
+        if(cardEventSink!=null) {
+            Log.d("readICCard", "cardEventSink");
+            cardEventSink.endOfStream();
+        }*/
     }
     private void showReadICCardErrorDialog(final int errorCode) {
         Log.d(TAG, "showReadICCardErrorDialog: " + errorCode);
+        //cardEventSink.success("error: "+errorCode);
+        if(cardEventSink!=null) {
+            Log.d("readICCard", "cardEventSink");
+            //cardEventSink.endOfStream();
+        }
+        mCardReadManager.cancelSearchCard();
     }
     private void showSearchCardDialog(@StringRes int title, @StringRes int msg) {
         Log.d(TAG, "showSearchCardDialog: 90" + title);
@@ -180,7 +253,7 @@ public class CardIcChannel {
 
     private void readMagnetCard() {
         Log.d("MagnetCard", "readMagnetCard: 182");
-        MagCard magCard = mCardReadManager.getMAGCard();
+        magCard = mCardReadManager.getMAGCard();
         final CardInfoEntity cardInfoEntity = magCard.getMagReadData();
         if (cardInfoEntity.getResultcode() == SdkResult.SDK_OK) {
             cardInfoToString(cardInfoEntity);
@@ -191,7 +264,31 @@ public class CardIcChannel {
         Log.d("MagnetCard", "readMagnetCard: 191");
     }
 
+    @Override
+    public void onListen(Object o, EventChannel.EventSink eventSink) {
+        Log.i("event", "onListen: ");
+        cardEventSink=eventSink;
+        //mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
+        //runnable.run();
+    }
+
+    @Override
+    public void onCancel(Object o) {
+        Log.d("event","onCancel 216");
+        cardEventSink=null;
+        mCardReadManager.cancelSearchCard();
+        mHandler.removeCallbacks(runnable);
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
+    public void disposeCardIc()
+    {
+        Log.d("disposeCardIc","close 223");
+        cardEventSink=null;
+        Log.d("disposeCardIc","close 225");
+        mCardReadManager.closeCard();
+        runnable=null;
+        mHandler.removeCallbacks(runnable);
+        mHandler.removeCallbacksAndMessages(null);
+    }
 }
-
-
-

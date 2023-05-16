@@ -20,7 +20,7 @@ class FingerChannelAux extends ChannelMethod {
   late StreamSubscription fingerStreamSubcription;
 
   /*finger */
-  static const eventChannelNameFinge = "com.prodem/emc";
+  static const eventChannelNameFinge = "com.prodem/emcF";
   final EventChannel eventChannelFinger =
       const EventChannel(eventChannelNameFinge);
 

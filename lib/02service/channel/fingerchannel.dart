@@ -21,7 +21,7 @@ class FingerChannel extends ChannelMethod {
   String vResult = '';
 
   /*finger */
-  static const eventChannelNameFinge = "com.prodem/emc";
+  static const eventChannelNameFinge = "com.prodem/emcF";
   final EventChannel eventChannelFinger =
       const EventChannel(eventChannelNameFinge);
 
@@ -94,17 +94,17 @@ class FingerChannel extends ChannelMethod {
     return null;
   }
 
-  Future<String?> inicilizaFinger() async {
-    try {
-      final vRespuesta = await methodChannel.invokeMethod<String?>(starFinger);
+  // Future<String?> inicilizaFinger() async {
+  //   try {
+  //     final vRespuesta = await methodChannel.invokeMethod<String?>(starFinger);
 
-      print({"exito  $vRespuesta"});
-      return vRespuesta;
-    } catch (e) {
-      print({"error  $e"});
-    }
-    return null;
-  }
+  //     print({"exito  $vRespuesta"});
+  //     return vRespuesta;
+  //   } catch (e) {
+  //     print({"error  $e"});
+  //   }
+  //   return null;
+  // }
 
   Future<Result> verifyUser(String pFinger) async {
     List<AditionalItems> vListaItem = [

@@ -1,5 +1,9 @@
+// ignore_for_file: avoid_print
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:postjava/02service/channel/card_channel.dart';
+import '../02service/channel/plataformchannel.dart';
 
 class CardPage extends StatefulWidget {
   const CardPage({super.key});
@@ -9,20 +13,36 @@ class CardPage extends StatefulWidget {
 }
 
 class _CardPageState extends State<CardPage> {
+  late StreamSubscription _streamSubscription;
   TextEditingController txtLectura = TextEditingController();
+  String cardIC = '';
+  final resul = PlaformChannel();
 
   @override
   void initState() {
     super.initState();
-    CardChannel.instance.init();
+    resul.cardChannel.init();
   }
 
   void _researchICC() {
-    CardChannel.instance.infosearchICC();
+    _streamSubscription =
+        resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
+    print('_researchICC: 28');
+    resul.cardChannel.infosearchICC();
+    print('_researchICC: 30');
   }
 
-  void _searchMagnetCard() {
-    CardChannel.instance.searchMagnetCard();
+  void _startListener() {
+    _streamSubscription =
+        resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
+    print('_researchICC: 36');
+  }
+
+  void _listenStream(value) {
+    print('_listenStream: 40 : $value');
+    setState(() {
+      cardIC = value;
+    });
   }
 
   @override
@@ -35,12 +55,30 @@ class _CardPageState extends State<CardPage> {
             TextField(
               controller: txtLectura,
             ),
+            // StreamBuilder(
+            //   builder: ((BuildContext context, AsyncSnapshot<String> snapshot) {
+            //     if (snapshot.hasData) {
+            //       cardIC = snapshot.data ?? '';
+            //       return Text(cardIC);
+            //     } else {
+            //       return const Text('sin data');
+            //     }
+            //   }),
+            //   stream: CardChannel.instance.capturaCardIC(),
+            //),
+            // Value in text
+            Text("Carid:  $cardIC: ".toUpperCase(),
+                textAlign: TextAlign.justify),
+            const SizedBox(
+              height: 50,
+            ),
+
             ElevatedButton(
               onPressed: _researchICC,
               child: const Text('lee captura'),
             ),
             ElevatedButton(
-              onPressed: _searchMagnetCard,
+              onPressed: _startListener,
               child: const Text('tarjeta Magnetica '),
             ),
           ],

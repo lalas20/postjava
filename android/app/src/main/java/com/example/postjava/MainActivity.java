@@ -34,7 +34,8 @@ public class MainActivity extends FlutterActivity {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger messenger= flutterEngine.getDartExecutor().getBinaryMessenger();
         String methodChannelName = "com.prodem/mc";
-        String eventChannelName="com.prodem/emc";
+        String eventChannelFingerName="com.prodem/emcF";
+        String eventChannelCardName="com.prodem/emcC";
 
         FingerChannelEvent fingerChannelEvent= new FingerChannelEvent();
 
@@ -49,7 +50,12 @@ public class MainActivity extends FlutterActivity {
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
                 String vResFinger="";
                 switch (call.method){
+                    case "disposeCardIc":
+                        Log.d("onMethodCall", "disposeCardIc: 53");
+                        cardChannel.disposeCardIc();
+                        result.success("disposeCardIc");
                     case "searchMagnetCard":
+                        Log.d("onMethodCall", "searchMagnetCard: 57");
                         cardChannel.searchMagnetCard();
                         result.success("searchMagnetCard");
                     case "researchICC":
@@ -93,9 +99,8 @@ public class MainActivity extends FlutterActivity {
                         result.success(vResFinger);
                         break;
                     case "captureFingerISO":
-                        Log.d("Finger", "onMethodCall: 92");
+                        Log.d("captureFingerISO", "onMethodCall: 92");
                         fingerChannelEvent.sendEvent();
-                        //fingerChannelEvent.initCapturaIso();
                         result.success("initCapturaIso");
                         break;
                     case "disposeFinger":
@@ -111,7 +116,9 @@ public class MainActivity extends FlutterActivity {
         });
 
         //capturando los eventos del finger
-        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelName).setStreamHandler(fingerChannelEvent);
+        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelFingerName).setStreamHandler(fingerChannelEvent);
+
+        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelCardName).setStreamHandler(cardChannel);
 
     }
 
