@@ -40,12 +40,12 @@ public class PrintChannel {
             format.setAli(Layout.Alignment.ALIGN_CENTER);
             format.setStyle(PrnTextStyle.BOLD);
             format.setFont(PrnTextFont.SANS_SERIF);
-            mPrinter.setPrintAppendString("POS example", format);
+            mPrinter.setPrintAppendString("PRODEM - POS ", format);
             format.setTextSize(25);
             format.setStyle(PrnTextStyle.NORMAL);
             format.setAli(Layout.Alignment.ALIGN_NORMAL);
             mPrinter.setPrintAppendString(" ", format);
-            mPrinter.setPrintAppendString("MERCHANGT NAME:" + " Test ", format);
+            mPrinter.setPrintAppendString("PRUEBA DE IMPRESION: .... ", format);
             format.setTextSize(25);
             mPrinter.setPrintAppendString(pText, format);
             mPrinter.setPrintAppendString(" ", format);

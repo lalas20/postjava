@@ -74,6 +74,9 @@ class _FingerPageState extends State<FingerPage> {
             ),
             ElevatedButton(
                 onPressed: _getFinger, child: const Text('Captura huella')),
+            const SizedBox(
+              height: 50,
+            ),
             ElevatedButton(
                 onPressed: _getVerifyUser, child: const Text('Envio')),
             TextField(

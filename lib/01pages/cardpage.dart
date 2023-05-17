@@ -18,12 +18,6 @@ class _CardPageState extends State<CardPage> {
   String cardIC = '';
   final resul = PlaformChannel();
 
-  @override
-  void initState() {
-    super.initState();
-    resul.cardChannel.init();
-  }
-
   void _researchICC() {
     _streamSubscription =
         resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
@@ -55,31 +49,14 @@ class _CardPageState extends State<CardPage> {
             TextField(
               controller: txtLectura,
             ),
-            // StreamBuilder(
-            //   builder: ((BuildContext context, AsyncSnapshot<String> snapshot) {
-            //     if (snapshot.hasData) {
-            //       cardIC = snapshot.data ?? '';
-            //       return Text(cardIC);
-            //     } else {
-            //       return const Text('sin data');
-            //     }
-            //   }),
-            //   stream: CardChannel.instance.capturaCardIC(),
-            //),
-            // Value in text
             Text("Carid:  $cardIC: ".toUpperCase(),
                 textAlign: TextAlign.justify),
             const SizedBox(
               height: 50,
             ),
-
             ElevatedButton(
               onPressed: _researchICC,
-              child: const Text('lee captura'),
-            ),
-            ElevatedButton(
-              onPressed: _startListener,
-              child: const Text('tarjeta Magnetica '),
+              child: const Text('tarjeta captura'),
             ),
           ],
         ),

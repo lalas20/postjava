@@ -51,20 +51,14 @@ public class MainActivity extends FlutterActivity {
                 String vResFinger="";
                 switch (call.method){
                     case "disposeCardIc":
-                        Log.d("onMethodCall", "disposeCardIc: 53");
                         cardChannel.disposeCardIc();
                         result.success("disposeCardIc");
                     case "searchMagnetCard":
-                        Log.d("onMethodCall", "searchMagnetCard: 57");
                         cardChannel.searchMagnetCard();
                         result.success("searchMagnetCard");
                     case "researchICC":
                         cardChannel.searchICCard();
                         result.success("researchICC");
-                        break;
-                    case "starCard":
-                        result.success("starCard iniciado");
-                        Log.d("onMethodCall", "starCard: 63");
                         break;
                     case "horaversion":
                         String vHoraVersion=getHoraVersion ();
@@ -94,17 +88,14 @@ public class MainActivity extends FlutterActivity {
                         }
                         break;
                     case "starFinger":
-                        Log.d("starFinger", "onMethodCall: 87");
                         vResFinger=   fingerChannelEvent.initFinger();
                         result.success(vResFinger);
                         break;
                     case "captureFingerISO":
-                        Log.d("captureFingerISO", "onMethodCall: 92");
                         fingerChannelEvent.sendEvent();
                         result.success("initCapturaIso");
                         break;
                     case "disposeFinger":
-                        Log.d("Finger", "disposeFinger: 98");
                         fingerChannelEvent.closeFinger();
                         result.success("disposeFinger");
                         break;

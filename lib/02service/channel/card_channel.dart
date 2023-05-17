@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:postjava/02service/channel/plataformchannel.dart';
 
 class CardChannel extends ChannelMethod {
-  static const starCard = "starCard";
   static const researchICC = "researchICC";
   static const searchMagnetCardName = "searchMagnetCard";
   static const disposeCardIcName = "disposeCardIc";
@@ -24,17 +23,17 @@ class CardChannel extends ChannelMethod {
   Stream<String> cardIc = const Stream.empty();
   late StreamSubscription cardStreamSubcription;
 
-  Future<String> init() async {
-    String rpt = '';
-    try {
-      final resul = await _channel.invokeMethod(starCard);
-      print('resul:=> $resul');
-      rpt = 'ingreso';
-    } catch (e) {
-      rpt = e.toString();
-    }
-    return rpt;
-  }
+  // Future<String> init() async {
+  //   String rpt = '';
+  //   try {
+  //     final resul = await _channel.invokeMethod(starCard);
+  //     print('resul:=> $resul');
+  //     rpt = 'ingreso';
+  //   } catch (e) {
+  //     rpt = e.toString();
+  //   }
+  //   return rpt;
+  // }
 
   Future<String> infosearchICC() async {
     String rpt = '';

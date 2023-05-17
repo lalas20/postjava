@@ -42,14 +42,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
     private int mTimeout = 3;
     private  int count=1;
     private  int maxcount=1;
-
-    private byte[] featureTmp;
     private byte[] isoFeatureTmp;
-
-    private String isoFeatureTmpTxt;
-
-
-
     private EventChannel.EventSink fingerEventSink;
 
     private final Runnable runnable = new Runnable() {
@@ -137,7 +130,6 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
     public void onGetImageFeature(int result, byte[] feature) {
         Log.d("event","onGetImageFeature ");
         if (result == SdkResult.SDK_OK) {
-            featureTmp = feature;
             isoFeatureTmp = feature;
             if(fingerEventSink!=null)
             {
@@ -153,31 +145,17 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         Log.d("event","onGetImageISOFeature desde java");
 
         if (i == SdkResult.SDK_OK) {
-            //Log.d("event","captura cadena txt");
             isoFeatureTmp = bytes;
-            isoFeatureTmpTxt=StringUtils.convertBytesToHex(bytes);
-            //Log.d("event",isoFeatureTmpTxt.toString());
-            if(fingerEventSink!=null)
-            {
-               // Log.d("event","captura");
-                //Log.d("event",StringUtils.convertBytesToHex(isoFeatureTmp));
-                //Log.d("event", Base64.decode(bytes));
-                //fingerEventSink.success(isoFeatureTmpTxt);
-            }
-            else
-            {
-                isoFeatureTmp=null;  //fingerEventSink.error("00","fingerEventSink null",i);
-            }
-
         }
         else
-            isoFeatureTmp=null; //fingerEventSink.error("00","revisar error",i);
+            isoFeatureTmp=null;
     }
 
     public void sendEvent(){
         Log.d("event","sendEvent");
         count=1;
         maxcount=2;
+        isoFeatureTmp=null;
         initFinger();
         mFingerprintManager.captureAndGetISOFeature();
     }

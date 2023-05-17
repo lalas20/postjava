@@ -65,6 +65,7 @@ class FingerChannelAux extends ChannelMethod {
 
   dispose() {
     vResult = '';
+    fingerStreamSubcription.cancel();
   }
 
   Future<String?> captureFingerISO() async {

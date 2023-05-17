@@ -34,19 +34,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // void _incrementCounter() async {
-  //   final resul = PlaformChannel();
-  //   //final vres = await resul.printMethod.printTxt();
-  //   final vres = await resul.fingerChannel.inicilizaFinger();
-  //   //resul.testMethod.horaVersionChannel();
-  //   // ignore: avoid_print
-  //   print(vres.toString());
-
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
-
   void processMethod(String pClasse) {
     if (pClasse == 'Card') {
       Navigator.push(
@@ -87,22 +74,40 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Column(
                   children: [
-                    ElevatedButton(
-                        onPressed: () => processMethod('Card'),
-                        child: const Text("Card")),
-                    ElevatedButton(
-                        onPressed: () => processMethod('Print'),
-                        child: const Text("Print"))
+                    SizedBox(
+                      height: 100,
+                      child: ElevatedButton(
+                          onPressed: () => processMethod('Card'),
+                          child: const Text("Card")),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: ElevatedButton(
+                          onPressed: () => processMethod('Print'),
+                          child: const Text("Print")),
+                    ),
                   ],
                 ),
                 Column(
                   children: [
-                    ElevatedButton(
-                        onPressed: () => processMethod('Finger'),
-                        child: const Text("Finger")),
-                    ElevatedButton(
-                        onPressed: () => processMethod('Test'),
-                        child: const Text("Test"))
+                    SizedBox(
+                      height: 100,
+                      child: ElevatedButton(
+                          onPressed: () => processMethod('Finger'),
+                          child: const Text("Finger")),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: ElevatedButton(
+                          onPressed: () => processMethod('Test'),
+                          child: const Text("Test")),
+                    )
                   ],
                 ),
               ],

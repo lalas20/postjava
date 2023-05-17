@@ -52,14 +52,14 @@ public class CardIcChannel implements EventChannel.StreamHandler {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            Log.d("runable", "run: 56");
+
             if (count > maxcount) {
-                Log.d("runable", "run: 58");
+
                 if(cardEventSink!=null) {
-                    Log.d("runable", "cardEventSink 59");
+
                     cardEventSink.endOfStream();
                 }
-                Log.d("runable", "cardEventSink 62");
+
                 onCancel(null);
             } else {
                 if(cardEventSink==null)
@@ -67,26 +67,21 @@ public class CardIcChannel implements EventChannel.StreamHandler {
                     Log.d("runable", "cardEventSink null");
                 }
                 else {
-                    Log.d("runable", "run: cardEventSink tiene algo");
                     if(infoCardTxt.isEmpty()){
                         Log.d("runable", "run: infoCardTxt es null");
                     }
                     else {
-                        Log.d("runable", "run: infoCardTxt");
                         cardEventSink.success(infoCardTxt);
                     }
                 }
-
-                Log.d("runable", "run: 62");
             }
             count++;
-            Log.d("runable", "run: count" +count);
             if (count < maxcount) {
                 mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
             }
             else {
                 if(cardEventSink!=null) {
-                    Log.d("runable", "cardEventSink 59");
+                   Log.d("runable", "cardEventSink 59");
                     cardEventSink.endOfStream();
                 }
                 onCancel(null);
@@ -112,6 +107,7 @@ public class CardIcChannel implements EventChannel.StreamHandler {
         count=1;
         maxcount=3;
         initCardID();
+        infoCardTxt="";
         mCardReadManager.cancelSearchCard();
         mHandler.removeCallbacks(runnable);
         //mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
@@ -134,6 +130,7 @@ public class CardIcChannel implements EventChannel.StreamHandler {
         @Override
         public void onError(int i) {
             Log.d("IC CARD", "onError: 77");
+           // cardEventSink.success("onError");
             showReadICCardErrorDialog(i);
         }
 
@@ -141,6 +138,7 @@ public class CardIcChannel implements EventChannel.StreamHandler {
         public void onNoCard(CardReaderTypeEnum cardReaderTypeEnum, boolean b) {
             Log.d("IC CARD", "onNoCard: cardReaderTypeEnum: "+cardReaderTypeEnum );
             Log.d("IC CARD", "onNoCard: b: "+ Utils.obtenerFechaHoraActual());
+            //cardEventSink.success("onNoCard");
            // mCardReadManager.cancelSearchCard();
         }
     };
