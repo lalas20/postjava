@@ -21,17 +21,17 @@ class FingerChannel extends ChannelMethod {
   String vResult = '';
 
   /*finger */
-  static const eventChannelNameFinge = "com.prodem/emcF";
-  final EventChannel eventChannelFinger =
-      const EventChannel(eventChannelNameFinge);
+  static String eventChannelNameFinge = "com.prodem/emcF";
+
+  final _event = EventChannel(eventChannelNameFinge);
+  get event => _event;
 
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
   Stream<String> capturFingerEvent() {
     final controller = StreamController<String>.broadcast();
 
-    fingerStreamSubcription =
-        eventChannelFinger.receiveBroadcastStream().listen((event) {
+    fingerStreamSubcription = _event.receiveBroadcastStream().listen((event) {
       Uint8List original = Uint8List.fromList(event);
       vResult = base64.encode(original);
       print("vResult::=> $vResult");
@@ -74,18 +74,6 @@ class FingerChannel extends ChannelMethod {
     }
     return null;
   }
-
-  // Future<String?> inicilizaFinger() async {
-  //   try {
-  //     final vRespuesta = await methodChannel.invokeMethod<String?>(starFinger);
-
-  //     print({"exito  $vRespuesta"});
-  //     return vRespuesta;
-  //   } catch (e) {
-  //     print({"error  $e"});
-  //   }
-  //   return null;
-  // }
 
   Future<Result> verifyUser(String pFinger) async {
     List<AditionalItems> vListaItem = [

@@ -12,6 +12,7 @@ class UtilConextion {
   static String errorInesperado = "Error inesperado al consumir el servicio";
 
   static String server = 'https://bancaelectronica-test.prodem.bo';
+  //static String server = 'https://bancaelectronica.prd.com.bo:3211'; //PRODUCCION
   static String puerto = ':3211/';
   static String hangarSafe = 'HangarSafeGate/';
 

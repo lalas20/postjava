@@ -21,46 +21,67 @@ class _CardPageState extends State<CardPage> {
   void _researchICC() {
     _streamSubscription =
         resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
-    print('_researchICC: 28');
     resul.cardChannel.infosearchICC();
-    print('_researchICC: 30');
+  }
+
+  void _clearTxt() {
+    txtLectura.text = '';
   }
 
   void _startListener() {
     _streamSubscription =
         resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
-    print('_researchICC: 36');
   }
 
   void _listenStream(value) {
-    print('_listenStream: 40 : $value');
-    setState(() {
-      cardIC = value;
-    });
+    txtLectura.text = value;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: txtLectura,
-            ),
-            Text("Carid:  $cardIC: ".toUpperCase(),
-                textAlign: TextAlign.justify),
-            const SizedBox(
-              height: 50,
-            ),
-            ElevatedButton(
-              onPressed: _researchICC,
-              child: const Text('tarjeta captura'),
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Lectura de Tarjeta"),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: txtLectura,
+                readOnly: true,
+              ),
+              Text("Carid:  $cardIC: ".toUpperCase(),
+                  textAlign: TextAlign.justify),
+              const SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: _researchICC,
+                    child: const Text('tarjeta captura'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _clearTxt,
+                    child: const Text('Limpiar'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    resul.cardChannel.dispose();
+    _streamSubscription.cancel();
+    super.dispose();
   }
 }

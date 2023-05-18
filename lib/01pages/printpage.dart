@@ -24,8 +24,11 @@ class _PrintPageState extends State<PrintPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Impresión"),
+      ),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

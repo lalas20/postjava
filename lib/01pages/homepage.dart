@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Card'),
-                pImg: 'assets/images/finger.png',
+                pImg: 'assets/images/card.png',
                 pName: 'Card'),
             WCarPage(
                 pElevation: 10,
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Test'),
-                pImg: 'assets/images/finger.png',
+                pImg: 'assets/images/test.png',
                 pName: 'Test'),
           ]),
     );

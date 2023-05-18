@@ -26,6 +26,8 @@ class WCarPage extends StatelessWidget {
           ),
           subtitle: Image(
             image: AssetImage(pImg),
+            width: 100,
+            height: 100,
           ),
         ),
       ),
