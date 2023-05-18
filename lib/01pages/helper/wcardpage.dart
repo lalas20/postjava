@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
 class WCarPage extends StatelessWidget {
-  double elevation;
-  Function() fun;
-  String name;
-  String img;
-  WCarPage(this.elevation, this.fun, this.img, this.name);
+  final double pElevation;
+  final Function() pFun;
+  final String pName, pImg;
+  const WCarPage(
+      {required this.pElevation,
+      required this.pFun,
+      required this.pImg,
+      required this.pName,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +18,14 @@ class WCarPage extends StatelessWidget {
       elevation: 10,
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
-        onTap: () {
-          fun;
-        },
+        onTap: pFun,
         child: ListTile(
           title: Text(
-            name,
+            pName,
             textAlign: TextAlign.center,
           ),
           subtitle: Image(
-            image: AssetImage(img),
+            image: AssetImage(pImg),
           ),
         ),
       ),
