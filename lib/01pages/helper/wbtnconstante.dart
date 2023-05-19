@@ -15,14 +15,14 @@ class WBtnConstante extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-        child: const Text(
-          pName,
-          style: const TextStyle(color: Colors.white),
-        ),
-        color: UtilConstante.headerColor,
+        color: UtilConstante.btnColor,
         elevation: 5,
         onPressed: () {
           fun();
-        });
+        },
+        child: Text(
+          pName,
+          style: const TextStyle(color: Colors.white),
+        ));
   }
 }

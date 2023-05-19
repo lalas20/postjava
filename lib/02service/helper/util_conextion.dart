@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:postjava/helper/util_preferences.dart';
 
 class UtilConextion {
   static String errorInternet = "No tiene Acceso a Internet";
@@ -18,9 +19,15 @@ class UtilConextion {
 
 //OperacionesController
   static String verifyUser = 'rest/VerifyUser';
+  static String getUserSessionInfo =
+      'rest/ProdemNet.Services.Services.ProdemKeyServices/GetUserSessionInfo';
   //
 
   static Map<String, String> vHeaderSin = {'Content-Type': 'application/json'};
+  static Map<String, String> vHeader = {
+    'Content-Type': 'application/json',
+    'HangarAuthentication': UtilPreferences.getToken()
+  };
 
   static Future<bool> internetConnectivity() async {
     try {
@@ -72,8 +79,8 @@ class UtilConextion {
 
   static Future<http.Response> httpPost(
       String pAction, String pJsonEncode) async {
-    final vUrl = Uri.parse(server + puerto + hangarSafe + pAction);
-    final response = await http.post(vUrl, body: pJsonEncode);
+    final vUrl = Uri.parse(server + puerto + pAction);
+    final response = await http.post(vUrl, headers: vHeader, body: pJsonEncode);
     return response;
   }
 

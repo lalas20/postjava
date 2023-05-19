@@ -3,11 +3,52 @@ import 'dart:convert';
 import 'package:postjava/03dominio/user/aditional_item.dart';
 import 'package:postjava/03dominio/user/credential.dart';
 import 'package:postjava/03dominio/user/result.dart';
+import 'package:postjava/helper/util_preferences.dart';
 
+import '../../../03dominio/user/credential_verify_user.dart';
+import '../../../03dominio/user/resul_get_user_session_info.dart';
 import '../../../03dominio/user/verify_user_result.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvClientePos {
+  static Future<ResulGetUserSessionInfo> getUserSessionInfo(
+      String pIdWebClient) async {
+    ResulGetUserSessionInfo respuesta = ResulGetUserSessionInfo();
+    GetUserSessionInfoResult getUserSessionInfo = GetUserSessionInfoResult();
+    dynamic jsonResponse;
+    try {
+      final vPing = await UtilConextion.internetConnectivity();
+      if (vPing == false) {
+        getUserSessionInfo.codeBase = UtilConextion.errorInternet;
+        getUserSessionInfo.state = 3;
+        getUserSessionInfo.message = "No tiene acceso a internet";
+        respuesta.getUserSessionInfoResult = getUserSessionInfo;
+        return respuesta;
+      }
+
+      Map<String, String> vWebCliente = {
+        'vIdWebClient': UtilPreferences.getIdWebPersonClient()
+      };
+
+      String vJSON = jsonEncode(vWebCliente);
+      final response =
+          await UtilConextion.httpPost(UtilConextion.getUserSessionInfo, vJSON);
+
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        respuesta = ResulGetUserSessionInfo.fromJson(jsonResponse);
+      } else {
+        respuesta = respuesta.errorRespuesta(response.statusCode);
+      }
+    } catch (e) {
+      respuesta.getUserSessionInfoResult = GetUserSessionInfoResult();
+      respuesta.getUserSessionInfoResult?.message =
+          "error sub: ${e.toString()}";
+      respuesta.getUserSessionInfoResult?.state = 3;
+    }
+    return respuesta;
+  }
+
   static Future<Result> autentica(pDI, pPass) async {
     Result respuesta = Result();
     respuesta.verifyUserResult = VerifyUserResult();
@@ -22,6 +63,7 @@ class SrvClientePos {
         respuesta.verifyUserResult = vObjVerify;
         return respuesta;
       }
+
       final vCredencialVeryUser = Credential(
           user: pDI,
           password: pPass,
@@ -29,8 +71,9 @@ class SrvClientePos {
           aditionalItems: [
             AditionalItems(key: 'IP', value: '255.255.255.255')
           ]);
+      final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 
-      String vJSON = jsonEncode(vCredencialVeryUser.toJson());
+      String vJSON = jsonEncode(vRes.toJson());
       final response =
           await UtilConextion.httpPostSin(UtilConextion.verifyUser, vJSON);
 

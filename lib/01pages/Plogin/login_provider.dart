@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/02service/service/User/srv_cliente_pos.dart';
+import 'package:postjava/03dominio/generic/resul_provider.dart';
 import 'package:postjava/03dominio/user/aditional_item.dart';
 
 import 'package:postjava/helper/util_preferences.dart';
@@ -8,11 +9,9 @@ import 'package:postjava/helper/utilmethod.dart';
 import '../helper/util_constante.dart';
 
 class LoginProviders with ChangeNotifier {
-  String _resp = '';
-
-  String get resp => _resp;
-
-  set resp(String value) {
+  late ResulProvider _resp;
+  ResulProvider get resp => _resp;
+  set resp(ResulProvider value) {
     _resp = value;
     notifyListeners();
   }
@@ -31,13 +30,18 @@ class LoginProviders with ChangeNotifier {
       UtilPreferences.setUser(resul.verifyUserResult!.object!.user!);
 
       UtilMethod.imprimir("mensajes get;");
-      UtilMethod.imprimir(UtilPreferences.getIdUsuario());
-      UtilMethod.imprimir(UtilPreferences.getIdWebPersonClient());
-      UtilMethod.imprimir(UtilPreferences.getToken());
-      UtilMethod.imprimir(UtilPreferences.getUser());
-      resp = RespProvider.correcto.toString();
+      UtilMethod.imprimir("getIdUsuario:  ${UtilPreferences.getIdUsuario()}");
+      UtilMethod.imprimir(
+          "getIdWebPersonClient: ${UtilPreferences.getIdWebPersonClient()}");
+      UtilMethod.imprimir("getToken: ${UtilPreferences.getToken()}");
+      UtilMethod.imprimir("getUser: ${UtilPreferences.getUser()}");
+      resp = ResulProvider(
+          message: resul.verifyUserResult!.message!,
+          state: RespProvider.correcto.toString());
     } else {
-      resp = RespProvider.incorrecto.toString();
+      resp = ResulProvider(
+          message: resul.verifyUserResult!.message!,
+          state: RespProvider.incorrecto.toString());
     }
   }
 }

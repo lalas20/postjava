@@ -73,6 +73,7 @@ class _FingerPageState extends State<FingerPage> {
     Uint8List original = Uint8List.fromList(value);
     txtRespuesta.text = base64.encode(original);
     vHuella = base64.encode(original);
+    print('vHuella:  $vHuella');
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
 
 import 'cardpage.dart';
@@ -8,7 +9,7 @@ import 'testpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
+  static String route = '/HomePage';
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -54,22 +55,22 @@ class _HomePageState extends State<HomePage> {
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Card'),
-                pImg: 'assets/images/card.png',
+                pImg: UtilConstante.card,
                 pName: 'Card'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Print'),
-                pImg: 'assets/images/POS.png',
+                pImg: UtilConstante.card,
                 pName: 'Print'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Finger'),
-                pImg: 'assets/images/finger.png',
+                pImg: UtilConstante.finger,
                 pName: 'Finger'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Test'),
-                pImg: 'assets/images/test.png',
+                pImg: UtilConstante.test,
                 pName: 'Test'),
           ]),
     );
