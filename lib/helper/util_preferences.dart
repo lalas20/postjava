@@ -48,4 +48,26 @@ class UtilPreferences {
     if (_preferences == null) return defValue;
     return _preferences!.getString(_keyToken) ?? defValue;
   }
+
+  static const _keyIdOperationEntity = 'token';
+  static Future setIdOperationEntity(int pIdOperationEntity) async {
+    if (_preferences == null) return null;
+    await _preferences!.setInt(_keyIdOperationEntity, pIdOperationEntity);
+  }
+
+  static int getIdOperationEntity({int defValue = 0}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getInt(_keyIdOperationEntity) ?? defValue;
+  }
+
+  static const _keyClientePos = 'ClientePos';
+  static Future setClientePos(String pClientePos) async {
+    if (_preferences == null) return null;
+    await _preferences!.setString(_keyClientePos, pClientePos);
+  }
+
+  static String getClientePos({String defValue = ''}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getString(_keyClientePos) ?? defValue;
+  }
 }

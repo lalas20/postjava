@@ -36,8 +36,9 @@ class LoginProviders with ChangeNotifier {
       UtilMethod.imprimir("getToken: ${UtilPreferences.getToken()}");
       UtilMethod.imprimir("getUser: ${UtilPreferences.getUser()}");
       resp = ResulProvider(
-          message: resul.verifyUserResult!.message!,
-          state: RespProvider.correcto.toString());
+        message: resul.verifyUserResult!.message!,
+        state: RespProvider.correcto.toString(),
+      );
     } else {
       resp = ResulProvider(
           message: resul.verifyUserResult!.message!,

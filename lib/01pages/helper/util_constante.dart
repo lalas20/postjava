@@ -13,6 +13,7 @@ class UtilConstante {
   static String pos = "assets/images/POS.png";
   static String finger = "assets/images/finger.png";
   static String test = "assets/images/test.png";
+  static String configuration = "assets/images/test.png";
 
   static Color colorFondo = const Color.fromRGBO(221, 247, 233, 1);
 

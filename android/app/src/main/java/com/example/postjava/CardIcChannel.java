@@ -31,6 +31,8 @@ import com.zcs.sdk.card.RfCard;
 import com.zcs.sdk.listener.OnSearchCardListener;
 import com.zcs.sdk.util.StringUtils;
 
+import java.util.logging.Logger;
+
 import io.flutter.plugin.common.EventChannel;
 
 public class CardIcChannel implements EventChannel.StreamHandler {
@@ -44,33 +46,30 @@ public class CardIcChannel implements EventChannel.StreamHandler {
     private MagCard magCard;
 
 
-    private String infoCardTxt="";
+    private String infoCardTxt = "";
     private EventChannel.EventSink cardEventSink;
-    private  int count=1;
-    private  int maxcount=2;
-    private Handler mHandler =new Handler(Looper.getMainLooper());
+    private int count = 1;
+    private int maxcount = 2;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
 
             if (count > maxcount) {
 
-                if(cardEventSink!=null) {
+                if (cardEventSink != null) {
 
                     cardEventSink.endOfStream();
                 }
 
                 onCancel(null);
             } else {
-                if(cardEventSink==null)
-                {
+                if (cardEventSink == null) {
                     Log.d("runable", "cardEventSink null");
-                }
-                else {
-                    if(infoCardTxt.isEmpty()){
+                } else {
+                    if (infoCardTxt.isEmpty()) {
                         Log.d("runable", "run: infoCardTxt es null");
-                    }
-                    else {
+                    } else {
                         cardEventSink.success(infoCardTxt);
                     }
                 }
@@ -78,10 +77,9 @@ public class CardIcChannel implements EventChannel.StreamHandler {
             count++;
             if (count < maxcount) {
                 mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
-            }
-            else {
-                if(cardEventSink!=null) {
-                   Log.d("runable", "cardEventSink 59");
+            } else {
+                if (cardEventSink != null) {
+                    Log.d("runable", "cardEventSink 59");
                     cardEventSink.endOfStream();
                 }
                 onCancel(null);
@@ -90,24 +88,26 @@ public class CardIcChannel implements EventChannel.StreamHandler {
         }
     };
 
-    public void initCardID(){
+    public void initCardID() {
         Log.d(TAG, "initCardID: 42");
         mDriverManager = DriverManager.getInstance();
         mCardReadManager = mDriverManager.getCardReadManager();
         Log.d(TAG, "initCardID: 45");
     }
-    public void initMagnetCard(){
+
+    public void initMagnetCard() {
         Log.d(TAG, "initMagnetCard: 42");
         mDriverManager = DriverManager.getInstance();
         mCardReadManager = mDriverManager.getCardReadManager();
         Log.d(TAG, "initCardID: 45");
     }
+
     public void searchICCard() {
         Log.d("searchICCard", "100");
-        count=1;
-        maxcount=3;
+        count = 1;
+        maxcount = 3;
         initCardID();
-        infoCardTxt="";
+        infoCardTxt = "";
         mCardReadManager.cancelSearchCard();
         mHandler.removeCallbacks(runnable);
         //mCardReadManager.searchCard(CardReaderTypeEnum.IC_CARD, READ_TIMEOUT, mICCardSearchCardListener);
@@ -130,20 +130,117 @@ public class CardIcChannel implements EventChannel.StreamHandler {
         @Override
         public void onError(int i) {
             Log.d("IC CARD", "onError: 77");
-           // cardEventSink.success("onError");
+            // cardEventSink.success("onError");
             showReadICCardErrorDialog(i);
         }
 
         @Override
         public void onNoCard(CardReaderTypeEnum cardReaderTypeEnum, boolean b) {
-            Log.d("IC CARD", "onNoCard: cardReaderTypeEnum: "+cardReaderTypeEnum );
-            Log.d("IC CARD", "onNoCard: b: "+ Utils.obtenerFechaHoraActual());
+            Log.d("IC CARD", "onNoCard: cardReaderTypeEnum: " + cardReaderTypeEnum);
+            Log.d("IC CARD", "onNoCard: b: " + Utils.obtenerFechaHoraActual());
             //cardEventSink.success("onNoCard");
-           // mCardReadManager.cancelSearchCard();
+            // mCardReadManager.cancelSearchCard();
         }
     };
 
     public static final byte[] APDU_SEND_IC = {0x00, (byte) 0xA4, 0x04, 0x00, 0x0E, 0x31, 0x50, 0x41, 0x59, 0x2E, 0x53, 0x59, 0x53, 0x2E, 0x44, 0x44, 0x46, 0x30, 0x31, 0X00};
+
+    public  void testByte()
+    {
+        String _TAG="testByte";
+        int[] trecvLen = new int[1];
+        byte[] trecvData = new byte[300];
+        //Command APDU : 00 B2 01 0C 00
+        byte[] tAPDU_aid = {0x00, (byte) 0xB2, 0x01, 0x0C, 0x00};
+        int result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU_aid, trecvData, trecvLen);
+        if (result != SdkResult.SDK_OK)
+        {
+            Log.d(_TAG,"157 no tiene data");
+            //return;
+        }
+        Log.d("testByte", StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+        //Command APDU : 00 B2 02 0C 00
+        byte[] tAPDU ={0x00, (byte) 0xB2, 0x02, 0x0C, 0x00};
+        result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU, trecvData, trecvLen);
+        if (result != SdkResult.SDK_OK)
+        {
+            Log.d(_TAG,"167 no tiene data");
+            //return;
+        }
+        Log.d("testByte", StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+        //Command APDU : 00 A4 04 00 05 A0 00 00 00 00 00
+        byte[] tAPDU1 ={0x00, (byte) 0xA4, 0x04, 0x00, 0x05,(byte)0xA0 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00};
+        result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU1, trecvData, trecvLen);
+        if (result != SdkResult.SDK_OK)
+        {
+            Log.d(_TAG,"167 no tiene data");
+            //return;
+        }
+        Log.d("testByte", StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+        //Command APDU : 80 A8 00 00 02 83 00 00
+        byte[] tAPDU2 ={(byte)0x80, (byte) 0xA8, 0x00, 0x00, 0x02,(byte)0x83 ,0x00 ,0x00};
+        result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU2, trecvData, trecvLen);
+        if (result != SdkResult.SDK_OK)
+        {
+            Log.d(_TAG,"167 no tiene data");
+            //return;
+        }
+        Log.d("testByte", StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+//Command APDU : 00 B2 01 0C 00
+        byte[] tAPDU3 ={0x00, (byte) 0xB2, 0x01, 0x0C, 0x00};
+        result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU3, trecvData, trecvLen);
+        if (result != SdkResult.SDK_OK)
+        {
+            Log.d(_TAG,"167 no tiene data");
+            //return;
+        }
+        Log.d("testByte","tAPDU3: "+ StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+//Command APDU : 00 B2 01 14 00
+        byte[] tAPDU4 ={0x00, (byte) 0xB2, 0x01, 0x14, 0x00};
+        result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU4, trecvData, trecvLen);
+        if (result != SdkResult.SDK_OK)
+        {
+            Log.d(_TAG,"167 no tiene data");
+            //return;
+        }
+        Log.d("testByte","tAPDU4: "+ StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+    }
+public  void testByte2()
+{
+    String _TAG="testByte";
+    int[] trecvLen = new int[1];
+    byte[] trecvData = new byte[300];
+
+
+    //byte[] tAPDU_aid = {(byte)0xA0,0x00,0x00,0x00,0x04,0x10,0x10};
+
+    //PASO1 Command APDU : 00 A4 00 00 00
+    byte[] tAPDU_aid = {(byte)0xA0,0x00,0x00,0x00,0x04,0x10,0x10};
+    int result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU_aid, trecvData, trecvLen);
+    if (result != SdkResult.SDK_OK)
+    {
+        Log.d(_TAG,"157 no tiene data");
+        //return;
+    }
+    Log.d("testByte","tAPDU_aid: "+ StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+    //PASO 2: Command APDU : 00 B2 01 14 00
+    byte[] tAPDU ={0x00, (byte) 0xB2, 0x01, 0x14, 0x00};
+    result= icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, tAPDU, trecvData, trecvLen);
+    if (result != SdkResult.SDK_OK)
+    {
+        Log.d(_TAG,"167 no tiene data");
+        //return;
+    }
+    Log.d("testByte","tAPDU: "+  StringUtils.convertBytesToHex(trecvData).substring(0, trecvData[0] * 2));
+
+
+}
     private void readICCard() {
         Log.d("readICCard", "readICCard: 106");
         icCard = mCardReadManager.getICCard();
@@ -154,14 +251,16 @@ public class CardIcChannel implements EventChannel.StreamHandler {
             Log.d("readICCard", "119");
             int[] recvLen = new int[1];
             byte[] recvData = new byte[300];
+            //result = icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, APDU_SEND_IC, recvData, recvLen);
             result = icCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, APDU_SEND_IC, recvData, recvLen);
             Log.d("readICCard", "123");
             if (result == SdkResult.SDK_OK) {
-                Log.d("readICCard", "125");
-                Log.d("readICCard", StringUtils.convertBytesToHex(recvData));
+                //Log.d("readICCard recvData", recvData.toString());
+                //Log.d("readICCard", StringUtils.convertBytesToHex(recvData));
                 final String apduRecv = StringUtils.convertBytesToHex(recvData).substring(0, recvLen[0] * 2);
                 Log.d("readICCard", "apduRecv===>: "+apduRecv);
                 infoCardTxt=apduRecv;
+                testByte2();
               //cardEventSink.success(apduRecv);
             } else {
                 showReadICCardErrorDialog(result);
