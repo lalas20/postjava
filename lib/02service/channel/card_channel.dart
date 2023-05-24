@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -23,23 +21,12 @@ class CardChannel extends ChannelMethod {
   Stream<String> cardIc = const Stream.empty();
   late StreamSubscription cardStreamSubcription;
 
-  // Future<String> init() async {
-  //   String rpt = '';
-  //   try {
-  //     final resul = await _channel.invokeMethod(starCard);
-  //     print('resul:=> $resul');
-  //     rpt = 'ingreso';
-  //   } catch (e) {
-  //     rpt = e.toString();
-  //   }
-  //   return rpt;
-  // }
-
   Future<String> infosearchICC() async {
     String rpt = '';
     try {
-      final resul = await _channel.invokeMethod(researchICC);
-      print('infosearchICC:=> $resul');
+      //final resul =
+      await _channel.invokeMethod(researchICC);
+
       rpt = 'ingreso';
     } catch (e) {
       rpt = e.toString();
@@ -50,8 +37,9 @@ class CardChannel extends ChannelMethod {
   Future<String> searchMagnetCard() async {
     String rpt = '';
     try {
-      final resul = await _channel.invokeMethod(searchMagnetCardName);
-      print('searchMagnetCard:=> $resul');
+      //final resul =
+      await _channel.invokeMethod(searchMagnetCardName);
+      //print('searchMagnetCard:=> $resul');
       rpt = 'searchMagnetCard';
     } catch (e) {
       rpt = e.toString();
@@ -62,7 +50,7 @@ class CardChannel extends ChannelMethod {
   Stream<String> capturaCardIC() {
     final controller = StreamController<String>.broadcast();
     cardStreamSubcription = _event.receiveBroadcastStream().listen((event) {
-      print("vResult::=> $event");
+      //print("vResult::=> $event");
       controller.add(event);
     });
     if (vResult.isNotEmpty) {
@@ -79,10 +67,10 @@ class CardChannel extends ChannelMethod {
     try {
       final vRespuesta =
           await _channel.invokeMethod<String?>(disposeCardIcName);
-      print({"exito  captureFingerISO==>> $vRespuesta"});
+      //print({"exito  captureFingerISO==>> $vRespuesta"});
       return "exito: $vRespuesta";
     } catch (e) {
-      print({"error ==>> $e"});
+      //print({"error ==>> $e"});
     }
     cardStreamSubcription.cancel();
     return null;

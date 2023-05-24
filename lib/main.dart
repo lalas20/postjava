@@ -6,6 +6,7 @@ import 'package:postjava/01pages/Plogin/login_provider.dart';
 import 'package:provider/provider.dart';
 
 import '01pages/PConfiguration/configuration_view.dart';
+import '01pages/emv_page.dart';
 import '01pages/homepage.dart';
 import 'helper/util_preferences.dart';
 
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         routes: {
           Login.route: (BuildContext context) => const Login(),
           HomePage.route: (BuildContext context) => const HomePage(),
+          EmvPage.route: (BuildContext context) => const EmvPage(),
           ConfigurationView.route: (BuildContext context) =>
               const ConfigurationView(),
         });

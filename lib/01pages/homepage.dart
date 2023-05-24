@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_view.dart';
+import 'package:postjava/01pages/emv_page.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
 
@@ -42,6 +43,11 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(builder: (context) => const ConfigurationView()),
       );
+    } else if (pClasse == 'EMV') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const EmvPage()),
+      );
     }
   }
 
@@ -83,6 +89,11 @@ class _HomePageState extends State<HomePage> {
                 pFun: () => processMethod('Configuración'),
                 pImg: UtilConstante.configuration,
                 pName: 'Configuración'),
+            WCarPage(
+                pElevation: 10,
+                pFun: () => processMethod('EMV'),
+                pImg: UtilConstante.configuration,
+                pName: 'EMV'),
           ]),
     );
   }
