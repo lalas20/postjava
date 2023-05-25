@@ -70,4 +70,15 @@ class UtilPreferences {
     if (_preferences == null) return defValue;
     return _preferences!.getString(_keyClientePos) ?? defValue;
   }
+
+  static const _keyAcount = 'Acount';
+  static Future setAcount(String pAcount) async {
+    if (_preferences == null) return null;
+    await _preferences!.setString(_keyAcount, pAcount);
+  }
+
+  static String getAcount({String defValue = ''}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getString(_keyAcount) ?? defValue;
+  }
 }

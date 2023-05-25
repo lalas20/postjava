@@ -1,6 +1,10 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 enum RespProvider { correcto, incorrecto }
+
+enum TipoPago { QR, TARJETA, DOC_IDENTIDAD }
 
 class UtilConstante {
   static Color colorAppPrimario = const Color.fromRGBO(80, 99, 136, 88);
@@ -9,11 +13,12 @@ class UtilConstante {
 
   static Color btnColor = const Color.fromRGBO(0, 112, 175, 1);
 
-  static String card = "assets/images/card.png";
-  static String pos = "assets/images/POS.png";
-  static String finger = "assets/images/finger.png";
-  static String test = "assets/images/test.png";
-  static String configuration = "assets/images/test.png";
+  static String iCard = "assets/images/card.png";
+  static String iPos = "assets/images/POS.png";
+  static String iFinger = "assets/images/finger.png";
+  static String iTest = "assets/images/test.png";
+  static String iConfiguration = "assets/images/test.png";
+  static String iPago = "assets/images/pago.png";
 
   static Color colorFondo = const Color.fromRGBO(221, 247, 233, 1);
 

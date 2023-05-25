@@ -103,13 +103,13 @@ public class EmvChannel implements EventChannel.StreamHandler {
         @Override
         public void onError(int resultCode) {
             mCardReadManager.closeCard();
+            Log.i("OnSearchCardListener", "onError: ");
         }
 
         @Override
         public void onCardInfo(CardInfoEntity cardInfoEntity) {
             realCardType = cardInfoEntity.getCardExistslot();
-
-            Log.i("onCardInfo", " Deleted card + realCardType.name()");
+            Log.i("OnSearchCardListener", " onCardInfo");
             switch (realCardType) {
                 case IC_CARD:
                     readIc();
@@ -121,6 +121,7 @@ public class EmvChannel implements EventChannel.StreamHandler {
 
         @Override
         public void onNoCard(CardReaderTypeEnum arg0, boolean arg1) {
+            Log.i("OnSearchCardListener", " onNoCard");
         }
     };
     void readIc() {
@@ -227,11 +228,11 @@ public class EmvChannel implements EventChannel.StreamHandler {
 
             @Override
             public byte[] onExchangeApdu(byte[] send) {
-                Log.d("OnEmvListener", "onExchangeApdu");
+                Log.d("OnEmvListener", "onExchangeApdu: "+(send==null?"send vacio":StringUtils.convertBytesToHex(send)));
                 if (realCardType == CardReaderTypeEnum.IC_CARD) {
                     return mICCard.icExchangeAPDU(CardSlotNoEnum.SDK_ICC_USERCARD, send);
                 }
-                //else if (realCardType == CardReaderTypeEnum.RF_CARD) {return mRFCard.rfExchangeAPDU(send);}
+                Log.d("OnEmvListener", "onExchangeApdu null");
                 return null;
             }
 
@@ -240,7 +241,7 @@ public class EmvChannel implements EventChannel.StreamHandler {
                 // 1. assemble the authorisation request data and send to bank by using get 'emvHandler.getTlvData()'
                 // 2. separateOnlineResp to emv kernel
                 // 3. return the callback ret
-                Log.d("Debug", "onOnlineProc");
+                Log.d("OnEmvListener", "onOnlineProc");
                 byte[] authRespCode = new byte[3];
                 byte[] issuerResp = new byte[512];
                 int[] issuerRespLen = new int[1];

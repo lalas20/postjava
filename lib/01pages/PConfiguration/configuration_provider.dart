@@ -17,6 +17,7 @@ class ConfigurationProvider with ChangeNotifier {
       ObjectGetUserSessionInfoResult pClientePos) async {
     UtilPreferences.setIdOperationEntity(pOperationEntity.idOperationEntity!);
     UtilPreferences.setClientePos(pClientePos.personName!);
+    UtilPreferences.setAcount(pOperationEntity.operationCode!);
     resp = ResulProvider(
       message: "Registro guardado correctamente",
       state: RespProvider.correcto.toString(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_view.dart';
+import 'package:postjava/01pages/PPago/pago_view.dart';
 import 'package:postjava/01pages/emv_page.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
@@ -48,6 +49,11 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(builder: (context) => const EmvPage()),
       );
+    } else if (pClasse == 'Pago') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PagoView()),
+      );
     }
   }
 
@@ -67,32 +73,32 @@ class _HomePageState extends State<HomePage> {
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Card'),
-                pImg: UtilConstante.card,
+                pImg: UtilConstante.iCard,
                 pName: 'Card'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Print'),
-                pImg: UtilConstante.card,
+                pImg: UtilConstante.iCard,
                 pName: 'Print'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Finger'),
-                pImg: UtilConstante.finger,
+                pImg: UtilConstante.iFinger,
                 pName: 'Finger'),
             WCarPage(
                 pElevation: 10,
-                pFun: () => processMethod('Test'),
-                pImg: UtilConstante.test,
-                pName: 'Test'),
+                pFun: () => processMethod('Pago'),
+                pImg: UtilConstante.iPago,
+                pName: 'Pago'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Configuración'),
-                pImg: UtilConstante.configuration,
+                pImg: UtilConstante.iConfiguration,
                 pName: 'Configuración'),
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('EMV'),
-                pImg: UtilConstante.configuration,
+                pImg: UtilConstante.iConfiguration,
                 pName: 'EMV'),
           ]),
     );

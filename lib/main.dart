@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
+import 'package:postjava/01pages/PPago/pago_view.dart';
 import 'package:postjava/01pages/Plogin/login.dart';
 
 import 'package:postjava/01pages/Plogin/login_provider.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           Login.route: (BuildContext context) => const Login(),
           HomePage.route: (BuildContext context) => const HomePage(),
           EmvPage.route: (BuildContext context) => const EmvPage(),
+          PagoView.route: (BuildContext context) => const PagoView(),
           ConfigurationView.route: (BuildContext context) =>
               const ConfigurationView(),
         });
