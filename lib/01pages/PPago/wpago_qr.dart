@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:postjava/01pages/helper/util_constante.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key, required this.imgQR});
+class WPagoQR extends StatelessWidget {
+  const WPagoQR({super.key, required this.imgQR});
   final String imgQR;
 
   @override
@@ -16,6 +16,18 @@ class MyWidget extends StatelessWidget {
         children: [
           Image.memory(
             bytes,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: child,
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(UtilConstante.iTest),
+              );
+            },
           )
         ],
       ),

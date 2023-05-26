@@ -1,7 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:postjava/01pages/PPago/pago_provider.dart';
+import 'package:postjava/01pages/PPago/wpago_identitycard.dart';
+import 'package:postjava/01pages/PPago/wpago_qr.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
+import 'package:postjava/01pages/helper/utilmodal.dart';
 import 'package:postjava/01pages/helper/wbtnconstante.dart';
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:provider/provider.dart';
 
 import '../helper/util_responsive.dart';
 
@@ -17,13 +24,16 @@ class _PagoViewState extends State<PagoView> {
   final _depositoController =
       TextEditingController(text: UtilPreferences.getAcount());
   final _montoController = TextEditingController();
+  final _ciController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  TipoPago selectTipoPago = TipoPago.QR;
+  TipoPago? selectTipoPago;
+  late PagoProvider provider;
 
   late UtilResponsive responsive;
   @override
   Widget build(BuildContext context) {
     responsive = UtilResponsive.of(context);
+    provider = Provider.of<PagoProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text("Pago de Servicio")),
       body: SingleChildScrollView(
@@ -88,7 +98,7 @@ class _PagoViewState extends State<PagoView> {
       },
       decoration: UtilConstante.entrada(
         labelText: "Depósito a la cuenta",
-        icon: Icon(Icons.monetization_on, color: UtilConstante.btnColor),
+        icon: Icon(Icons.card_travel, color: UtilConstante.btnColor),
       ),
       keyboardType: TextInputType.text,
     );
@@ -109,14 +119,43 @@ class _PagoViewState extends State<PagoView> {
       ).toList(),
       onChanged: (value) {
         selectTipoPago = value!;
-        setState(() {});
+        getwidgetTipoPago();
       },
       elevation: 10,
       hint: const Text("Seleccion un tipo"),
+      decoration: UtilConstante.entrada(
+          labelText: "Tipo de Pago",
+          icon: Icon(Icons.list_outlined, color: UtilConstante.btnColor)),
     );
   }
 
+  void getwidgetTipoPago() async {
+    if (selectTipoPago != null) {
+      UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
+    }
+    switch (selectTipoPago) {
+      case TipoPago.TARJETA:
+        break;
+      case TipoPago.DOC_IDENTIDAD:
+        await provider.getDocIdentidad();
+        break;
+      case TipoPago.QR:
+        await provider.getQRPago();
+
+        break;
+      default:
+        break;
+    }
+    Navigator.of(context).pop();
+  }
+
   Widget wSeleccTipoPago() {
+    if (selectTipoPago == null) {
+      return const SizedBox(
+        height: 10,
+        child: Text("sin data"),
+      );
+    }
     final Widget resul;
 
     switch (selectTipoPago) {
@@ -124,10 +163,41 @@ class _PagoViewState extends State<PagoView> {
         resul = const SizedBox(height: 100, child: Text("card"));
         break;
       case TipoPago.DOC_IDENTIDAD:
-        resul = const SizedBox(height: 100, child: Text("identitycard"));
+        if (provider.resp.state == RespProvider.correcto.toString()) {
+          resul = WPagoIdentityCard(
+            txtCI: TextFormField(
+              controller: _ciController,
+              onEditingComplete: () {
+                _formKey.currentState!.validate();
+              },
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Documento de Identidad, es campo obligatorio';
+                }
+                return null;
+              },
+              decoration: UtilConstante.entrada(
+                  labelText: "Documento Identidad",
+                  icon: Icon(Icons.card_membership,
+                      color: UtilConstante.btnColor)),
+              keyboardType: TextInputType.text,
+            ),
+          );
+        } else {
+          resul =
+              const SizedBox(height: 100, child: Text("seleccione registro"));
+        }
         break;
       case TipoPago.QR:
-        resul = const SizedBox(height: 100, child: Text("QR"));
+        if (provider.resp.state == RespProvider.correcto.toString()) {
+          resul = WPagoQR(
+            imgQR: provider.resp.obj.toString(),
+          );
+        } else {
+          resul = SizedBox(
+              height: 100, child: Text("Error de ${provider.resp.message}"));
+        }
         break;
       default:
         resul = const SizedBox(height: 100, child: Text("seleccione registro"));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
+import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/PPago/pago_view.dart';
 import 'package:postjava/01pages/Plogin/login.dart';
 
@@ -18,7 +19,8 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => LoginProviders()),
-      ChangeNotifierProvider(create: (_) => ConfigurationProvider())
+      ChangeNotifierProvider(create: (_) => ConfigurationProvider()),
+      ChangeNotifierProvider(create: (_) => PagoProvider())
     ],
     child: const MyApp(),
   ));
