@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:postjava/02service/channel/card_channel.dart';
+import 'package:postjava/02service/channel/emv_channel.dart';
 import 'package:postjava/02service/channel/fingerchannel.dart';
 
 class PlaformChannel {
@@ -10,11 +11,14 @@ class PlaformChannel {
   late PrintMethod printMethod;
   late FingerChannel fingerChannel;
   late CardChannel cardChannel;
+  late EmvChannel emvChannel;
+
   PlaformChannel() {
     testMethod = TestMethod(methodChannel);
     printMethod = PrintMethod(methodChannel);
     fingerChannel = FingerChannel(methodChannel);
     cardChannel = CardChannel(methodChannel);
+    emvChannel = EmvChannel(methodChannel);
   }
 }
 

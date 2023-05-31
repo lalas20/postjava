@@ -36,11 +36,11 @@ public class MainActivity extends FlutterActivity {
         String methodChannelName = "com.prodem/mc";
         String eventChannelFingerName="com.prodem/emcF";
         String eventChannelCardName="com.prodem/emcC";
+        String eventChannelEMVName="com.prodem/emcEmv";
 
         FingerChannelEvent fingerChannelEvent= new FingerChannelEvent();
-
         CardIcChannel cardChannel=new CardIcChannel();
-
+        EmvChannel emvChannel=new EmvChannel();
 
         MethodChannel methodChannel= new MethodChannel(messenger,methodChannelName);
         PrintChannel printChannel=new PrintChannel();
@@ -50,12 +50,24 @@ public class MainActivity extends FlutterActivity {
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
                 String vResFinger="";
                 switch (call.method){
+                    case "disposeEMV":
+                        emvChannel.disposeCardIc();
+                        result.success("disposeEMV");
+                        Log.i("onMethodCall", "disposeEMV: 55");
+                        break;
+                    case "searchEMV":
+                        emvChannel.initSdk();
+                        result.success("searchEMV");
+                        Log.i("onMethodCall", "searchEMV: 55");
+                        break;
                     case "disposeCardIc":
                         cardChannel.disposeCardIc();
                         result.success("disposeCardIc");
+                        break;
                     case "searchMagnetCard":
                         cardChannel.searchMagnetCard();
                         result.success("searchMagnetCard");
+                        break;
                     case "researchICC":
                         cardChannel.searchICCard();
                         result.success("researchICC");
@@ -110,6 +122,7 @@ public class MainActivity extends FlutterActivity {
         new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelFingerName).setStreamHandler(fingerChannelEvent);
 
         new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelCardName).setStreamHandler(cardChannel);
+        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),eventChannelEMVName).setStreamHandler(emvChannel);
 
     }
 

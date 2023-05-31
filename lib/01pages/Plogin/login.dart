@@ -22,8 +22,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   LoginProviders provider = LoginProviders();
-  final _usuariocontroller = TextEditingController();
-  final _passcontroller = TextEditingController();
+  final _usuariocontroller = TextEditingController(text: "perlita103");
+  final _passcontroller = TextEditingController(text: "Pr0d3m123");
   late UtilResponsive responsive;
 
   @override

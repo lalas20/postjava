@@ -54,20 +54,18 @@ class GetUserSessionInfoResult {
         message = json['Message'] as String?,
         state = json['State'] as int?,
         code = json['Code'] as String?,
-        objectGetUserSessionInfoResult = (json['ObjectGetUserSessionInfoResult']
-                    as Map<String, dynamic>?) !=
-                null
-            ? ObjectGetUserSessionInfoResult.fromJson(
-                json['ObjectGetUserSessionInfoResult'] as Map<String, dynamic>)
-            : null;
+        objectGetUserSessionInfoResult =
+            (json['Object'] as Map<String, dynamic>?) != null
+                ? ObjectGetUserSessionInfoResult.fromJson(
+                    json['Object'] as Map<String, dynamic>)
+                : null;
 
   Map<String, dynamic> toJson() => {
         'CodeBase': codeBase,
         'Message': message,
         'State': state,
         'Code': code,
-        'ObjectGetUserSessionInfoResult':
-            objectGetUserSessionInfoResult?.toJson()
+        'Object': objectGetUserSessionInfoResult?.toJson()
       };
 }
 
@@ -85,12 +83,12 @@ class ObjectGetUserSessionInfoResult {
   bool? isEmployee;
   bool? isPersonNatural;
   List<ListAds>? listAds;
-  List<dynamic>? listCodeCreditLine;
-  List<dynamic>? listCodeLoanFlowCredit;
+  // List<dynamic>? listCodeCreditLine;
+  // List<dynamic>? listCodeLoanFlowCredit;
   List<ListCodeSavingsAccount>? listCodeSavingsAccount;
-  List<dynamic>? listElectronicWallet;
-  int? maximumAmount;
-  int? maximumElectronicWalletAmount;
+  //List<dynamic>? listElectronicWallet;
+  double? maximumAmount;
+  //double? maximumElectronicWalletAmount;
   String? personName;
   String? processDate;
   bool? sendEmailNotification;
@@ -114,12 +112,12 @@ class ObjectGetUserSessionInfoResult {
     this.isEmployee,
     this.isPersonNatural,
     this.listAds,
-    this.listCodeCreditLine,
-    this.listCodeLoanFlowCredit,
+    // this.listCodeCreditLine,
+    // this.listCodeLoanFlowCredit,
     this.listCodeSavingsAccount,
-    this.listElectronicWallet,
+    //this.listElectronicWallet,
     this.maximumAmount,
-    this.maximumElectronicWalletAmount,
+    //this.maximumElectronicWalletAmount,
     this.personName,
     this.processDate,
     this.sendEmailNotification,
@@ -146,16 +144,15 @@ class ObjectGetUserSessionInfoResult {
         listAds = (json['ListAds'] as List?)
             ?.map((dynamic e) => ListAds.fromJson(e as Map<String, dynamic>))
             .toList(),
-        listCodeCreditLine = json['ListCodeCreditLine'] as List?,
-        listCodeLoanFlowCredit = json['ListCodeLoanFlowCredit'] as List?,
+        // listCodeCreditLine = json['ListCodeCreditLine'] as List?,
+        // listCodeLoanFlowCredit = json['ListCodeLoanFlowCredit'] as List?,
         listCodeSavingsAccount = (json['ListCodeSavingsAccount'] as List?)
             ?.map((dynamic e) =>
                 ListCodeSavingsAccount.fromJson(e as Map<String, dynamic>))
             .toList(),
-        listElectronicWallet = json['ListElectronicWallet'] as List?,
-        maximumAmount = json['MaximumAmount'] as int?,
-        maximumElectronicWalletAmount =
-            json['MaximumElectronicWalletAmount'] as int?,
+        // listElectronicWallet = json['ListElectronicWallet'] as List?,
+        maximumAmount = json['MaximumAmount'] as double?,
+        //maximumElectronicWalletAmount =json['MaximumElectronicWalletAmount'] as Int?,
         personName = json['PersonName'] as String?,
         processDate = json['ProcessDate'] as String?,
         sendEmailNotification = json['SendEmailNotification'] as bool?,
@@ -179,13 +176,13 @@ class ObjectGetUserSessionInfoResult {
         'IsEmployee': isEmployee,
         'IsPersonNatural': isPersonNatural,
         'ListAds': listAds?.map((e) => e.toJson()).toList(),
-        'ListCodeCreditLine': listCodeCreditLine,
-        'ListCodeLoanFlowCredit': listCodeLoanFlowCredit,
+        // 'ListCodeCreditLine': listCodeCreditLine,
+        // 'ListCodeLoanFlowCredit': listCodeLoanFlowCredit,
         'ListCodeSavingsAccount':
             listCodeSavingsAccount?.map((e) => e.toJson()).toList(),
-        'ListElectronicWallet': listElectronicWallet,
+        //'ListElectronicWallet': listElectronicWallet,
         'MaximumAmount': maximumAmount,
-        'MaximumElectronicWalletAmount': maximumElectronicWalletAmount,
+        //'MaximumElectronicWalletAmount': maximumElectronicWalletAmount,
         'PersonName': personName,
         'ProcessDate': processDate,
         'SendEmailNotification': sendEmailNotification,

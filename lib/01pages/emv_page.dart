@@ -1,16 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
 import '../02service/channel/plataformchannel.dart';
 
-class CardPage extends StatefulWidget {
-  const CardPage({super.key});
+class EmvPage extends StatefulWidget {
+  const EmvPage({super.key});
+  static String route = '/EmvPage';
 
   @override
-  State<CardPage> createState() => _CardPageState();
+  State<EmvPage> createState() => _EmvPageState();
 }
 
-class _CardPageState extends State<CardPage> {
+class _EmvPageState extends State<EmvPage> {
   late StreamSubscription _streamSubscription;
   TextEditingController txtLectura = TextEditingController();
   String cardIC = '';
@@ -18,28 +20,23 @@ class _CardPageState extends State<CardPage> {
 
   void _researchICC() {
     _streamSubscription =
-        resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
-    resul.cardChannel.infosearchICC();
-  }
-
-  void _clearTxt() {
-    txtLectura.text = '';
-  }
-
-  void _startListener() {
-    _streamSubscription =
-        resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
+        resul.emvChannel.event.receiveBroadcastStream().listen(_listenStream);
+    resul.emvChannel.emvSearch();
   }
 
   void _listenStream(value) {
     txtLectura.text = value;
   }
 
+  void _clearTxt() {
+    txtLectura.text = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Lectura de Tarjeta"),
+        title: const Text("EMV"),
       ),
       body: Center(
         child: Padding(
@@ -74,12 +71,5 @@ class _CardPageState extends State<CardPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    resul.cardChannel.dispose();
-    _streamSubscription.cancel();
-    super.dispose();
   }
 }
