@@ -33,6 +33,9 @@ class WBtnConstante extends StatelessWidget {
             onPressed: () {
               fun();
             },
-            icon: ico!);
+            icon: ico!,
+            color: UtilConstante.btnColor,
+            iconSize: 30,
+          );
   }
 }

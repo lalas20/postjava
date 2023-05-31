@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
+import 'package:postjava/01pages/PPago/wpago_cardfinger.dart';
 import 'package:postjava/01pages/PPago/wpago_identitycard.dart';
 import 'package:postjava/01pages/PPago/wpago_qr.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
@@ -135,6 +136,7 @@ class _PagoViewState extends State<PagoView> {
     }
     switch (selectTipoPago) {
       case TipoPago.TARJETA:
+        await provider.getCardFinger();
         break;
       case TipoPago.DOC_IDENTIDAD:
         await provider.getDocIdentidad();
@@ -160,7 +162,11 @@ class _PagoViewState extends State<PagoView> {
 
     switch (selectTipoPago) {
       case TipoPago.TARJETA:
-        resul = const SizedBox(height: 100, child: Text("card"));
+        if (provider.resp.state == RespProvider.correcto.toString()) {
+          resul = const WPagoCardFinger();
+        } else {
+          resul = SizedBox(height: 100, child: Text(provider.resp.message));
+        }
         break;
       case TipoPago.DOC_IDENTIDAD:
         if (provider.resp.state == RespProvider.correcto.toString()) {
@@ -185,8 +191,7 @@ class _PagoViewState extends State<PagoView> {
             ),
           );
         } else {
-          resul =
-              const SizedBox(height: 100, child: Text("seleccione registro"));
+          resul = SizedBox(height: 100, child: Text(provider.resp.message));
         }
         break;
       case TipoPago.QR:
