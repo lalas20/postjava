@@ -366,6 +366,7 @@ public class CardIcChannel implements EventChannel.StreamHandler {
         Log.d("disposeCardIc", "close 223");
         cardEventSink = null;
         Log.d("disposeCardIc", "close 225");
+        if(mCardReadManager!=null)
         mCardReadManager.closeCard();
         runnable = null;
         mHandler.removeCallbacks(runnable);

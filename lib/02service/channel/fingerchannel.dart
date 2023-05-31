@@ -58,6 +58,7 @@ class FingerChannel extends ChannelMethod {
     } catch (e) {
       print({"error ==>> $e"});
     }
+
     fingerStreamSubcription.cancel();
     return null;
   }

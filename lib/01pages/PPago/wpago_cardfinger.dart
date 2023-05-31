@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -19,9 +20,11 @@ class WPagoCardFinger extends StatefulWidget {
 
 class _WPagoCardFingerState extends State<WPagoCardFinger> {
   TextEditingController txtCard = TextEditingController();
-  TextEditingController txtfinger = TextEditingController();
+
   late UtilResponsive responsive;
   late PagoProvider provider;
+  Image? image;
+  String imagePath = '';
 
   late StreamSubscription _streamSubscriptionCard;
   late StreamSubscription _streamSubscriptionFinger;
@@ -47,16 +50,35 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _listenStreamFinger(value) {
-    print('listen');
-    Uint8List original = Uint8List.fromList(value);
-    txtfinger.text = base64.encode(original);
+    imagePath = value;
+    File imgfile = File(value);
+    image = Image.file(
+      imgfile,
+      fit: BoxFit.cover,
+      width: responsive.anchoPorcentaje(50),
+      height: responsive.altoPorcentaje(40),
+    );
+    setState(() {});
   }
 
   @override
   void dispose() {
     resul.fingerChannel.dispose();
+
     resul.cardChannel.dispose();
     super.dispose();
+  }
+
+  void _converBase64() async {
+    print('_converBase64');
+    File imagefile = File(imagePath);
+    Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+    String base64string =
+        base64.encode(imagebytes); //convert bytes to base64 string
+    print(base64string);
+
+    //final vstring = await imagefile.readAsString();
+    //print(vstring);
   }
 
   // Widget _cboAcount() {
@@ -71,40 +93,47 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     return Container(
       width: responsive.vAncho - 50,
       decoration: BoxDecoration(color: UtilConstante.colorFondo),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: txtCard,
-                  readOnly: true,
+      child: Expanded(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: txtCard,
+                    readOnly: true,
+                  ),
                 ),
-              ),
-              WBtnConstante(
-                pName: "",
-                fun: _findCard,
-                ico: const Icon(Icons.find_in_page),
-              )
-            ],
-          ),
-          //_cboAcount(),
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: txtfinger,
-                  readOnly: true,
+                WBtnConstante(
+                  pName: "",
+                  fun: _findCard,
+                  ico: const Icon(Icons.find_in_page),
+                )
+              ],
+            ),
+            //_cboAcount(),
+            Row(
+              children: [
+                Expanded(
+                  child: image == null
+                      ? const SizedBox(
+                          height: 10,
+                        )
+                      : image!,
                 ),
-              ),
-              WBtnConstante(
-                pName: "",
-                fun: _findFinger,
-                ico: const Icon(Icons.fingerprint),
-              )
-            ],
-          )
-        ],
+                WBtnConstante(
+                  pName: "",
+                  fun: _findFinger,
+                  ico: const Icon(Icons.fingerprint),
+                )
+              ],
+            ),
+            WBtnConstante(
+              pName: "Convert",
+              fun: _converBase64,
+            )
+          ],
+        ),
       ),
     );
   }

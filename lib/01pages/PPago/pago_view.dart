@@ -43,14 +43,16 @@ class _PagoViewState extends State<PagoView> {
           decoration: BoxDecoration(color: UtilConstante.colorFondo),
           child: Form(
             key: _formKey,
-            child: Column(
-              children: [
-                wCuentaDeposito(),
-                wMontoPago(),
-                wCboCuentas(),
-                wSeleccTipoPago(),
-                WBtnConstante(pName: "Pagar", fun: () {})
-              ],
+            child: Expanded(
+              child: Column(
+                children: [
+                  wCuentaDeposito(),
+                  wMontoPago(),
+                  wCboCuentas(),
+                  wSeleccTipoPago(),
+                  WBtnConstante(pName: "Pagar", fun: () {})
+                ],
+              ),
             ),
           ),
         ),
