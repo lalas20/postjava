@@ -9,11 +9,11 @@ import 'package:provider/provider.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
 import '../helper/util_constante.dart';
 import '../helper/wbtnconstante.dart';
-import '../homepage.dart';
 
 class ConfigurationView extends StatefulWidget {
   const ConfigurationView({super.key});
   static String route = '/ConfigurationView';
+
   @override
   State<ConfigurationView> createState() => _ConfigurationViewState();
 }
@@ -25,21 +25,43 @@ class _ConfigurationViewState extends State<ConfigurationView> {
   ObjectGetUserSessionInfoResult? sessionInfo;
   final _txtClientePos = TextEditingController();
   bool ingreso = false;
-  ListCodeSavingsAccount? account = ListCodeSavingsAccount();
-
+  String vMensajeValida = "seleccione la cuenta";
+  ListCodeSavingsAccount? account;
   void initConfiguration() async {
     await provider.getUserSessionInfo();
     if (provider.resp.state == RespProvider.correcto.toString()) {
       sessionInfo = provider.resp.obj as ObjectGetUserSessionInfoResult;
       _txtClientePos.text = sessionInfo!.personName!;
+    } else {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención!",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.colorAppPrimario),
+          ),
+          "Aceptar",
+          () => null);
     }
   }
 
   void saveConfiguration() async {
     UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
-    await provider.saveDataIni(account!, sessionInfo!);
+    await provider.saveDataIni(account, sessionInfo!);
     Navigator.of(context).pop();
-    Navigator.of(context).pushReplacementNamed(HomePage.route);
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      Navigator.of(context).pop();
+    } else {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
+    }
   }
 
   @override
@@ -60,45 +82,47 @@ class _ConfigurationViewState extends State<ConfigurationView> {
         decoration: BoxDecoration(
           color: UtilConstante.colorFondo,
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10, left: 10),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  UtilConstante.fondo,
-                  fit: BoxFit.fitWidth,
-                  height: 100,
-                  alignment: Alignment.topRight,
-                ),
-                txtClientePos(),
-                cboCuentas(),
-                account!.idOperationEntity == null
-                    ? const Text(
-                        "seleccione la cuenta",
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      )
-                    : const SizedBox(
-                        height: 10,
+        child: sessionInfo != null
+            ? Padding(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        UtilConstante.fondo,
+                        fit: BoxFit.fitWidth,
+                        height: 100,
+                        alignment: Alignment.topRight,
                       ),
-                WBtnConstante(
-                    pName: "Grabar",
-                    fun: () {
-                      final vValida = _formKey.currentState!.validate();
-                      if (vValida) {
-                        saveConfiguration();
-                      }
-                    }),
-              ],
-            ),
-          ),
-        ),
+                      txtClientePos(),
+                      cboCuentas(),
+                      account == null
+                          ? Text(
+                              vMensajeValida,
+                              textAlign: TextAlign.start,
+                              style: const TextStyle(
+                                color: Colors.red,
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 10,
+                            ),
+                      WBtnConstante(
+                          pName: "Grabar",
+                          fun: () {
+                            final vValida = _formKey.currentState!.validate();
+                            if (vValida) {
+                              saveConfiguration();
+                            }
+                          }),
+                    ],
+                  ),
+                ),
+              )
+            : UtilModal.iniCircularProgres(),
       ),
     );
   }
@@ -120,8 +144,12 @@ class _ConfigurationViewState extends State<ConfigurationView> {
           return null;
         },
         decoration: UtilConstante.entrada(
-          labelText: "Cliente POS",
-        ),
+            labelText: "Cliente POS",
+            hintText: "Cliente POS",
+            icon: Icon(
+              Icons.person_3,
+              color: UtilConstante.btnColor,
+            )),
         keyboardType: TextInputType.text,
       ),
     );
@@ -143,10 +171,32 @@ class _ConfigurationViewState extends State<ConfigurationView> {
       ).toList(),
       onChanged: (value) {
         account = value;
+        vMensajeValida = '';
         setState(() {});
       },
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: UtilConstante.headerColor,
+        size: 32,
+      ),
+      hint: const Text("Seleccione una cuenta"),
       elevation: 10,
-      hint: const Text("Seleccion una cuenta"),
+      /*decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          //<-- SEE HERE
+          borderSide: BorderSide(
+            color: UtilConstante.headerColor,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          //<-- SEE HERE
+          borderSide: BorderSide(
+            color: UtilConstante.headerColor,
+          ),
+        ),
+        filled: true,
+        //fillColor: UtilConstante.colorAppPrimario,
+      ),*/
     );
   }
 }

@@ -217,4 +217,26 @@ class UtilModal {
       actions: actions,
     );
   }
+
+  static Widget iniCircularProgres() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            strokeWidth: 10.0,
+            backgroundColor: UtilConstante.headerColor,
+            color: UtilConstante.colorAppPrimario,
+          ),
+          Text(
+            "Cargando...",
+            style: TextStyle(
+                color: UtilConstante.colorAppPrimario,
+                fontSize: 30,
+                fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+    );
+  }
 }

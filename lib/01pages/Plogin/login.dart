@@ -90,7 +90,8 @@ class _LoginState extends State<Login> {
     Navigator.of(context).pop();
     UtilMethod.imprimir(provider.resp.state);
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      Navigator.of(context).pushNamed(HomePage.route);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          HomePage.route, (Route<dynamic> route) => false);
     } else {
       UtilModal.mostrarDialogoNativo(
           context,

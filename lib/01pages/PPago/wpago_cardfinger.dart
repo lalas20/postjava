@@ -26,6 +26,8 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   Image? image;
   String imagePath = '';
 
+  GestureDetector? gestor;
+
   late StreamSubscription _streamSubscriptionCard;
   late StreamSubscription _streamSubscriptionFinger;
   final resul = PlaformChannel();
@@ -70,20 +72,35 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _converBase64() async {
-    print('_converBase64');
+    print('imagePath');
     File imagefile = File(imagePath);
     Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
-    String base64string =
-        base64.encode(imagebytes); //convert bytes to base64 string
+    String base64string = base64.encode(imagebytes);
+
     print(base64string);
 
+    var file =
+        await File('/sdcard/dataFinger1.txt').writeAsString(base64string);
     //final vstring = await imagefile.readAsString();
     //print(vstring);
   }
 
+  Widget fingerIco() {
+    return GestureDetector(
+      onTap: _findFinger,
+      child: image == null
+          ? Icon(
+              Icons.fingerprint,
+              size: 80,
+              color: UtilConstante.colorAppPrimario,
+            )
+          : image!,
+    );
+  }
+
   // Widget _cboAcount() {
-  //   return DropdownButton(items: items, onChanged: onChanged)
-  // }
+  //    return DropdownButton<>(items: items, onChanged: onChanged)
+  //  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +129,8 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
               ],
             ),
             //_cboAcount(),
-            Row(
+            fingerIco(),
+            /*Row(
               children: [
                 Expanded(
                   child: image == null
@@ -127,7 +145,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
                   ico: const Icon(Icons.fingerprint),
                 )
               ],
-            ),
+            ),*/
             WBtnConstante(
               pName: "Convert",
               fun: _converBase64,

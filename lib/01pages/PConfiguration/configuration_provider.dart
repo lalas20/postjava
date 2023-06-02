@@ -13,9 +13,17 @@ class ConfigurationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  saveDataIni(ListCodeSavingsAccount pOperationEntity,
+  saveDataIni(ListCodeSavingsAccount? pOperationEntity,
       ObjectGetUserSessionInfoResult pClientePos) async {
-    UtilPreferences.setIdOperationEntity(pOperationEntity.idOperationEntity!);
+    if (pOperationEntity == null) {
+      resp = ResulProvider(
+        message: "Seleccione la cuenta",
+        state: RespProvider.incorrecto.toString(),
+      );
+      return;
+    }
+
+    UtilPreferences.setIdOperationEntity(pOperationEntity!.idOperationEntity!);
     UtilPreferences.setClientePos(pClientePos.personName!);
     UtilPreferences.setAcount(pOperationEntity.operationCode!);
     resp = ResulProvider(

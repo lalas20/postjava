@@ -13,6 +13,10 @@ class PagoProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  String vIdSavingAcount = '';
+  String vFile = '';
+  String vCodigo = '';
+
   getCardFinger() async {
     await Future.delayed(const Duration(seconds: 2));
     final resul = await SrvPay.getQrPay();
