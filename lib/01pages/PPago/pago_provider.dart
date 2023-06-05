@@ -16,6 +16,10 @@ class PagoProvider with ChangeNotifier {
   String vIdSavingAcount = '';
   String vFile = '';
   String vCodigo = '';
+  double vMontoPagar = 0;
+  late List<ListCodeSavingsAccount> vListaCuentaByCi;
+
+  bool tieneFinger = false;
 
   getCardFinger() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -34,7 +38,48 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
-  getDocIdentidad() async {
+  getinitDocIdentidadPago() {
+    vListaCuentaByCi = List.empty();
+    resp = ResulProvider(
+      message: "Registro recuperado satisfactoriamente",
+      state: RespProvider.correcto.toString(),
+      obj: vListaCuentaByCi,
+    );
+  }
+
+  getDocIdentidadPago(String pCi) async {
+    if (pCi.isEmpty) {
+      resp = ResulProvider(
+        message: "El Documento de identidad es campo obligatorio",
+        state: RespProvider.incorrecto.toString(),
+      );
+      return;
+    }
+    await Future.delayed(const Duration(seconds: 2));
+    vListaCuentaByCi = vLista;
+
+    if (vListaCuentaByCi.isEmpty) {
+      resp = ResulProvider(
+        message: "No tiene cuentas asociado al documento de identidad",
+        state: RespProvider.incorrecto.toString(),
+      );
+    } else {
+      resp = ResulProvider(
+        message: "Registro recuperado satisfactoriamente",
+        state: RespProvider.correcto.toString(),
+        obj: vListaCuentaByCi,
+      );
+    }
+  }
+
+  getQRPago(double pMonto) async {
+    if (pMonto <= 0) {
+      resp = ResulProvider(
+        message: "El monto a pagar debe ser mayor 0",
+        state: RespProvider.incorrecto.toString(),
+      );
+      return;
+    }
     await Future.delayed(const Duration(seconds: 2));
     final resul = await SrvPay.getQrPay();
     if (resul.getUserSessionInfoResult!.state == 1) {
@@ -43,23 +88,7 @@ class PagoProvider with ChangeNotifier {
         state: RespProvider.correcto.toString(),
         obj: imgQR,
       );
-    } else {
-      resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
-        state: RespProvider.incorrecto.toString(),
-      );
-    }
-  }
-
-  getQRPago() async {
-    await Future.delayed(const Duration(seconds: 5));
-    final resul = await SrvPay.getQrPay();
-    if (resul.getUserSessionInfoResult!.state == 1) {
-      resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
-        state: RespProvider.correcto.toString(),
-        obj: imgQR,
-      );
+      vMontoPagar = pMonto;
     } else {
       resp = ResulProvider(
         message: resul.getUserSessionInfoResult!.message!,

@@ -7,7 +7,7 @@ import 'package:postjava/01pages/PPago/wpago_identitycard.dart';
 import 'package:postjava/01pages/PPago/wpago_qr.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
-import 'package:postjava/01pages/helper/wbtnconstante.dart';
+
 import 'package:postjava/helper/util_preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class _PagoViewState extends State<PagoView> {
   final _depositoController =
       TextEditingController(text: UtilPreferences.getAcount());
   final _montoController = TextEditingController();
-  final _ciController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   TipoPago? selectTipoPago;
   late PagoProvider provider;
@@ -49,7 +49,6 @@ class _PagoViewState extends State<PagoView> {
                 wMontoPago(),
                 wCboCuentas(),
                 wSeleccTipoPago(),
-                WBtnConstante(pName: "Pagar", fun: () {})
               ],
             ),
           ),
@@ -105,6 +104,10 @@ class _PagoViewState extends State<PagoView> {
     );
   }
 
+  void closeQr() {
+    Navigator.of(context).pop();
+  }
+
   Widget wCboCuentas() {
     return DropdownButtonFormField<TipoPago>(
       items: TipoPago.values.map<DropdownMenuItem<TipoPago>>(
@@ -139,10 +142,10 @@ class _PagoViewState extends State<PagoView> {
         await provider.getCardFinger();
         break;
       case TipoPago.DOC_IDENTIDAD:
-        await provider.getDocIdentidad();
+        await provider.getinitDocIdentidadPago();
         break;
       case TipoPago.QR:
-        await provider.getQRPago();
+        await provider.getQRPago(double.tryParse(_montoController.text) ?? 0);
 
         break;
       default:
@@ -155,7 +158,6 @@ class _PagoViewState extends State<PagoView> {
     if (selectTipoPago == null) {
       return const SizedBox(
         height: 10,
-        child: Text("sin data"),
       );
     }
     final Widget resul;
@@ -169,35 +171,23 @@ class _PagoViewState extends State<PagoView> {
         }
         break;
       case TipoPago.DOC_IDENTIDAD:
-        if (provider.resp.state == RespProvider.correcto.toString()) {
-          resul = WPagoIdentityCard(
-            txtCI: TextFormField(
-              controller: _ciController,
-              onEditingComplete: () {
-                _formKey.currentState!.validate();
-              },
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Documento de Identidad, es campo obligatorio';
-                }
-                return null;
-              },
-              decoration: UtilConstante.entrada(
-                  labelText: "Documento Identidad",
-                  icon: Icon(Icons.card_membership,
-                      color: UtilConstante.btnColor)),
-              keyboardType: TextInputType.text,
-            ),
-          );
-        } else {
-          resul = SizedBox(height: 100, child: Text(provider.resp.message));
-        }
+        resul = WPagoIdentityCard(
+          frmKey: _formKey,
+        );
+        // if (provider.resp.state == RespProvider.correcto.toString()) {
+        //   resul = WPagoIdentityCard(
+        //     frmKey: _formKey,
+        //   );
+        // } else {
+        //   resul = SizedBox(height: 100, child: Text(provider.resp.message));
+        // }
         break;
       case TipoPago.QR:
         if (provider.resp.state == RespProvider.correcto.toString()) {
           resul = WPagoQR(
             imgQR: provider.resp.obj.toString(),
+            monto: provider.vMontoPagar,
+            fun: closeQr,
           );
         } else {
           resul = SizedBox(

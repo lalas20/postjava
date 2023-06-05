@@ -25,7 +25,8 @@ class _ConfigurationViewState extends State<ConfigurationView> {
   ObjectGetUserSessionInfoResult? sessionInfo;
   final _txtClientePos = TextEditingController();
   bool ingreso = false;
-  String vMensajeValida = "seleccione la cuenta";
+  bool sinData = false;
+  String vMensajeValida = "Seleccione la cuenta";
   ListCodeSavingsAccount? account;
   void initConfiguration() async {
     await provider.getUserSessionInfo();
@@ -33,6 +34,7 @@ class _ConfigurationViewState extends State<ConfigurationView> {
       sessionInfo = provider.resp.obj as ObjectGetUserSessionInfoResult;
       _txtClientePos.text = sessionInfo!.personName!;
     } else {
+      sinData = true;
       UtilModal.mostrarDialogoNativo(
           context,
           "Atención!",
@@ -40,8 +42,11 @@ class _ConfigurationViewState extends State<ConfigurationView> {
             provider.resp.message,
             style: TextStyle(color: UtilConstante.colorAppPrimario),
           ),
-          "Aceptar",
-          () => null);
+          "Aceptar", () {
+        sessionInfo = ObjectGetUserSessionInfoResult();
+        setState(() {});
+        ;
+      });
     }
   }
 
@@ -156,7 +161,10 @@ class _ConfigurationViewState extends State<ConfigurationView> {
   }
 
   Widget cboCuentas() {
-    List<ListCodeSavingsAccount>? pLista = sessionInfo?.listCodeSavingsAccount!;
+    List<ListCodeSavingsAccount>? pLista =
+        sessionInfo?.listCodeSavingsAccount == null
+            ? null
+            : sessionInfo?.listCodeSavingsAccount!;
     return DropdownButtonFormField<ListCodeSavingsAccount>(
       items: pLista?.map<DropdownMenuItem<ListCodeSavingsAccount>>(
         (ListCodeSavingsAccount pCuenta) {
