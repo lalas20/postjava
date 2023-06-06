@@ -25,12 +25,12 @@ class _PagoViewState extends State<PagoView> {
   final _depositoController =
       TextEditingController(text: UtilPreferences.getAcount());
   final _montoController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
   TipoPago? selectTipoPago;
   late PagoProvider provider;
-
   late UtilResponsive responsive;
+  final _GlosaController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     responsive = UtilResponsive.of(context);
@@ -39,6 +39,7 @@ class _PagoViewState extends State<PagoView> {
       appBar: AppBar(title: const Text("Pago de Servicio")),
       body: SingleChildScrollView(
         child: Container(
+          padding: const EdgeInsets.all(8),
           height: responsive.vAlto - 10,
           decoration: BoxDecoration(color: UtilConstante.colorFondo),
           child: Form(
@@ -46,6 +47,7 @@ class _PagoViewState extends State<PagoView> {
             child: Column(
               children: [
                 wCuentaDeposito(),
+                wGlosa(),
                 wMontoPago(),
                 wCboCuentas(),
                 wSeleccTipoPago(),
@@ -54,6 +56,33 @@ class _PagoViewState extends State<PagoView> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget wGlosa() {
+    return TextFormField(
+      controller: _GlosaController,
+      onEditingComplete: () {
+        _formKey.currentState!.validate();
+      },
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Glosa campo obligatorio';
+        }
+        return null;
+      },
+      decoration: UtilConstante.entrada(
+        labelText: "Glosa",
+        icon: Icon(Icons.edit_document, color: UtilConstante.btnColor),
+      ),
+      keyboardType: TextInputType.multiline,
+      maxLength: 60,
+      minLines: 2,
+      maxLines: 2,
+      onChanged: (value) {
+        provider.glosaWIdentityCard = value;
+      },
     );
   }
 
@@ -79,6 +108,9 @@ class _PagoViewState extends State<PagoView> {
         icon: Icon(Icons.monetization_on, color: UtilConstante.btnColor),
       ),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      onChanged: (value) {
+        provider.montoWIdentityCard = double.tryParse(value) ?? 0;
+      },
     );
   }
 
@@ -145,7 +177,8 @@ class _PagoViewState extends State<PagoView> {
         await provider.getinitDocIdentidadPago();
         break;
       case TipoPago.QR:
-        await provider.getQRPago(double.tryParse(_montoController.text) ?? 0);
+        await provider.getQRPago(
+            double.tryParse(_montoController.text) ?? 0, _GlosaController.text);
 
         break;
       default:
@@ -191,7 +224,11 @@ class _PagoViewState extends State<PagoView> {
           );
         } else {
           resul = SizedBox(
-              height: 100, child: Text("Error de ${provider.resp.message}"));
+              height: 100,
+              child: Text(
+                provider.resp.message,
+                style: const TextStyle(color: Colors.red, fontSize: 20),
+              ));
         }
         break;
       default:

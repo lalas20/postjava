@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: LoginAutentica.route,
-        // Login.route,
+        initialRoute: //LoginAutentica.route,
+            Login.route,
         //UtilPreferences.getToken() == '' ? Login.route : HomePage.route,
         routes: {
           LoginAutentica.route: (BuildContext context) =>

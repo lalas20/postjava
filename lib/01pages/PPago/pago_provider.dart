@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:postjava/02service/service/Pay/srv_pay.dart';
+import 'package:postjava/helper/util_preferences.dart';
 
 import '../../03dominio/generic/resul_provider.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
@@ -38,15 +41,6 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
-  getinitDocIdentidadPago() {
-    vListaCuentaByCi = List.empty();
-    resp = ResulProvider(
-      message: "Registro recuperado satisfactoriamente",
-      state: RespProvider.correcto.toString(),
-      obj: vListaCuentaByCi,
-    );
-  }
-
   getDocIdentidadPago(String pCi) async {
     if (pCi.isEmpty) {
       resp = ResulProvider(
@@ -72,10 +66,17 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
-  getQRPago(double pMonto) async {
+  getQRPago(double pMonto, String pGlosa) async {
     if (pMonto <= 0) {
       resp = ResulProvider(
         message: "El monto a pagar debe ser mayor 0",
+        state: RespProvider.incorrecto.toString(),
+      );
+      return;
+    }
+    if (pGlosa.isEmpty) {
+      resp = ResulProvider(
+        message: "Glosa es un campo requerido",
         state: RespProvider.incorrecto.toString(),
       );
       return;
@@ -122,6 +123,80 @@ class PagoProvider with ChangeNotifier {
         message: resul.getUserSessionInfoResult!.message!,
         state: RespProvider.correcto.toString(),
         obj: vLista,
+      );
+    } else {
+      resp = ResulProvider(
+        message: resul.getUserSessionInfoResult!.message!,
+        state: RespProvider.incorrecto.toString(),
+      );
+    }
+  }
+
+  /* evento de registrar el proceso de pago caso WIDENTITYCAR*/
+  String glosaWIdentityCard = '';
+  String fingerWIdentityCard = '';
+  double montoWIdentityCard = 0;
+
+  getinitDocIdentidadPago() {
+    clearIdentityCard();
+    resp = ResulProvider(
+      message: "Registro recuperado satisfactoriamente",
+      state: RespProvider.correcto.toString(),
+      obj: vListaCuentaByCi,
+    );
+  }
+
+  clearIdentityCard() {
+    glosaWIdentityCard = '';
+    fingerWIdentityCard = '';
+    montoWIdentityCard = 0;
+    vListaCuentaByCi = [];
+  }
+
+  saveIdentityCard({
+    required String pCi,
+    required String pOperationCodeCliente,
+    required String pIdOperationEntity,
+  }) async {
+    List<String> vmessge = [];
+    if (glosaWIdentityCard.isEmpty) {
+      vmessge.add("Glosa.");
+    }
+    if (montoWIdentityCard <= 0) {
+      vmessge.add("Monto a pagar.");
+    }
+    if (pCi.isEmpty) {
+      vmessge.add("Documento de identidad.");
+    }
+    if (pOperationCodeCliente.isEmpty) {
+      vmessge.add("Cuenta cliente.");
+    }
+    if (fingerWIdentityCard.isEmpty) {
+      vmessge.add("Captura de huella.");
+    }
+    if (UtilPreferences.getAcount().isEmpty) {
+      vmessge.add("Depósito a la cuenta.");
+    }
+    if (vmessge.isNotEmpty) {
+      if (vmessge.length > 1) {
+        vmessge.add("son campos requeridos.");
+      } else {
+        vmessge.add("es campo requerido.");
+      }
+      resp = ResulProvider(
+        message:
+            vmessge.join('\n'), // "Debe completar la siguiente informacion",
+        state: RespProvider.incorrecto.toString(),
+      );
+      return;
+    }
+    await Future.delayed(const Duration(seconds: 3));
+    final resul =
+        await SrvPay.savingsAccountByCiAndFinger(pCi, fingerWIdentityCard);
+    if (resul.getUserSessionInfoResult!.state == 1) {
+      resp = ResulProvider(
+        message: "Registro guardado correctamente",
+        state: RespProvider.correcto.toString(),
       );
     } else {
       resp = ResulProvider(

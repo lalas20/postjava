@@ -1,12 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
 import 'package:postjava/01pages/helper/wbtnconstante.dart';
 import 'package:provider/provider.dart';
 
+import '../../02service/channel/plataformchannel.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
 import '../helper/util_constante.dart';
+import '../helper/util_responsive.dart';
 import 'pago_provider.dart';
 
 class WPagoIdentityCard extends StatefulWidget {
@@ -20,22 +24,26 @@ class WPagoIdentityCard extends StatefulWidget {
 class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
   final _ciController = TextEditingController();
   late PagoProvider provider;
+  late UtilResponsive responsive;
   List<ListCodeSavingsAccount>? vListaCuentaByCi;
+  ListCodeSavingsAccount? selecAcount;
 
-  FocusNode focusNode = FocusNode();
+  final resul = PlaformChannel();
+  late StreamSubscription _streamSubscription;
+  bool tieneFinger = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    focusNode.addListener(getCboSavingAcount);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     _ciController.dispose();
-    focusNode.dispose();
+    resul.fingerChannel.dispose();
+    super.dispose();
   }
 
   void getCboSavingAcount() async {
@@ -64,23 +72,25 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
   }
 
   Widget _txtCI() {
-    return TextFormField(
-      controller: _ciController,
-      /*onEditingComplete: () {
-        // keyfrm.currentState!.validate();
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Documento de Identidad, es campo obligatorio';
-        }
-        return null;
-      },*/
-      decoration: UtilConstante.entrada(
-          labelText: "Documento Identidad",
-          icon: Icon(Icons.card_membership, color: UtilConstante.btnColor)),
-      keyboardType: TextInputType.text,
-      focusNode: focusNode,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: _ciController,
+            decoration: UtilConstante.entrada(
+                labelText: "Documento Identidad",
+                icon:
+                    Icon(Icons.card_membership, color: UtilConstante.btnColor)),
+            keyboardType: TextInputType.text,
+          ),
+        ),
+        WBtnConstante(
+          pName: '',
+          fun: getCboSavingAcount,
+          ico: const Icon(Icons.find_in_page_outlined),
+        )
+      ],
     );
   }
 
@@ -100,7 +110,9 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
                 );
               },
             ).toList(),
-      onChanged: (value) {},
+      onChanged: (value) {
+        selecAcount = value;
+      },
       elevation: 10,
       hint: const Text("Seleccione una cuenta"),
       decoration: UtilConstante.entrada(
@@ -109,26 +121,27 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     );
   }
 
-  void _getHuella() {
-    print('_getHuella');
-  }
-
   Widget _iconFinger() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const Text(
-            "Huella no reconocida",
-            style: TextStyle(color: Colors.red),
-          ),
+          tieneFinger
+              ? Text(
+                  "Huella reconocida",
+                  style: TextStyle(color: UtilConstante.headerColor),
+                )
+              : const Text(
+                  "Huella no reconocida",
+                  style: TextStyle(color: Colors.red),
+                ),
           WBtnConstante(
             pName: '',
-            fun: _getHuella,
-            ico: const Icon(
+            fun: _getFinger,
+            ico: Icon(
               Icons.fingerprint,
-              color: Colors.red,
-              size: 48,
+              color: tieneFinger ? UtilConstante.headerColor : Colors.red,
+              size: 64,
             ),
           )
         ],
@@ -140,14 +153,73 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
   Widget build(BuildContext context) {
     final keyfrm = widget.frmKey;
     provider = Provider.of<PagoProvider>(context);
+    responsive = UtilResponsive.of(context);
     return Container(
       child: Column(
         children: [
           _txtCI(),
           _cboSavingAcount(),
           _iconFinger(),
+          const SizedBox(
+            height: 50,
+          ),
+          WBtnConstante(pName: 'Grabar', fun: _saveIdentityCard)
         ],
       ),
     );
+  }
+
+  _saveIdentityCard() async {
+    UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
+    await provider.saveIdentityCard(
+        pCi: _ciController.text,
+        pIdOperationEntity: selecAcount == null
+            ? ''
+            : selecAcount!.idOperationEntity.toString(),
+        pOperationCodeCliente:
+            selecAcount == null ? '' : selecAcount!.operationCode!);
+    Navigator.of(context).pop();
+
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar", () {
+        Navigator.of(context).pop();
+      });
+    } else {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
+    }
+  }
+
+  void _getFinger() {
+    print('_getFinger:39');
+    _streamSubscription = resul.fingerChannel.event
+        .receiveBroadcastStream()
+        .listen(_listenStream);
+    resul.fingerChannel.captureFingerISO();
+  }
+
+  void _listenStream(value) {
+    if (value == null) {
+      tieneFinger = false;
+    } else {
+      print(value.toString());
+      tieneFinger = true;
+      provider.fingerWIdentityCard = value.toString();
+    }
+    setState(() {});
   }
 }
