@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,8 +11,10 @@ import 'package:postjava/01pages/helper/wbtnconstante.dart';
 import 'package:provider/provider.dart';
 
 import '../../02service/channel/plataformchannel.dart';
+import '../../03dominio/user/resul_get_user_session_info.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
+import '../helper/utilmodal.dart';
 
 class WPagoCardFinger extends StatefulWidget {
   const WPagoCardFinger({super.key});
@@ -19,32 +23,59 @@ class WPagoCardFinger extends StatefulWidget {
 }
 
 class _WPagoCardFingerState extends State<WPagoCardFinger> {
-  TextEditingController txtCard = TextEditingController();
+  final _txtCard = TextEditingController();
 
   late UtilResponsive responsive;
   late PagoProvider provider;
   Image? image;
   String imagePath = '';
-
-  GestureDetector? gestor;
+  List<ListCodeSavingsAccount>? vListaCuentaByCi;
+  ListCodeSavingsAccount? selecAcount;
+  bool tieneFinger = false;
 
   late StreamSubscription _streamSubscriptionCard;
   late StreamSubscription _streamSubscriptionFinger;
   final resul = PlaformChannel();
 
-  void _findCard() {
+  void _findCardNumber() {
     _streamSubscriptionCard = resul.emvChannel.event
         .receiveBroadcastStream()
         .listen(_listenStreamCard);
     resul.emvChannel.emvSearch();
   }
 
-  void _listenStreamCard(value) async {
-    txtCard.text = value;
-    provider.getCardFinger();
+  void _listenStreamCard(value) {
+    _txtCard.text = value;
+    getCboSavingAcount();
+  }
+
+  void getCboSavingAcount() async {
+    if (_txtCard.text.isEmpty) {
+      print('getCboSavingAcount');
+      return;
+    }
+    UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
+    await provider.getDocIdentidadPago(_txtCard.text);
+    Navigator.of(context).pop();
+
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      vListaCuentaByCi = provider.resp.obj as List<ListCodeSavingsAccount>;
+    } else {
+      vListaCuentaByCi = List.empty();
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
+    }
   }
 
   void _findFinger() {
+    print('_findFinger:39');
     _streamSubscriptionFinger = resul.fingerChannel.event
         .receiveBroadcastStream()
         .listen(_listenStreamFinger);
@@ -52,14 +83,22 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _listenStreamFinger(value) {
-    imagePath = value;
+    if (value == null) {
+      tieneFinger = false;
+    } else {
+      print("finger: " + value.toString());
+      tieneFinger = true;
+      provider.fingerWIdentityCard = value.toString();
+    }
+    /*imagePath = value;
     File imgfile = File(value);
     image = Image.file(
       imgfile,
       fit: BoxFit.cover,
       width: responsive.anchoPorcentaje(50),
       height: responsive.altoPorcentaje(40),
-    );
+    );*/
+    print('_listenStreamFinger:39');
     setState(() {});
   }
 
@@ -85,22 +124,33 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     //print(vstring);
   }
 
-  Widget fingerIco() {
-    return GestureDetector(
-      onTap: _findFinger,
-      child: image == null
-          ? Icon(
+  Widget _iconFinger() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, bottom: 30),
+      child: Column(
+        children: [
+          tieneFinger
+              ? Text(
+                  "Huella reconocida",
+                  style: TextStyle(color: UtilConstante.headerColor),
+                )
+              : const Text(
+                  "Huella no reconocida",
+                  style: TextStyle(color: Colors.red),
+                ),
+          WBtnConstante(
+            pName: '',
+            fun: _findFinger,
+            ico: Icon(
               Icons.fingerprint,
-              size: 80,
-              color: UtilConstante.colorAppPrimario,
-            )
-          : image!,
+              color: tieneFinger ? UtilConstante.headerColor : Colors.red,
+              size: 64,
+            ),
+          )
+        ],
+      ),
     );
   }
-
-  // Widget _cboAcount() {
-  //    return DropdownButton<>(items: items, onChanged: onChanged)
-  //  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,51 +158,69 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     provider = Provider.of<PagoProvider>(context);
 
     return Container(
-      width: responsive.vAncho - 50,
-      decoration: BoxDecoration(color: UtilConstante.colorFondo),
-      child: Expanded(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: txtCard,
-                    readOnly: true,
-                  ),
-                ),
-                WBtnConstante(
-                  pName: "",
-                  fun: _findCard,
-                  ico: const Icon(Icons.find_in_page),
-                )
-              ],
-            ),
-            //_cboAcount(),
-            fingerIco(),
-            /*Row(
-              children: [
-                Expanded(
-                  child: image == null
-                      ? const SizedBox(
-                          height: 10,
-                        )
-                      : image!,
-                ),
-                WBtnConstante(
-                  pName: "",
-                  fun: _findFinger,
-                  ico: const Icon(Icons.fingerprint),
-                )
-              ],
-            ),*/
-            WBtnConstante(
-              pName: "Convert",
-              fun: _converBase64,
-            )
-          ],
-        ),
+      //width: responsive.vAncho - 50,
+      //decoration: BoxDecoration(color: UtilConstante.colorFondo),
+      child: Column(
+        children: [
+          _cardNumber(),
+          _cboSavingAcount(),
+          _iconFinger(),
+          WBtnConstante(
+            pName: "Convert",
+            fun: _converBase64,
+          )
+        ],
       ),
+    );
+  }
+
+  Widget _cboSavingAcount() {
+    return DropdownButtonFormField<ListCodeSavingsAccount>(
+      items: vListaCuentaByCi == null
+          ? null
+          : vListaCuentaByCi!.map<DropdownMenuItem<ListCodeSavingsAccount>>(
+              (ListCodeSavingsAccount pCuenta) {
+                return DropdownMenuItem(
+                  value: pCuenta,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child:
+                        Text("${pCuenta.operationCode!}  ${pCuenta.codMoney}"),
+                  ),
+                );
+              },
+            ).toList(),
+      onChanged: (value) {
+        selecAcount = value;
+      },
+      elevation: 10,
+      hint: const Text("Seleccione una cuenta"),
+      decoration: UtilConstante.entrada(
+          labelText: "Cuenta cliente",
+          icon: Icon(Icons.list_outlined, color: UtilConstante.btnColor)),
+    );
+  }
+
+  Widget _cardNumber() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: _txtCard,
+            readOnly: true,
+            decoration: UtilConstante.entrada(
+                labelText: "Tarjeta Debito",
+                icon:
+                    Icon(Icons.card_membership, color: UtilConstante.btnColor)),
+          ),
+        ),
+        WBtnConstante(
+          pName: "",
+          fun: _findCardNumber,
+          ico: const Icon(Icons.find_in_page),
+        )
+      ],
     );
   }
 }

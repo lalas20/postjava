@@ -97,6 +97,7 @@ class PagoProvider with ChangeNotifier {
       );
     }
   }
+/*eventos y metodos de card y finger*/
 
   savingsAccountByCard(String pCard) async {
     await Future.delayed(const Duration(seconds: 5));
@@ -115,6 +116,7 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
+  /* evento de registrar el proceso de pago caso WIDENTITYCAR*/
   savingsAccountByCiAndFinger(String pCi, String pFinger) async {
     await Future.delayed(const Duration(seconds: 3));
     final resul = await SrvPay.savingsAccountByCiAndFinger(pCi, pFinger);
@@ -132,7 +134,6 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
-  /* evento de registrar el proceso de pago caso WIDENTITYCAR*/
   String glosaWIdentityCard = '';
   String fingerWIdentityCard = '';
   double montoWIdentityCard = 0;
