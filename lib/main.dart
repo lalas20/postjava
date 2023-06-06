@@ -8,6 +8,7 @@ import 'package:postjava/01pages/Plogin/login_provider.dart';
 import 'package:provider/provider.dart';
 
 import '01pages/PConfiguration/configuration_view.dart';
+import '01pages/Plogin/login_autentica.dart';
 import '01pages/emv_page.dart';
 import '01pages/homepage.dart';
 import 'helper/util_preferences.dart';
@@ -38,9 +39,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: Login.route,
+        initialRoute: LoginAutentica.route,
+        // Login.route,
         //UtilPreferences.getToken() == '' ? Login.route : HomePage.route,
         routes: {
+          LoginAutentica.route: (BuildContext context) =>
+              const LoginAutentica(),
           Login.route: (BuildContext context) => const Login(),
           HomePage.route: (BuildContext context) => const HomePage(),
           EmvPage.route: (BuildContext context) => const EmvPage(),
