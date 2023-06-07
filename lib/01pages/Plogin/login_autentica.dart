@@ -55,6 +55,7 @@ class _LoginAutenticaState extends State<LoginAutentica> {
               ),
             ),
           ),
+          buildBottonHalfContainer(true),
           Positioned(
             top: 150,
             child: Container(
@@ -86,12 +87,95 @@ class _LoginAutenticaState extends State<LoginAutentica> {
                     height: 2,
                     width: 100,
                     color: Colors.amber,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 20, left: 10, right: 10),
+                    child: Column(
+                      children: [
+                        builTexField(Icons.person, "Usuario", false, false),
+                        builTexField(Icons.password, "Contraseña", true, false),
+                      ],
+                    ),
                   )
                 ],
               ),
             ),
-          )
+          ),
+          buildBottonHalfContainer(false),
         ],
+      ),
+    );
+  }
+
+  Positioned buildBottonHalfContainer(bool showShadow) {
+    return Positioned(
+      top: 480,
+      right: 0,
+      left: 0,
+      child: Center(
+        child: Container(
+          height: 95,
+          width: 95,
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: UtilConstante.colorFondo,
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: [
+                if (showShadow)
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    spreadRadius: 1.5,
+                    blurRadius: 10,
+                  )
+              ]),
+          child: !showShadow
+              ? Container(
+                  decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                          colors: [Colors.greenAccent, Colors.blueGrey],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight),
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: Offset(0, 1))
+                      ]),
+                  child: const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.amber,
+                  ),
+                )
+              : Center(),
+        ),
+      ),
+    );
+  }
+
+  Widget builTexField(
+      IconData icon, String hintText, bool isPassword, bool isEmail) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: TextField(
+        obscureText: isPassword,
+        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
+        decoration: InputDecoration(
+            prefixIcon: Icon(
+              icon,
+              color: UtilConstante.btnColor,
+            ),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: UtilConstante.colorAppPrimario),
+                borderRadius: const BorderRadius.all(Radius.circular(35.0))),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: UtilConstante.colorAppPrimario),
+                borderRadius: const BorderRadius.all(Radius.circular(35.0))),
+            contentPadding: EdgeInsets.all(10),
+            hintText: hintText,
+            hintStyle:
+                TextStyle(fontSize: 14, color: UtilConstante.colorAppPrimario)),
       ),
     );
   }
