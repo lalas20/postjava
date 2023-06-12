@@ -99,6 +99,31 @@ public class MainActivity extends FlutterActivity {
                             result.success(vResFinger);
                         }
                         break;
+                    case "printVoucher":
+                        Log.i("printVoucher", "inicio: ");
+                        PrintVoucher printVoucher=new PrintVoucher();
+                        printVoucher.cuentaDestino = call.argument("cuentaDestino");
+                        printVoucher.fechaTransaccion=call.argument("fechaTransaccion");
+                        printVoucher.glosa=call.argument("glosa");
+                        printVoucher.cuentaOrigen=call.argument("cuentaOrigen");
+                        printVoucher.bancoDestino=call.argument("bancoDestino");
+                        printVoucher.titular=call.argument("titular");
+                        printVoucher.montoPago=call.argument("montoPago");
+                        printVoucher.nroTransaccion=call.argument("nroTransaccion");
+                        printVoucher.tipoPago=call.argument("tipoPago");
+
+                        Log.i("printVoucher", "fin: inicio de impresion ");
+                        vResFinger= printChannel.printVoucher(printVoucher);
+                        Log.i("printVoucher", "fin: de impresion ");
+                        if(vResFinger=="Error"){
+                            vmssPrin="error";
+                            result.success(vResFinger);
+                        }else {
+                            vmssPrin="elsee ingreso";
+                            result.success(vResFinger);
+                        }
+
+                        break;
                     case "starFinger":
                         vResFinger=   fingerChannelEvent.initFinger();
                         result.success(vResFinger);

@@ -1,5 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
+import 'package:provider/provider.dart';
+
+import '../helper/utilmodal.dart';
+import '../homepage.dart';
+import 'login_provider.dart';
 
 class LoginAutentica extends StatefulWidget {
   const LoginAutentica({Key? key}) : super(key: key);
@@ -10,8 +17,14 @@ class LoginAutentica extends StatefulWidget {
 }
 
 class _LoginAutenticaState extends State<LoginAutentica> {
+  LoginProviders provider = LoginProviders();
+  TextEditingController txtuser = TextEditingController(text: "perlita103");
+  TextEditingController txtpass = TextEditingController(text: "Pr0d3m123");
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<LoginProviders>(context);
+
     return Scaffold(
       backgroundColor: UtilConstante.colorFondo,
       body: Stack(
@@ -24,11 +37,13 @@ class _LoginAutenticaState extends State<LoginAutentica> {
               height: 200,
               decoration: BoxDecoration(
                   image: DecorationImage(
+                      scale: 0.9,
                       image: AssetImage(UtilConstante.iLogo),
-                      fit: BoxFit.fill)),
+                      fit: BoxFit.scaleDown,
+                      repeat: ImageRepeat.repeat)),
               child: Container(
                 padding: const EdgeInsets.only(top: 90, left: 20),
-                color: const Color(0xFF3b5999).withOpacity(.85),
+                color: UtilConstante.colorBanner.withOpacity(.85),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   //mainAxisAlignment: MainAxisAlignment.end,
@@ -92,8 +107,10 @@ class _LoginAutenticaState extends State<LoginAutentica> {
                     margin: EdgeInsets.only(top: 20, left: 10, right: 10),
                     child: Column(
                       children: [
-                        builTexField(Icons.person, "Usuario", false, false),
-                        builTexField(Icons.password, "Contraseña", true, false),
+                        builTexField(
+                            Icons.person, "Usuario", false, false, txtuser),
+                        builTexField(
+                            Icons.password, "Contraseña", true, false, txtpass),
                       ],
                     ),
                   )
@@ -107,58 +124,83 @@ class _LoginAutenticaState extends State<LoginAutentica> {
     );
   }
 
+  Future<void> _autentica() async {
+    UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
+    await provider.autentica(txtuser.text, txtpass.text);
+    Navigator.of(context).pop();
+
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          HomePage.route, (Route<dynamic> route) => false);
+    } else {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
+    }
+  }
+
   Positioned buildBottonHalfContainer(bool showShadow) {
     return Positioned(
       top: 480,
       right: 0,
       left: 0,
-      child: Center(
-        child: Container(
-          height: 95,
-          width: 95,
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-              color: UtilConstante.colorFondo,
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                if (showShadow)
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    spreadRadius: 1.5,
-                    blurRadius: 10,
+      child: GestureDetector(
+        onTap: () => _autentica(),
+        child: Center(
+          child: Container(
+            height: 95,
+            width: 95,
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+                color: UtilConstante.colorFondo,
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: [
+                  if (showShadow)
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 1.5,
+                      blurRadius: 10,
+                    )
+                ]),
+            child: !showShadow
+                ? Container(
+                    decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                            colors: [Colors.greenAccent, Colors.blueGrey],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: Offset(0, 1))
+                        ]),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.amber,
+                    ),
                   )
-              ]),
-          child: !showShadow
-              ? Container(
-                  decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                          colors: [Colors.greenAccent, Colors.blueGrey],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 2,
-                            offset: Offset(0, 1))
-                      ]),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.amber,
-                  ),
-                )
-              : Center(),
+                : Center(),
+          ),
         ),
       ),
     );
   }
 
-  Widget builTexField(
-      IconData icon, String hintText, bool isPassword, bool isEmail) {
+  Widget builTexField(IconData icon, String hintText, bool isPassword,
+      bool isEmail, TextEditingController pController) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: TextField(
+        controller: pController,
         obscureText: isPassword,
         keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
         decoration: InputDecoration(

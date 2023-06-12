@@ -16,6 +16,31 @@ class LoginProviders with ChangeNotifier {
   }
 
   autentica(String pDI, String pPass) async {
+    List<String> vMessage = [];
+    if (pDI.isEmpty) {
+      vMessage.add("Usuario ");
+    }
+    if (pPass.isEmpty) {
+      vMessage.add("Constraseña ");
+    }
+    if (vMessage.isNotEmpty) {
+      final auxmessage = vMessage.length > 1
+          ? 'son campos obligatorios'
+          : 'es campo obligatorio';
+      vMessage.add(auxmessage);
+      resp = ResulProvider(
+        message: vMessage.join('\n'),
+        state: RespProvider.correcto.toString(),
+      );
+      return;
+    }
+
+    // resp = ResulProvider(
+    //   message: vMessage.join('\n'),
+    //   state: RespProvider.correcto.toString(),
+    // );
+    // return;
+
     final resul = await SrvClientePos.autentica(pDI, pPass);
     if (resul.verifyUserResult?.state == 1) {
       AditionalItems? iTems = resul.verifyUserResult!.object!.aditionalItems!

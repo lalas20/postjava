@@ -5,10 +5,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
 import 'package:postjava/01pages/helper/wbtnconstante.dart';
+import 'package:postjava/03dominio/pos/resul_voucher.dart';
+import 'package:postjava/helper/utilmethod.dart';
 import 'package:provider/provider.dart';
 
 import '../../02service/channel/plataformchannel.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
+import '../../helper/util_preferences.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
 import 'pago_provider.dart';
@@ -181,6 +184,21 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
+      final resul = PlaformChannel();
+      final voucher = ResulVoucher(
+        bancoDestino: 'BANCO PRODEM',
+        cuentaDestino: UtilPreferences.getAcount(), // '117-2-1-11208-1',
+        cuentaOrigen: selecAcount!.operationCode!, // '117-2-1-XXXX-1',
+        fechaTransaccion: UtilMethod.formatteDate(DateTime.now()),
+        glosa: provider.glosaWIdentityCard,
+        montoPago: provider.montoWIdentityCard,
+        nroTransaccion: 122245547,
+        titular: UtilPreferences.getClientePos(),
+        tipoPago: 'Doc. Identidad y huella',
+      );
+
+      final res = await resul.printMethod.printVoucherChannel(voucher);
+
       UtilModal.mostrarDialogoNativo(
           context,
           "Atención",

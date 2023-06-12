@@ -114,6 +114,55 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
+  saveCardFinger({
+    required String pOperationCodeCliente,
+    required String pIdOperationEntity,
+  }) async {
+    List<String> vmessge = [];
+    if (glosaWIdentityCard.isEmpty) {
+      vmessge.add("Glosa.");
+    }
+    if (montoWIdentityCard <= 0) {
+      vmessge.add("Monto a pagar.");
+    }
+    if (pOperationCodeCliente.isEmpty) {
+      vmessge.add("Cuenta cliente.");
+    }
+    if (fingerWIdentityCard.isEmpty) {
+      vmessge.add("Captura de huella.");
+    }
+    if (UtilPreferences.getAcount().isEmpty) {
+      vmessge.add("Depósito a la cuenta.");
+    }
+    if (vmessge.isNotEmpty) {
+      if (vmessge.length > 1) {
+        vmessge.add("son campos requeridos.");
+      } else {
+        vmessge.add("es campo requerido.");
+      }
+      resp = ResulProvider(
+        message:
+            vmessge.join('\n'), // "Debe completar la siguiente informacion",
+        state: RespProvider.incorrecto.toString(),
+      );
+      return;
+    }
+
+    await Future.delayed(const Duration(seconds: 3));
+    final resul = await SrvPay.savingsAccountByCiAndFinger('', '');
+    if (resul.getUserSessionInfoResult!.state == 1) {
+      resp = ResulProvider(
+        message: "Registro guardado correctamente",
+        state: RespProvider.correcto.toString(),
+      );
+    } else {
+      resp = ResulProvider(
+        message: resul.getUserSessionInfoResult!.message!,
+        state: RespProvider.incorrecto.toString(),
+      );
+    }
+  }
+
   /* evento de registrar el proceso de pago caso WIDENTITYCAR*/
   savingsAccountByCiAndFinger(String pCi, String pFinger) async {
     await Future.delayed(const Duration(seconds: 3));
@@ -137,7 +186,8 @@ class PagoProvider with ChangeNotifier {
   double montoWIdentityCard = 0;
 
   getinitDocIdentidadPago() {
-    clearIdentityCard();
+    //clearIdentityCard();
+    vListaCuentaByCi = [];
     resp = ResulProvider(
       message: "Registro recuperado satisfactoriamente",
       state: RespProvider.correcto.toString(),

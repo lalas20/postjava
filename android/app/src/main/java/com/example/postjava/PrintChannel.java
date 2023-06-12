@@ -24,6 +24,56 @@ public class PrintChannel {
 
     }
 
+    public String printVoucher(PrintVoucher printVoucher ){
+
+        String vRespuesta;
+        mDriverManager = DriverManager.getInstance();
+        if(mDriverManager==null){ vRespuesta="drive"; return vRespuesta;}
+        Log.d("pengzhan","zcs_model_code = ");
+        mPrinter = mDriverManager.getPrinter();
+        if(mPrinter==null){ vRespuesta="mPrinter"; return vRespuesta;}
+        int printStatus = mPrinter.getPrinterStatus();
+        if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+            vRespuesta="Error";
+        } else {
+            PrnStrFormat format = new PrnStrFormat();
+            format.setTextSize(30);
+            format.setAli(Layout.Alignment.ALIGN_CENTER);
+            format.setStyle(PrnTextStyle.BOLD);
+            format.setFont(PrnTextFont.SANS_SERIF);
+            mPrinter.setPrintAppendString("PRODEM - POS ", format);
+            format.setTextSize(20);
+            format.setStyle(PrnTextStyle.NORMAL);
+            format.setAli(Layout.Alignment.ALIGN_NORMAL);
+            mPrinter.setPrintAppendString(" ", format);
+            mPrinter.setPrintAppendString(printVoucher.bancoDestino, format);
+            mPrinter.setPrintAppendString("Nro. transacción: "+printVoucher.nroTransaccion, format);
+            mPrinter.setPrintAppendString("Titular: " +printVoucher.titular, format);
+            mPrinter.setPrintAppendString("Fecha: " +printVoucher.fechaTransaccion, format);
+            mPrinter.setPrintAppendString("Monto: " +printVoucher.montoPago, format);
+            format.setTextSize(20);
+            mPrinter.setPrintAppendString("Cta. Origen: " +printVoucher.cuentaOrigen, format);
+            mPrinter.setPrintAppendString("Cta. Destino: " +printVoucher.cuentaDestino, format);
+            mPrinter.setPrintAppendString("Tipo Pago: " +printVoucher.tipoPago, format);
+            format.setTextSize(20);
+            format.setStyle(PrnTextStyle.NORMAL);
+            format.setAli(Layout.Alignment.ALIGN_NORMAL);
+            mPrinter.setPrintAppendString("Glosa: " +printVoucher.glosa, format);
+
+            mPrinter.setPrintAppendString(" ", format);
+            mPrinter.setPrintAppendString(" -----------------------------", format);
+
+            mPrinter.setPrintAppendString(" ", format);
+            mPrinter.setPrintAppendString(" ", format);
+
+            printStatus = mPrinter.setPrintStart();
+            Log.i("printStatus", "printStatus: "+printStatus);
+            vRespuesta="ejecucion del print " + printStatus;
+
+        }
+        return  vRespuesta;
+    }
+
     public String printTextMessage(String pText){
         String vRespuesta;
         mDriverManager = DriverManager.getInstance();
@@ -109,4 +159,21 @@ public class PrintChannel {
         }
         return  vRespuesta;
     }
+}
+
+class PrintVoucher{
+   public  int nroTransaccion;
+    public String titular;
+    public String fechaTransaccion;
+    public double montoPago;
+
+    //cuenta origen
+    public    String cuentaOrigen;
+    //cuenta destino
+    public String cuentaDestino;
+    public String bancoDestino;
+    //concepto
+    public String glosa;
+    public String tipoPago;
+
 }

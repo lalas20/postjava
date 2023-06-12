@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisSpacing: 10,
           crossAxisCount: 2,
           children: <Widget>[
-            WCarPage(
+            /*  WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Card'),
                 pImg: UtilConstante.iCard,
@@ -82,9 +82,14 @@ class _HomePageState extends State<HomePage> {
                 pName: 'Print'),
             WCarPage(
                 pElevation: 10,
+                pFun: () => processMethod('EMV'),
+                pImg: UtilConstante.iConfiguration,
+                pName: 'EMV'),
+            WCarPage(
+                pElevation: 10,
                 pFun: () => processMethod('Finger'),
                 pImg: UtilConstante.iFinger,
-                pName: 'Finger'),
+                pName: 'Finger'),*/
             WCarPage(
                 pElevation: 10,
                 pFun: () => processMethod('Pago'),
@@ -95,11 +100,6 @@ class _HomePageState extends State<HomePage> {
                 pFun: () => processMethod('Configuración'),
                 pImg: UtilConstante.iConfiguration,
                 pName: 'Configuración'),
-            WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('EMV'),
-                pImg: UtilConstante.iConfiguration,
-                pName: 'EMV'),
           ]),
     );
   }

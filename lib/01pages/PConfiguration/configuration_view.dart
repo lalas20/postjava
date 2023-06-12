@@ -32,7 +32,7 @@ class _ConfigurationViewState extends State<ConfigurationView> {
     await provider.getUserSessionInfo();
     if (provider.resp.state == RespProvider.correcto.toString()) {
       sessionInfo = provider.resp.obj as ObjectGetUserSessionInfoResult;
-      _txtClientePos.text = sessionInfo!.personName!;
+      _txtClientePos.text = sessionInfo!.personName ?? 'sin dato';
     } else {
       sinData = true;
       UtilModal.mostrarDialogoNativo(

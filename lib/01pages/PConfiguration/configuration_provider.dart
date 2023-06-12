@@ -23,7 +23,7 @@ class ConfigurationProvider with ChangeNotifier {
       return;
     }
 
-    UtilPreferences.setIdOperationEntity(pOperationEntity!.idOperationEntity!);
+    UtilPreferences.setIdOperationEntity(pOperationEntity.idOperationEntity!);
     UtilPreferences.setClientePos(pClientePos.personName!);
     UtilPreferences.setAcount(pOperationEntity.operationCode!);
     resp = ResulProvider(

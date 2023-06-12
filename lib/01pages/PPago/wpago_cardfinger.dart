@@ -11,7 +11,10 @@ import 'package:postjava/01pages/helper/wbtnconstante.dart';
 import 'package:provider/provider.dart';
 
 import '../../02service/channel/plataformchannel.dart';
+import '../../03dominio/pos/resul_voucher.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
+import '../../helper/util_preferences.dart';
+import '../../helper/utilmethod.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
 import '../helper/utilmodal.dart';
@@ -124,6 +127,54 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     //print(vstring);
   }
 
+  _saveCardFinger() async {
+    UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
+    await provider.saveCardFinger(
+        pIdOperationEntity: selecAcount == null
+            ? ''
+            : selecAcount!.idOperationEntity.toString(),
+        pOperationCodeCliente:
+            selecAcount == null ? '' : selecAcount!.operationCode!);
+    Navigator.of(context).pop();
+
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      final resul = PlaformChannel();
+      final voucher = ResulVoucher(
+        bancoDestino: 'BANCO PRODEM',
+        cuentaDestino: UtilPreferences.getAcount(), // '117-2-1-11208-1',
+        cuentaOrigen: selecAcount!.operationCode!, // '117-2-1-XXXX-1',
+        fechaTransaccion: UtilMethod.formatteDate(DateTime.now()),
+        glosa: provider.glosaWIdentityCard,
+        montoPago: provider.montoWIdentityCard,
+        nroTransaccion: 122245547,
+        titular: UtilPreferences.getClientePos(),
+        tipoPago: 'Tarjeta débito y huella',
+      );
+
+      final res = await resul.printMethod.printVoucherChannel(voucher);
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar", () {
+        Navigator.of(context).pop();
+      });
+    } else {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
+    }
+  }
+
   Widget _iconFinger() {
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 30),
@@ -166,8 +217,8 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
           _cboSavingAcount(),
           _iconFinger(),
           WBtnConstante(
-            pName: "Convert",
-            fun: _converBase64,
+            pName: "Grabar",
+            fun: _saveCardFinger,
           )
         ],
       ),

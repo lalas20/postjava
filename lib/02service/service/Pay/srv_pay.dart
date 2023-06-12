@@ -1,3 +1,4 @@
+import '../../../03dominio/pos/resul_voucher.dart';
 import '../../../03dominio/user/resul_get_user_session_info.dart';
 
 class SrvPay {
@@ -55,5 +56,19 @@ class SrvPay {
       respuesta.getUserSessionInfoResult!.message = e.toString();
     }
     return respuesta;
+  }
+
+  static Future<ResulVoucher> printVoucher(String pIdTransaccion) async {
+    final vResul = ResulVoucher(
+        bancoDestino: 'BANCO PRODEM',
+        cuentaDestino: '117-2-1-11208-1',
+        cuentaOrigen: '117-2-1-XXXX-1',
+        fechaTransaccion: DateTime.now().toString(),
+        glosa: 'Pago de algo',
+        montoPago: 180,
+        nroTransaccion: 122245547,
+        titular: 'Perlita perlita');
+
+    return vResul;
   }
 }

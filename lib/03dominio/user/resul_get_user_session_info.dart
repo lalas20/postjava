@@ -131,8 +131,12 @@ class ObjectGetUserSessionInfoResult {
   ObjectGetUserSessionInfoResult.fromJson(Map<String, dynamic> json)
       : cellPhoneNumber = json['CellPhoneNumber'] as String?,
         contractMessage = json['ContractMessage'] as String?,
-        currencyExchangeBuy = json['CurrencyExchangeBuy'] as double?,
-        currencyExchangeSell = json['CurrencyExchangeSell'] as double?,
+        currencyExchangeBuy = json['CurrencyExchangeBuy'] == 0
+            ? json['CurrencyExchangeBuy'].toDouble()
+            : json['CurrencyExchangeBuy'] as double?,
+        currencyExchangeSell = json['CurrencyExchangeSell'] == 0
+            ? json['CurrencyExchangeSell'].toDouble()
+            : json['CurrencyExchangeSell'] as double?,
         email = json['Email'] as String?,
         estado = json['Estado'] as String?,
         hasContractPending = json['HasContractPending'] as bool?,
@@ -151,7 +155,7 @@ class ObjectGetUserSessionInfoResult {
                 ListCodeSavingsAccount.fromJson(e as Map<String, dynamic>))
             .toList(),
         // listElectronicWallet = json['ListElectronicWallet'] as List?,
-        maximumAmount = json['MaximumAmount'] as double?,
+        maximumAmount = json['MaximumAmount'].toDouble(),
         //maximumElectronicWalletAmount =json['MaximumElectronicWalletAmount'] as Int?,
         personName = json['PersonName'] as String?,
         processDate = json['ProcessDate'] as String?,

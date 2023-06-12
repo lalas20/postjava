@@ -32,6 +32,13 @@ class _PagoViewState extends State<PagoView> {
   final _GlosaController = TextEditingController();
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    provider.clearIdentityCard();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     responsive = UtilResponsive.of(context);
     provider = Provider.of<PagoProvider>(context);
