@@ -1,7 +1,15 @@
+import 'package:postjava/03dominio/pos/resul_moves.dart';
+
 import '../../../03dominio/pos/resul_voucher.dart';
 import '../../../03dominio/user/resul_get_user_session_info.dart';
 
 class SrvPay {
+  static Future<List<ResulMoves>> getLasMoves() async {
+    List<ResulMoves> vLista = ResulMoves.vCarga;
+
+    return vLista;
+  }
+
   static Future<ResulGetUserSessionInfo> getQrPay() async {
     ResulGetUserSessionInfo respuesta = ResulGetUserSessionInfo();
     respuesta.getUserSessionInfoResult = GetUserSessionInfoResult();

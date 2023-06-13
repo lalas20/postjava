@@ -197,18 +197,19 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
         tipoPago: 'Doc. Identidad y huella',
       );
 
-      final res = await resul.printMethod.printVoucherChannel(voucher);
-
-      UtilModal.mostrarDialogoNativo(
-          context,
-          "Atención",
-          Text(
-            provider.resp.message,
-            style: TextStyle(color: UtilConstante.btnColor),
-          ),
-          "Aceptar", () {
-        Navigator.of(context).pop();
-      });
+      Future future = resul.printMethod.printVoucherChannel(voucher);
+      future
+          .then((value) => UtilModal.mostrarDialogoNativo(
+                  context,
+                  "Atención",
+                  Text(
+                    provider.resp.message,
+                    style: TextStyle(color: UtilConstante.btnColor),
+                  ),
+                  "Aceptar", () {
+                Navigator.of(context).pop();
+              }))
+          .catchError((e) => UtilMethod.imprimir(e));
     } else {
       UtilModal.mostrarDialogoNativo(
           context,

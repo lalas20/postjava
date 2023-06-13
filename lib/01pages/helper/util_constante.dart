@@ -21,6 +21,7 @@ class UtilConstante {
   static String iConfiguration = "assets/images/test.png";
   static String iPago = "assets/images/pago.png";
   static String iLogo = "assets/images/logo.png";
+  static String iLastMoves = "assets/images/lastMoves.png";
 
   static Color colorFondo = const Color.fromRGBO(221, 247, 233, 1);
 

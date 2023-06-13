@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_view.dart';
+import 'package:postjava/01pages/PMovimientos/last%20_moves_page.dart';
 import 'package:postjava/01pages/PPago/pago_view.dart';
 import 'package:postjava/01pages/emv_page.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
@@ -54,6 +55,11 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(builder: (context) => const PagoView()),
       );
+    } else if (pClasse == 'UltimoMovimiento') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LastMoves()),
+      );
     }
   }
 
@@ -63,44 +69,52 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Menu POS"),
       ),
-      body: GridView.count(
-          primary: false,
-          padding: const EdgeInsets.all(10),
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: <Widget>[
-            /*  WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('Card'),
-                pImg: UtilConstante.iCard,
-                pName: 'Card'),
-            WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('Print'),
-                pImg: UtilConstante.iCard,
-                pName: 'Print'),
-            WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('EMV'),
-                pImg: UtilConstante.iConfiguration,
-                pName: 'EMV'),
-            WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('Finger'),
-                pImg: UtilConstante.iFinger,
-                pName: 'Finger'),*/
-            WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('Pago'),
-                pImg: UtilConstante.iPago,
-                pName: 'Pago'),
-            WCarPage(
-                pElevation: 10,
-                pFun: () => processMethod('Configuración'),
-                pImg: UtilConstante.iConfiguration,
-                pName: 'Configuración'),
-          ]),
+      body: Container(
+        decoration: BoxDecoration(color: UtilConstante.colorFondo),
+        child: GridView.count(
+            primary: false,
+            padding: const EdgeInsets.all(10),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            crossAxisCount: 2,
+            children: <Widget>[
+              /*  WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('Card'),
+                  pImg: UtilConstante.iCard,
+                  pName: 'Card'),
+              WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('Print'),
+                  pImg: UtilConstante.iCard,
+                  pName: 'Print'),
+              WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('EMV'),
+                  pImg: UtilConstante.iConfiguration,
+                  pName: 'EMV'),
+              WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('Finger'),
+                  pImg: UtilConstante.iFinger,
+                  pName: 'Finger'),*/
+              WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('Pago'),
+                  pImg: UtilConstante.iPago,
+                  pName: 'Pago'),
+              WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('Configuración'),
+                  pImg: UtilConstante.iConfiguration,
+                  pName: 'Configuración'),
+              WCarPage(
+                  pElevation: 10,
+                  pFun: () => processMethod('UltimoMovimiento'),
+                  pImg: UtilConstante.iLastMoves,
+                  pName: 'Ultimo Movimientos'),
+            ]),
+      ),
     );
   }
 }
