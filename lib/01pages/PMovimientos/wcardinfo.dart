@@ -46,8 +46,6 @@ class WCardInfo extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       height: responsive.altoPorcentaje(50),
       width: responsive.anchoPorcentaje(70),
-      decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(30))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,11 +54,16 @@ class WCardInfo extends StatelessWidget {
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8),
             width: responsive.anchoPorcentaje(100),
-            color: Colors.white,
-            child: Text(
+            //color: Colors.white,
+            decoration: BoxDecoration(
+              color: UtilConstante.btnColor,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+            ),
+            child: const Text(
               "Detalle de Movimiento",
               style: TextStyle(
-                  color: UtilConstante.btnColor,
+                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),

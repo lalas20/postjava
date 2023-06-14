@@ -239,4 +239,23 @@ class UtilModal {
       ),
     );
   }
+
+  static Widget iniSinRegistro() {
+    return Container(
+      padding: const EdgeInsets.only(top: 100),
+      child: Center(
+        child: Column(
+          children: [
+            Text(
+              "Sin Registros",
+              style: TextStyle(
+                  color: UtilConstante.colorAppPrimario,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }

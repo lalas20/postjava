@@ -23,11 +23,14 @@ class WCarPage extends StatelessWidget {
         splashColor: Colors.blue.withAlpha(30),
         onTap: pFun,
         child: ListTile(
-          title: Text(
-            pName,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: UtilConstante.btnColor, fontWeight: FontWeight.bold),
+          title: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              pName,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: UtilConstante.btnColor, fontWeight: FontWeight.bold),
+            ),
           ),
           subtitle: Image(
             image: AssetImage(pImg),

@@ -11,6 +11,7 @@ import 'package:postjava/helper/utilmethod.dart';
 import 'package:provider/provider.dart';
 
 import '../helper/util_responsive.dart';
+import '../helper/utilmodal.dart';
 
 class LastMoves extends StatefulWidget {
   static String route = '/LastMoves';
@@ -25,12 +26,16 @@ class _LastMovesState extends State<LastMoves> {
   late LastMovesProvider provider;
   late UtilResponsive responsive;
   bool esIngreso = true;
+  bool cargando = true;
   List<ResulMoves> vLista = [];
 
   _getLastMoves() async {
     await provider.getLasMovimiento();
+    cargando = false;
     if (provider.resp.state == RespProvider.correcto.toString()) {
       vLista = provider.resp.obj as List<ResulMoves>;
+    } else {
+      vLista = [];
     }
   }
 
@@ -82,20 +87,26 @@ class _LastMovesState extends State<LastMoves> {
                   label: 'Fecha: ',
                   value: UtilMethod.formatteOnlyDate(DateTime.now())),
               const WRowOpcion(label: 'Saldo: ', value: '1548.50 Bs'),
-              Container(
-                padding: const EdgeInsets.only(top: 10),
-                height: responsive.altoPorcentaje(65),
-                child: ListView.builder(
-                  itemCount: vLista.length,
-                  itemBuilder: (context, index) {
-                    return WCardInfo(resulMoves: vLista[index]);
-                  },
-                ),
-              ),
+              cargando ? UtilModal.iniCircularProgres() : ListVacia()
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget ListVacia() {
+    return vLista.isEmpty
+        ? UtilModal.iniSinRegistro()
+        : Container(
+            padding: const EdgeInsets.only(top: 10),
+            height: responsive.altoPorcentaje(65),
+            child: ListView.builder(
+              itemCount: vLista.length,
+              itemBuilder: (context, index) {
+                return WCardInfo(resulMoves: vLista[index]);
+              },
+            ),
+          );
   }
 }
