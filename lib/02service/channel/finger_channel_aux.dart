@@ -51,7 +51,7 @@ class FingerChannelAux extends ChannelMethod {
         eventChannelFinger.receiveBroadcastStream().listen((event) {
       Uint8List original = Uint8List.fromList(event);
       vResult = base64.encode(original);
-      print("vResult::=> $vResult");
+      print("vResult=> $vResult");
       controller.add(vResult);
       // ignore: void_checks
       // return event;
