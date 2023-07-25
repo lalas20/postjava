@@ -92,17 +92,12 @@ class _HomePageState extends State<HomePage> {
                   pElevation: 10,
                   pFun: () => processMethod('EMV'),
                   pImg: UtilConstante.iConfiguration,
-                  pName: 'EMV'),
+                  pName: 'EMV'),*/
               WCarPage(
                   pElevation: 10,
                   pFun: () => processMethod('Finger'),
                   pImg: UtilConstante.iFinger,
-                  pName: 'Finger'),*/
-              WCarPage(
-                  pElevation: 10,
-                  pFun: () => processMethod('Pago'),
-                  pImg: UtilConstante.iPago,
-                  pName: 'Pago'),
+                  pName: 'Finger'),
               WCarPage(
                   pElevation: 10,
                   pFun: () => processMethod('Configuración'),
@@ -110,9 +105,14 @@ class _HomePageState extends State<HomePage> {
                   pName: 'Configuración'),
               WCarPage(
                   pElevation: 10,
+                  pFun: () => processMethod('Pago'),
+                  pImg: UtilConstante.iPago,
+                  pName: 'Pago'),
+              WCarPage(
+                  pElevation: 10,
                   pFun: () => processMethod('UltimoMovimiento'),
                   pImg: UtilConstante.iLastMoves,
-                  pName: 'Ultimo Movimientos'),
+                  pName: 'Ultimos Movimientos'),
             ]),
       ),
     );

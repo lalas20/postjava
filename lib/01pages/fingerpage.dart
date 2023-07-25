@@ -43,6 +43,14 @@ class _FingerPageState extends State<FingerPage> {
     resul.fingerChannel.captureFingerISO();
   }
 
+  void _getFingerByte() {
+    print('_getFinger:39');
+    _streamSubscription = resul.fingerChannel.event
+        .receiveBroadcastStream()
+        .listen(_listenStreamByte);
+    resul.fingerChannel.captureFingerISObyte();
+  }
+
   void _getVerifyUser() async {
     final res = await resul.fingerChannel.verifyUser(vHuella);
     setState(() {
@@ -59,19 +67,14 @@ class _FingerPageState extends State<FingerPage> {
     setState(() {});
   }
 
-  void _startListener() {
-    _streamSubscription =
-        resul.cardChannel.event.receiveBroadcastStream().listen(_listenStream);
-  }
-
 //cadena huella
-  // void _listenStream(value) {
-  //   print('listen');
-  //   Uint8List original = Uint8List.fromList(value);
-  //   txtRespuesta.text = base64.encode(original);
-  //   vHuella = base64.encode(original);
-  //   print('vHuella:  $vHuella');
-  // }
+  void _listenStreamByte(value) {
+    print('listen');
+    Uint8List original = Uint8List.fromList(value);
+    txtRespuesta.text = base64.encode(original);
+    vHuella = base64.encode(original);
+    print('vHuella:  $vHuella');
+  }
 
 //byte de huella
   void _listenStream(value) {
@@ -124,7 +127,7 @@ class _FingerPageState extends State<FingerPage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                    onPressed: _getFinger, child: const Text('Captura huella')),
+                    onPressed: _getFinger, child: const Text('huella img')),
                 const SizedBox(
                   height: 50,
                 ),
@@ -143,6 +146,9 @@ class _FingerPageState extends State<FingerPage> {
                 ),
               ],
             ),
+            ElevatedButton(
+                onPressed: _getFingerByte,
+                child: const Text('get huella byte txt')),
             TextField(
               controller: txtRespuesta,
               readOnly: true,

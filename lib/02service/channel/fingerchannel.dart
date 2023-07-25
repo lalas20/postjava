@@ -47,6 +47,17 @@ class FingerChannel extends ChannelMethod {
     return vHuellares;
   }
 
+  Future<String?> captureFingerISObyte() async {
+    String rpt = '';
+    try {
+      await methodChannel.invokeMethod(captureFingerISOname);
+      rpt = 'ingreso';
+    } catch (e) {
+      rpt = e.toString();
+    }
+    return rpt;
+  }
+
   dispose() async {
     vResult = '';
     try {

@@ -44,6 +44,8 @@ public class MainActivity extends FlutterActivity {
 
         MethodChannel methodChannel= new MethodChannel(messenger,methodChannelName);
         PrintChannel printChannel=new PrintChannel();
+        FingerChannelDP fingerChannelDP = new FingerChannelDP();
+
 
         methodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
@@ -129,6 +131,8 @@ public class MainActivity extends FlutterActivity {
                         result.success(vResFinger);
                         break;
                     case "captureFingerISO":
+                        Log.i("captureFingerISO", "sendEvent ");
+
                         fingerChannelEvent.sendEvent();
                         result.success("initCapturaIso");
                         break;
@@ -136,6 +140,19 @@ public class MainActivity extends FlutterActivity {
                         fingerChannelEvent.closeFinger();
                         result.success("disposeFinger");
                         break;
+                    case "captureNameDevice":
+                        Log.i("onMethodCall", "captureNameDevice: 43");
+                        String vNameDevice= fingerChannelDP.initFingerDP (getApplicationContext());
+                        result.success(vNameDevice);
+                        Log.i("onMethodCall", "vNameDevice: 55");
+                        break;
+                    case "captureFinger":
+                        Log.i("onMethodCall", "disposeEMV: 55");
+                        String resul= fingerChannelDP.captureFinger (getApplicationContext());
+                        result.success(resul);
+
+                        break;
+
                     default:
                         result.notImplemented();
 

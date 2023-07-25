@@ -1,4 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+
+// ignore: depend_on_referenced_packages
+import 'package:image/image.dart' as imglib;
 import 'package:postjava/02service/service/Pay/srv_pay.dart';
 import 'package:postjava/helper/util_preferences.dart';
 
@@ -19,24 +24,16 @@ class PagoProvider with ChangeNotifier {
   String vCodigo = '';
   double vMontoPagar = 0;
   late List<ListCodeSavingsAccount> vListaCuentaByCi;
+  Uint8List vImgQR = Uint8List(0);
 
   bool tieneFinger = false;
 
   getCardFinger() async {
     await Future.delayed(const Duration(seconds: 2));
-    final resul = await SrvPay.getQrPay();
-    if (resul.getUserSessionInfoResult!.state == 1) {
-      resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
-        state: RespProvider.correcto.toString(),
-        obj: imgQR,
-      );
-    } else {
-      resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
-        state: RespProvider.incorrecto.toString(),
-      );
-    }
+    resp = ResulProvider(
+      message: 'correcto',
+      state: RespProvider.correcto.toString(),
+    );
   }
 
   getDocIdentidadPago(String pCi) async {
@@ -80,21 +77,46 @@ class PagoProvider with ChangeNotifier {
       return;
     }
     await Future.delayed(const Duration(seconds: 2));
-    final resul = await SrvPay.getQrPay();
-    if (resul.getUserSessionInfoResult!.state == 1) {
+    final resul = await SrvPay.getQrPay(pAmount: pMonto, pGlosa: pGlosa);
+    if (resul.state == 1) {
       resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
+        message: resul.message!,
         state: RespProvider.correcto.toString(),
-        obj: imgQR,
+        obj: generateQRCode(resul.object?.qrValue ?? '0'),
       );
       vMontoPagar = pMonto;
     } else {
       resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
+        message: resul.message!,
         state: RespProvider.incorrecto.toString(),
       );
     }
   }
+
+  Uint8List generateQRCode(String data) {
+    /*final encode = EncodeParams(
+      eccLevel: EccLevel.low,
+      format: Format.qrCode,
+      width: 120,
+      height: 120,
+      margin: 10,
+    );
+    final qrCode = zx.encodeBarcode(contents: data, params: encode);
+
+    if (qrCode.isValid) {
+      final buffer = qrCode.data?.buffer;
+      final img = imglib.Image.fromBytes(
+          bytes: buffer!,
+          height: 150,
+          width: 150); //(bytes:  width, height, result.data);
+      final encodedBytes = Uint8List.fromList(imglib.encodeJpg(img));
+      return encodedBytes;
+    } else {
+      print('error');
+    }*/
+    return Uint8List(0);
+  }
+
 /*eventos y metodos de card y finger*/
 
   savingsAccountByCard(String pCard) async {

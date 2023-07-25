@@ -56,25 +56,22 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
     private String files = "/sdcard/";
     private EventChannel.EventSink fingerEventSink;
 
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            Log.d("runable", "run: 56");
-            if (count > maxcount) {
-                Log.d("runable", "run: 58");
-                if (fingerEventSink != null) {
-                    fingerEventSink.endOfStream();
-                }
-                onCancel(null);
+    private void method_isoFeatureTmptxt(){
+        if (count > maxcount) {
+            Log.d("runable", "run: 58");
+            if (fingerEventSink != null) {
+                fingerEventSink.endOfStream();
             }
-            else {
-                Log.d("runable", "run: 71");
-                if(isoFeatureTmptxt!=null)
-                {
-                    Log.d("runable", "isoFeatureTmptxt no es vacio");
-                    count=maxcount+1;
-                    fingerEventSink.success(isoFeatureTmptxt);
-                }
+            onCancel(null);
+        }
+        else {
+            Log.d("runable", "run: 71");
+            if(isoFeatureTmptxt!=null)
+            {
+                Log.d("runable", "isoFeatureTmptxt no es vacio");
+                count=maxcount+1;
+                fingerEventSink.success(isoFeatureTmptxt);
+            }
                 /*
                 // initCapturaIso();
                 if (fingerEventSink == null) {
@@ -90,14 +87,41 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
                     }
                 }
 */
-                Log.d("runable", "run: 62");
+            Log.d("runable", "run: 62");
+        }
+        count++;
+    }
+
+    private void method_isoFeatureTmp(){
+        if (count > maxcount) {
+            Log.d("runable", "run: 58");
+            if (fingerEventSink != null) {
+                fingerEventSink.endOfStream();
             }
-            count++;
+            onCancel(null);
+        }
+        else {
+            Log.d("runable", "run: 71");
+            if(isoFeatureTmp!=null)
+            {
+                Log.d("runable", "isoFeatureTmp no es vacio");
+                count=maxcount+1;
+                fingerEventSink.success(isoFeatureTmp);
+            }
+            Log.d("runable", "run: 62");
+        }
+        count++;
+    }
+
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("runable", "run: 56");
+            method_isoFeatureTmptxt();
+           // method_isoFeatureTmp();
             Log.d("runable", "run: count" + count);
             mHandler.postDelayed(this, 2000);
         }
-
-
     };
 
 
@@ -190,7 +214,7 @@ public class FingerChannelEvent implements  EventChannel.StreamHandler, Fingerpr
         isoFeatureTmp = null;
         isoFeatureTmptxt=null;
         initFinger();
-        //mFingerprintManager.captureAndGetISOFeature();
+       // mFingerprintManager.captureAndGetISOFeature();
         mFingerprintManager.capture();
     }
 

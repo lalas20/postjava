@@ -12,13 +12,13 @@ class WPagoQR extends StatelessWidget {
     required this.monto,
     required this.fun,
   });
-  final String imgQR;
+  final Uint8List imgQR;
   final double monto;
   final Function() fun;
 
   @override
   Widget build(BuildContext context) {
-    Uint8List bytes = const Base64Decoder().convert(imgQR);
+    //Uint8List bytes = const Base64Decoder().convert(imgQR);
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -28,7 +28,7 @@ class WPagoQR extends StatelessWidget {
             style: TextStyle(color: UtilConstante.colorAppPrimario),
           ),
           Image.memory(
-            bytes,
+            imgQR,
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               return Padding(
                 padding: const EdgeInsets.only(top: 0, left: 8, right: 8),

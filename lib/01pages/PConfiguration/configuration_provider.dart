@@ -26,6 +26,8 @@ class ConfigurationProvider with ChangeNotifier {
     UtilPreferences.setIdOperationEntity(pOperationEntity.idOperationEntity!);
     UtilPreferences.setClientePos(pClientePos.personName!);
     UtilPreferences.setAcount(pOperationEntity.operationCode!);
+    UtilPreferences.setCodMoney(
+        pOperationEntity.codMoney == 'BS' ? 'BOB' : pOperationEntity.codMoney!);
     resp = ResulProvider(
       message: "Registro guardado correctamente",
       state: RespProvider.correcto.toString(),

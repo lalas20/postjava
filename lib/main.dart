@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
 import 'package:postjava/01pages/PMovimientos/last_moves_provider.dart';

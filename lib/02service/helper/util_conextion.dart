@@ -21,6 +21,10 @@ class UtilConextion {
   static String verifyUser = 'rest/VerifyUser';
   static String getUserSessionInfo =
       'rest/ProdemNet.Services.Services.ProdemKeyServices/GetUserSessionInfo';
+  static String getEncryptedQrString =
+      'rest/ProdemNet.Services.Services.ProdemKeyServices/GetEncryptedQrString';
+  static String savingsAccountExtractDataTransactionable =
+      'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountExtractDataTransactionable';
   //
 
   static Map<String, String> vHeaderSin = {'Content-Type': 'application/json'};

@@ -81,4 +81,15 @@ class UtilPreferences {
     if (_preferences == null) return defValue;
     return _preferences!.getString(_keyAcount) ?? defValue;
   }
+
+  static const _keyCodMoney = 'CodMoney';
+  static Future setCodMoney(String pCodMoney) async {
+    if (_preferences == null) return null;
+    await _preferences!.setString(_keyCodMoney, pCodMoney);
+  }
+
+  static String getCodMoney({String defValue = ''}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getString(_keyCodMoney) ?? defValue;
+  }
 }

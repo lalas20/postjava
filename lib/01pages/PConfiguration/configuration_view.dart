@@ -45,7 +45,6 @@ class _ConfigurationViewState extends State<ConfigurationView> {
           "Aceptar", () {
         sessionInfo = ObjectGetUserSessionInfoResult();
         setState(() {});
-        ;
       });
     }
   }

@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/PPago/wpago_cardfinger.dart';
@@ -225,7 +227,7 @@ class _PagoViewState extends State<PagoView> {
       case TipoPago.QR:
         if (provider.resp.state == RespProvider.correcto.toString()) {
           resul = WPagoQR(
-            imgQR: provider.resp.obj.toString(),
+            imgQR: provider.resp.obj as Uint8List,
             monto: provider.vMontoPagar,
             fun: closeQr,
           );

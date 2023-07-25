@@ -56,11 +56,10 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation files('libs/SmartPos_1.6.8_R230206.jar')
     implementation files('libs/scan_activate_2.1.6.jar')
-    implementation files('libs/gson-2.2.4.jar')
     implementation files('libs/gson-2.2.4.jar')
     implementation files('libs/scan_activate_2.1.6.jar')
     implementation files('libs/SmartPos_1.6.8_R230206.jar')
