@@ -12,7 +12,7 @@ import 'package:postjava/03dominio/user/credential_verify_user.dart';
 import 'package:postjava/03dominio/user/result.dart';
 
 class FingerChannel extends ChannelMethod {
-  static const starFinger = "starFinger";
+  static const captureNameDevice = "captureNameDevice";
   static const captureFingerISOname = "captureFingerISO";
   static const disposeFinger = "disposeFinger";
 
@@ -28,23 +28,14 @@ class FingerChannel extends ChannelMethod {
 
   FingerChannel(MethodChannel methodChannel) : super(methodChannel);
 
-  Stream<String> capturFingerEvent() {
-    final controller = StreamController<String>.broadcast();
-
-    fingerStreamSubcription = _event.receiveBroadcastStream().listen((event) {
-      Uint8List original = Uint8List.fromList(event);
-      vResult = base64.encode(original);
-      print("vResult::=> $vResult");
-      controller.add(vResult);
-    });
-    if (vResult.isNotEmpty) {
-      vHuellares = controller.stream;
-    } else {
-      controller.add('sin huekla');
-      vHuellares = controller.stream;
+  Future<String?> captureNameDeviceDP() async {
+    String vNameDevice = "";
+    try {
+      vNameDevice = await methodChannel.invokeMethod(captureNameDevice);
+    } catch (e) {
+      vNameDevice = e.toString();
     }
-
-    return vHuellares;
+    return vNameDevice;
   }
 
   Future<String?> captureFingerISObyte() async {

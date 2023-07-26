@@ -55,8 +55,7 @@ private Reader.Status status=null;
 
     private void displayReaderNotFound()
     {
-        m_deviceName="displayReaderNotFound ";
-
+        m_deviceName="displayReaderNotFound";
     }
     protected void CheckDevice()
     {
@@ -64,7 +63,6 @@ private Reader.Status status=null;
         {
             m_reader.Open(Priority.EXCLUSIVE);
             Reader.Capabilities cap = m_reader.GetCapabilities();
-
             m_reader.Close();
         }
         catch (UareUException e1)
@@ -202,60 +200,33 @@ private Reader.Status status=null;
             //add permisos usb
             if((m_deviceName != null) && !m_deviceName.isEmpty())
             {
-                //m_selectedDevice.setText("Device: " + m_deviceName);
-
-                try {
-                    // Context applContext = getApplicationContext();
-                    // m_reader = Globals.getInstance().getReader(m_deviceName, applContext);
-
+                try
+                {
+                    PendingIntent mPermissionIntent;
+                    mPermissionIntent = PendingIntent.getBroadcast(applContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+                    applContext.registerReceiver(mUsbReceiver, filter);
+                    if(DPFPDDUsbHost.DPFPDDUsbCheckAndRequestPermissions(applContext, mPermissionIntent, m_deviceName))
                     {
-                        Log.i("USB","VERIFICANDO USB:");
-                        PendingIntent mPermissionIntent;
-                        Log.i("USB","mPermissionIntent:");
-
-                        mPermissionIntent = PendingIntent.getBroadcast(applContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                        Log.i("USB","getBroadcast:");
-
-                        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-                        Log.i("USB","IntentFilter:");
-
-                        applContext.registerReceiver(mUsbReceiver, filter);
-                        Log.i("USB","registerReceiver:");
-
-
-                        if(DPFPDDUsbHost.DPFPDDUsbCheckAndRequestPermissions(applContext, mPermissionIntent, m_deviceName))
-                        {
-                            Log.i("USB","DPFPDDUsbCheckAndRequestPermissions:");
-                            CheckDevice();
-                        }
+                        CheckDevice();
                     }
+
                 } catch (DPFPDDUsbException e)
                 {
-                    Log.i("USB","DPFPDDUsbException:" +e.getMessage());
-
                     displayReaderNotFound();
                 }
 
             } else
             {
-                Log.i("USB","else 144:");
                 displayReaderNotFound();
             }
-            //fin add usb permisos
-
-
-
-            Log.i("status","antes del status:"+m_deviceName);
             m_reader.Open(Priority.COOPERATIVE);
-            status= m_reader.GetStatus();
-            Log.i("status","NAME READER:"+status.status.name());
-            Log.i("status","NAME READER:"+status.toString());
-            m_reader.Close();
+            onBackPressed();
         }
         catch (Exception e)
         {
             Log.i(TAG, "excepcion: "+e.getMessage() );
-            m_deviceName="error reader";
+            m_deviceName="error reader:" +e.getMessage();
         }
         return  m_deviceName;
     }

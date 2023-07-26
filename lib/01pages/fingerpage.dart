@@ -20,10 +20,6 @@ class _FingerPageState extends State<FingerPage> {
   final txtProcess = TextEditingController();
   final txtRespuesta = TextEditingController();
   Image? image;
-  // = Image.file(
-  //   File('/sdcard/20230601003441.bmp'),
-  //   fit: BoxFit.cover,
-  // );
   final resul = PlaformChannel();
   String vHuella = '';
   late StreamSubscription _streamSubscription;
@@ -87,21 +83,6 @@ class _FingerPageState extends State<FingerPage> {
     );
     print('value $value');
     setState(() {});
-    /*Uint8List original = Uint8List.fromList(value);
-    print('_listenStream:  ${original.length}');
-    print('_listenStream:  ${original.runtimeType}');
-    print('_listenStream:  ${value.runtimeType}');
-
-    txtRespuesta.text = 'imagen capturada'; // base64.encode(original);
-    //vHuella = base64.encode(original);
-    print('_listenStream:  $original');
-    try {
-      image = byteArrayToImage(original);
-      //setState(() {});
-    } catch (e) {
-      print('e:  $e');
-      image = null;
-    }*/
   }
 
   @override
