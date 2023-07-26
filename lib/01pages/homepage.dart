@@ -3,6 +3,7 @@ import 'package:postjava/01pages/PConfiguration/configuration_view.dart';
 import 'package:postjava/01pages/PMovimientos/last%20_moves_page.dart';
 import 'package:postjava/01pages/PPago/pago_view.dart';
 import 'package:postjava/01pages/emv_page.dart';
+import 'package:postjava/01pages/fingerpageDP.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
 
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     } else if (pClasse == 'Finger') {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const FingerPage()),
+        MaterialPageRoute(builder: (context) => const FingerPageDP()),
       );
     } else if (pClasse == 'Test') {
       Navigator.push(

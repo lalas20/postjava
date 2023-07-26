@@ -8,21 +8,19 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../02service/channel/plataformchannel.dart';
 
-class FingerPage extends StatefulWidget {
-  const FingerPage({super.key});
+class FingerPageDP extends StatefulWidget {
+  const FingerPageDP({super.key});
 
   @override
-  State<FingerPage> createState() => _FingerPageState();
+  State<FingerPageDP> createState() => _FingerPageDPState();
 }
 
-class _FingerPageState extends State<FingerPage> {
-  final txtInicial = TextEditingController();
-  final txtProcess = TextEditingController();
+class _FingerPageDPState extends State<FingerPageDP> {
   final txtRespuesta = TextEditingController();
   Image? image;
   final resul = PlaformChannel();
-  String vHuella = '';
-  late StreamSubscription _streamSubscription;
+
+
 
   @override
   void dispose() {
@@ -31,109 +29,32 @@ class _FingerPageState extends State<FingerPage> {
   }
   //
 
-  void _getFinger() {
-    print('_getFinger:39');
-    _streamSubscription = resul.fingerChannel.event
-        .receiveBroadcastStream()
-        .listen(_listenStream);
-    resul.fingerChannel.captureFingerISO();
-  }
-
-  void _getFingerByte() {
-    print('_getFinger:39');
-    _streamSubscription = resul.fingerChannel.event
-        .receiveBroadcastStream()
-        .listen(_listenStreamByte);
-    resul.fingerChannel.captureFingerISObyte();
-  }
-
-  void _getVerifyUser() async {
-    final res = await resul.fingerChannel.verifyUser(vHuella);
+  void _getName() async {
+    final res=await resul.fingerChannel.captureNameDeviceDP();
     setState(() {
-      txtRespuesta.text = res.verifyUserResult!.message.toString();
+      txtRespuesta.text="name: ${res!.isEmpty ?" vacio": res}";
     });
-  }
-
-  void _clearTxt() {
-    print('limpiar');
-    txtRespuesta.text = '';
-    txtInicial.text = '';
-    txtProcess.text = '';
-    image = null;
-    setState(() {});
-  }
-
-//cadena huella
-  void _listenStreamByte(value) {
-    print('listen');
-    Uint8List original = Uint8List.fromList(value);
-    txtRespuesta.text = base64.encode(original);
-    vHuella = base64.encode(original);
-    print('vHuella:  $vHuella');
-  }
-
-//byte de huella
-  void _listenStream(value) {
-    File imgfile = File(value);
-    image = Image.file(
-      imgfile,
-      fit: BoxFit.cover,
-      width: 300,
-      height: 300,
-    );
-    print('value $value');
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Captura Huella"),
+        title: const Text("Captura Huella DP"),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: txtInicial,
-              readOnly: true,
-            ),
-            TextField(
-              controller: txtProcess,
-              readOnly: true,
-            ),
-            image == null ? const Text('sin imagen') : image!,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                    onPressed: _getFinger, child: const Text('huella img')),
-                const SizedBox(
-                  height: 50,
-                ),
-                ElevatedButton(
-                    onPressed: _clearTxt, child: const Text('Limpiar')),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ElevatedButton(
-                    onPressed: _getVerifyUser, child: const Text('Envio')),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('5961581'),
-                ),
-              ],
-            ),
-            ElevatedButton(
-                onPressed: _getFingerByte,
-                child: const Text('get huella byte txt')),
-            TextField(
               controller: txtRespuesta,
               readOnly: true,
             ),
+
+            ElevatedButton(
+                onPressed: _getName,
+                child: const Text('get huella byte txt')),
+
           ],
         ),
       ),
