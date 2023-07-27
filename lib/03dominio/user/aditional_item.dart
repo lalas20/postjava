@@ -1,7 +1,7 @@
 class AditionalItems {
-  final String? groupName;
-  final String? key;
-  final String? value;
+   String? groupName;
+   String? key;
+   String? value;
 
   AditionalItems({
     this.groupName,

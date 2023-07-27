@@ -33,6 +33,7 @@ import com.example.postjava.utils.Globals;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 
 public class FingerChannelDP {
@@ -51,7 +52,9 @@ public class FingerChannelDP {
     private int m_DPI = 0;
 
     private String files="/sdcard/";
-private Reader.Status status=null;
+    private HashMap<String, String> map = new HashMap<>();
+
+    private Reader.Status status=null;
 
     private void displayReaderNotFound()
     {
@@ -62,7 +65,7 @@ private Reader.Status status=null;
         try
         {
             m_reader.Open(Priority.EXCLUSIVE);
-            Reader.Capabilities cap = m_reader.GetCapabilities();
+           // Reader.Capabilities cap = m_reader.GetCapabilities();
             m_reader.Close();
         }
         catch (UareUException e1)
@@ -92,77 +95,70 @@ private Reader.Status status=null;
             }
         }
     };
-    public String captureFinger (Context applContext){
+    public HashMap<String, String> captureFinger (Context applContext){
+        map.clear();
         Log.i("captureFinger", "ini:" );
         String vResul="";
         try {
-
-           // Context applContext = getApplicationContext();
             m_reader = Globals.getInstance().getReader(m_deviceName, applContext);
-            Log.i("captureFinger", "getReader:" );
-
             m_reader.Open(Priority.EXCLUSIVE);
-            Log.i("captureFinger", "Open:" );
-
             m_DPI = Globals.GetFirstDPI(m_reader);
-            Log.i("captureFinger", "GetFirstDPI:" );
-
             m_engine = UareUGlobal.GetEngine();
-            Log.i("captureFinger", "GetEngine:" );
-
             try
             {
                 cap_result = m_reader.Capture(Fid.Format.ISO_19794_4_2005, Globals.DefaultImageProcessing, m_DPI, -1);
-
-                Log.i("captureFinger", "Capture:" );
-
             }
             catch (Exception e)
             {
-                  Log.w("captureFinger", "Exception: " + e.toString());
-                    m_deviceName = "";
-                    onBackPressed();
-
+                m_deviceName = "";
+                onBackPressed();
             }
             // an error occurred
-            if (cap_result == null || cap_result.image == null) {onBackPressed(); return vResul="cap_resul null";};
+            if (cap_result == null || cap_result.image == null) {
+                onBackPressed();
+                map.put("state","01");
+                map.put("message","intente nuevamente la captura");
 
+                return map;
+            };
             try
             {
                 vResul="";
-
-                // save bitmap image locally
-                /*
-                m_bitmap = Globals.GetBitmapFromRaw(cap_result.image.getViews()[0].getImageData(), cap_result.image.getViews()[0].getWidth(), cap_result.image.getViews()[0].getHeight());
-                Log.i("captureFinger", "GetBitmapFromRaw:" );*/
-
                 if (m_fmd == null)
                 {
                     m_fmd = m_engine.CreateFmd(cap_result.image, Fmd.Format.ISO_19794_2_2005);
                     Log.i("captureFinger", "ConverBase64byte getData:" +Globals.ConverBase64byte(m_fmd.getData()) );
-                    Globals.save2File("/sdcard/raw.data",m_fmd.getData());
+/*                  Globals.save2File("/sdcard/raw.data",m_fmd.getData());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                     String name = sdf.format(new Date()) + "_finger.bmp";
                     Globals.generateBmp_NEW(m_bitmap,name,applContext);
                     Log.i("generateBmp", " se genero la imagen:" +name );
-                    vResul="se creo el obj m_fmd";
+ */
+                    map.put("state","00");
+                    //map.put("message","registro recuperado satisfactoriamente");
+                    map.put("message",Globals.ConverBase64byte(m_fmd.getData()));
+
+                    //vResul="se creo el obj m_fmd";
                 }
             }
             catch (Exception e)
             {
-                vResul = e.toString();
-                Log.w("UareUSampleJava", "Engine error: " + e.toString());
+                map.put("state","02");
+                map.put("message","excepcion CreateFmd: "+e.getMessage());
+                //vResul = e.toString();
+                //Log.w("UareUSampleJava", "Engine error: " + e.toString());
             }
 
         }
         catch (Exception e)
         {
-            Log.i(TAG, "excepcion: "+e.getMessage() );
-            vResul="error reader";
-            onBackPressed();
+            map.put("state","02");
+            map.put("message","excepcion caturefinger: "+e.getMessage());
+            //vResul="error reader";
+            //onBackPressed();
         }
         onBackPressed();
-        return  vResul;
+        return  map;
     }
 
     public void onBackPressed()
@@ -178,9 +174,10 @@ private Reader.Status status=null;
         }
     }
 
-    public String   initFingerDP(Context applContext){
+    public HashMap<String, String>   initFingerDP(Context applContext){
         Log.i(TAG, "initFingerDP: 31 ini" );
         m_deviceName="sin data";
+        map.clear();
         try {
 
             readers = UareUGlobal.GetReaderCollection(applContext);
@@ -189,12 +186,14 @@ private Reader.Status status=null;
             if (readers.size()==0)
             {
                 m_deviceName="Dispositivo no reconocido";
-                return m_deviceName;
+                map.put("state","01");
+                map.put("message","Dispositivo no reconocido ");
+                return map;
             }
-            Log.i(TAG, "cantidad reader:" + readers.size() );
+/*            Log.i(TAG, "cantidad reader:" + readers.size() );
             Log.i(TAG,"NAME READER:"+readers.get(0).GetDescription().name);
-
             Log.i(TAG,"NAME READER:"+readers.get(0).GetDescription().id.product_name);
+ */
             m_reader= readers.get(0);
             m_deviceName=readers.get(0).GetDescription().name;
             //add permisos usb
@@ -221,13 +220,13 @@ private Reader.Status status=null;
                 displayReaderNotFound();
             }
             m_reader.Open(Priority.COOPERATIVE);
-            onBackPressed();
         }
         catch (Exception e)
         {
-            Log.i(TAG, "excepcion: "+e.getMessage() );
-            m_deviceName="error reader:" +e.getMessage();
+            map.put("state","03");
+            map.put("message","excepcion: " + e.getMessage());
         }
-        return  m_deviceName;
+        onBackPressed();
+        return  map;
     }
 }

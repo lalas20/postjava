@@ -140,7 +140,7 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
                 ),
           WBtnConstante(
             pName: '',
-            fun: _getFinger,
+            fun: _findFinger,
             ico: Icon(
               Icons.fingerprint,
               color: tieneFinger ? UtilConstante.headerColor : Colors.red,
@@ -157,18 +157,17 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     final keyfrm = widget.frmKey;
     provider = Provider.of<PagoProvider>(context);
     responsive = UtilResponsive.of(context);
-    return Container(
-      child: Column(
+    return
+       Column(
         children: [
+          _iconFinger(),
           _txtCI(),
           _cboSavingAcount(),
-          _iconFinger(),
           const SizedBox(
             height: 50,
           ),
           WBtnConstante(pName: 'Grabar', fun: _saveIdentityCard)
         ],
-      ),
     );
   }
 
@@ -223,12 +222,38 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     }
   }
 
-  void _getFinger() {
-    print('_getFinger:39');
-    _streamSubscription = resul.fingerChannel.event
-        .receiveBroadcastStream()
-        .listen(_listenStream);
-    resul.fingerChannel.captureFingerISO();
+  void _findFinger() async {
+    await  provider.getNameDeviceDP();
+    if(provider.resp.state==RespProvider.incorrecto.toString())
+    {
+      tieneFinger = false;
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+              () {});
+      return;
+    }
+    await provider.getFingerDP();
+    if(provider.resp.state==RespProvider.incorrecto.toString())
+    {
+      tieneFinger = false;
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+              () {});
+      return;
+    }
+    tieneFinger = true;
   }
 
   void _listenStream(value) {

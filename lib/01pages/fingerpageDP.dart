@@ -31,6 +31,7 @@ class _FingerPageDPState extends State<FingerPageDP> {
 
   void _getName() async {
     final res=await resul.fingerChannel.captureNameDeviceDP();
+
     setState(() {
       txtRespuesta.text="name: ${res!.isEmpty ?" vacio": res}";
     });

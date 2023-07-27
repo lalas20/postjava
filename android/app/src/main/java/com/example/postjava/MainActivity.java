@@ -21,6 +21,8 @@ import com.zcs.sdk.SdkResult;
 import com.zcs.sdk.Sys;
 import com.zcs.sdk.fingerprint.FingerprintManager;
 
+import java.util.HashMap;
+
 public class MainActivity extends FlutterActivity {
 
 
@@ -137,18 +139,18 @@ public class MainActivity extends FlutterActivity {
                         result.success("initCapturaIso");
                         break;
                     case "disposeFinger":
-                        fingerChannelEvent.closeFinger();
+                        fingerChannelDP.onBackPressed();
                         result.success("disposeFinger");
                         break;
                     case "captureNameDevice":
                         Log.i("onMethodCall", "captureNameDevice: 43");
-                        String vNameDevice= fingerChannelDP.initFingerDP (getApplicationContext());
+                        HashMap<String, String> vNameDevice= fingerChannelDP.initFingerDP (getApplicationContext());
                         result.success(vNameDevice);
                         Log.i("onMethodCall", "vNameDevice: 55");
                         break;
-                    case "captureFinger":
+                    case "captureFingerDP":
                         Log.i("onMethodCall", "disposeEMV: 55");
-                        String resul= fingerChannelDP.captureFinger (getApplicationContext());
+                        HashMap<String, String> resul= fingerChannelDP.captureFinger (getApplicationContext());
                         result.success(resul);
 
                         break;

@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/helper/wbtnconstante.dart';
+import 'package:postjava/03dominio/user/saving_accounts.dart';
 import 'package:provider/provider.dart';
 
 import '../../02service/channel/plataformchannel.dart';
@@ -32,8 +33,8 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   late PagoProvider provider;
   Image? image;
   String imagePath = '';
-  List<ListCodeSavingsAccount>? vListaCuentaByCi;
-  ListCodeSavingsAccount? selecAcount;
+  List<SavingAccounts>? vListaCuentaByCi;
+  SavingAccounts? selecAcount;
   bool tieneFinger = false;
 
   late StreamSubscription _streamSubscriptionCard;
@@ -62,7 +63,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      vListaCuentaByCi = provider.resp.obj as List<ListCodeSavingsAccount>;
+      vListaCuentaByCi = provider.resp.obj as List<SavingAccounts>;
     } else {
       vListaCuentaByCi = List.empty();
       UtilModal.mostrarDialogoNativo(
@@ -77,12 +78,42 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     }
   }
 
-  void _findFinger() {
-    print('_findFinger:39');
-    _streamSubscriptionFinger = resul.fingerChannel.event
+  void _findFinger() async {
+   /* _streamSubscriptionFinger = resul.fingerChannel.event
         .receiveBroadcastStream()
         .listen(_listenStreamFinger);
-    resul.fingerChannel.captureFingerISO();
+    */
+  await  provider.getNameDeviceDP();
+  if(provider.resp.state==RespProvider.incorrecto.toString())
+    {
+      tieneFinger = false;
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+              () {});
+      return;
+    }
+  await provider.getFingerDP();
+  if(provider.resp.state==RespProvider.incorrecto.toString())
+  {
+    tieneFinger = false;
+    UtilModal.mostrarDialogoNativo(
+        context,
+        "Atención",
+        Text(
+          provider.resp.message,
+          style: TextStyle(color: UtilConstante.btnColor),
+        ),
+        "Aceptar",
+            () {});
+    return;
+  }
+  tieneFinger = true;
   }
 
   void _listenStreamFinger(value) {
@@ -132,9 +163,9 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
     await provider.saveCardFinger(
         pIdOperationEntity: selecAcount == null
             ? ''
-            : selecAcount!.idOperationEntity.toString(),
+            : selecAcount!.idSavingsAccount.toString(),
         pOperationCodeCliente:
-            selecAcount == null ? '' : selecAcount!.operationCode!);
+            selecAcount == null ? '' : selecAcount!.codeAccount!);
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
@@ -142,7 +173,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
       final voucher = ResulVoucher(
         bancoDestino: 'BANCO PRODEM',
         cuentaDestino: UtilPreferences.getAcount(), // '117-2-1-11208-1',
-        cuentaOrigen: selecAcount!.operationCode!, // '117-2-1-XXXX-1',
+        cuentaOrigen: selecAcount!.codeAccount!, // '117-2-1-XXXX-1',
         fechaTransaccion: UtilMethod.formatteDate(DateTime.now()),
         glosa: provider.glosaWIdentityCard,
         montoPago: provider.montoWIdentityCard,
@@ -213,9 +244,9 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
       //decoration: BoxDecoration(color: UtilConstante.colorFondo),
       child: Column(
         children: [
+          _iconFinger(),
           _cardNumber(),
           _cboSavingAcount(),
-          _iconFinger(),
           WBtnConstante(
             pName: "Grabar",
             fun: _saveCardFinger,
@@ -226,17 +257,17 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   Widget _cboSavingAcount() {
-    return DropdownButtonFormField<ListCodeSavingsAccount>(
+    return DropdownButtonFormField<SavingAccounts>(
       items: vListaCuentaByCi == null
           ? null
-          : vListaCuentaByCi!.map<DropdownMenuItem<ListCodeSavingsAccount>>(
-              (ListCodeSavingsAccount pCuenta) {
+          : vListaCuentaByCi!.map<DropdownMenuItem<SavingAccounts>>(
+              (SavingAccounts pCuenta) {
                 return DropdownMenuItem(
                   value: pCuenta,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child:
-                        Text("${pCuenta.operationCode!}  ${pCuenta.codMoney}"),
+                        Text("${pCuenta.codeAccount!}  ${pCuenta.moneyDescription}"),
                   ),
                 );
               },
