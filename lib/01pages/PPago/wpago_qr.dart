@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wbtnconstante.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class WPagoQR extends StatelessWidget {
   const WPagoQR({
@@ -26,6 +27,13 @@ class WPagoQR extends StatelessWidget {
           Text(
             'Monto: $monto',
             style: TextStyle(color: UtilConstante.colorAppPrimario),
+          ),
+          PrettyQr(
+            size: 300,
+            data: "holmunfo",
+            errorCorrectLevel: QrErrorCorrectLevel.M,
+            typeNumber: null,
+            roundEdges: true,
           ),
           Image.memory(
             imgQR,

@@ -126,19 +126,20 @@ class PagoProvider with ChangeNotifier {
       );
       return;
     }
-    await Future.delayed(const Duration(seconds: 2));
+
     final resul = await SrvPay.getQrPay(pAmount: pMonto, pGlosa: pGlosa);
     if (resul.state == 1) {
       resp = ResulProvider(
         message: resul.message!,
         state: RespProvider.correcto.toString(),
-        obj: generateQRCode(resul.object?.qrValue ?? '0'),
+        obj:Uint8List(0)// generateQRCode(resul.object?.qrValue ?? '0'),
       );
       vMontoPagar = pMonto;
     } else {
       resp = ResulProvider(
         message: resul.message!,
         state: RespProvider.incorrecto.toString(),
+        obj: Uint8List(0),
       );
     }
   }

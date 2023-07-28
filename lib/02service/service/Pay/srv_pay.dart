@@ -20,7 +20,10 @@ class SrvPay {
 
   static Future<GetEncryptedQrStringResult> getQrPay(
       {required double pAmount, required String pGlosa}) async {
-    Map<String, dynamic> toMap() => {
+
+
+    Map<String, dynamic> toMap =
+    {
           'idPerson': UtilPreferences.getIdWebPersonClient(),
           'accountCode': UtilPreferences.getAcount(),
           'moneyCode': UtilPreferences.getCodMoney(),
@@ -31,25 +34,26 @@ class SrvPay {
           'IdQuickResponse': 0
         };
     GetEncryptedQrStringResult respuesta = GetEncryptedQrStringResult();
+    final vPing = await UtilConextion.internetConnectivity();
+    if (vPing == false) {
+      respuesta.codeBase = UtilConextion.errorInternet;
+      respuesta.state = 3;
+      respuesta.message = "No tiene acceso a internet";
+      return respuesta;
+    }
     dynamic jsonResponse;
     try {
       String vJSON = jsonEncode(toMap);
       final response = await UtilConextion.httpPost(
-          UtilConextion.getEncryptedQrString, vJSON);
+          UtilConextion.getEncryptedQrString,vJSON );
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
-        respuesta = GetEncryptedQrStringResult.fromJson(jsonResponse);
+        respuesta = GetEncryptedQrStringResult.fromJson(jsonResponse['GetEncryptedQrStringResult']);
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
       }
 
-      final vPing = await UtilConextion.internetConnectivity();
-      if (vPing == false) {
-        respuesta.codeBase = UtilConextion.errorInternet;
-        respuesta.state = 3;
-        respuesta.message = "No tiene acceso a internet";
-        return respuesta;
-      }
+
     } catch (e) {
       respuesta.message = "error sub: ${e.toString()}";
       respuesta.state = 3;

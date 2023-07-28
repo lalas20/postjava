@@ -27,7 +27,7 @@ class UtilConextion {
   static String getUserSessionInfo =
       'rest/ProdemNet.Services.Services.ProdemKeyServices/GetUserSessionInfo';
   static String getEncryptedQrString =
-      'rest/ProdemNet.Services.Services.ProdemKeyServices/GetEncryptedQrString';
+      'rest/SavingAccountCoreServices.Services.SavingAccountService/GetEncryptedQrString';
   static String savingsAccountExtractDataTransactionable =
       'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountExtractDataTransactionable';
   //

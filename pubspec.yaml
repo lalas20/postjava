@@ -16,7 +16,8 @@ dependencies:
   intl: ^0.18.1
   provider: ^6.0.5
   shared_preferences: ^2.1.1
-  stack_trace: ^1.10.0  
+  stack_trace: ^1.10.0
+  pretty_qr_code: ^2.0.3
 
 dev_dependencies:
   flutter_lints: ^2.0.0
