@@ -11,6 +11,7 @@ import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
 
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:postjava/helper/utilmethod.dart';
 import 'package:provider/provider.dart';
 
 import '../helper/util_responsive.dart';
@@ -180,7 +181,7 @@ class _PagoViewState extends State<PagoView> {
     }
     switch (selectTipoPago) {
       case TipoPago.TARJETA:
-        await provider.getCardFinger();
+        await provider.getNameDeviceDP();// provider.getCardFinger();
         break;
       case TipoPago.DOC_IDENTIDAD:
         await provider.getinitDocIdentidadPago();
@@ -206,11 +207,13 @@ class _PagoViewState extends State<PagoView> {
 
     switch (selectTipoPago) {
       case TipoPago.TARJETA:
-        if (provider.resp.state == RespProvider.correcto.toString()) {
+        UtilMethod.imprimir(provider.resp.state.toString());
+       // if (provider.resp.state == RespProvider.correcto.toString()) {
+
           resul = const WPagoCardFinger();
-        } else {
-          resul = SizedBox(height: 100, child: Text(provider.resp.message));
-        }
+        //} else {
+          //resul = SizedBox(height: 100, child: Text(provider.resp.message));
+        //}
         break;
       case TipoPago.DOC_IDENTIDAD:
         resul = WPagoIdentityCard(

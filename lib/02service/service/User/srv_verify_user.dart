@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:postjava/03dominio/pos/request_transfer_accounts.dart';
 import 'package:postjava/03dominio/user/aditional_item.dart';
 import 'package:postjava/03dominio/user/credential.dart';
 import 'package:postjava/03dominio/user/saving_accounts.dart';
@@ -11,6 +11,8 @@ import '../../helper/util_conextion.dart';
 
 class SrvVerifyUser {
 
+
+
   static Future<Result> ObtieneCuentaByTarjetaPan(
   {required String pTarjetaPan,
   required String pFinger
@@ -18,6 +20,14 @@ class SrvVerifyUser {
     dynamic jsonResponse;
     Result respuesta = Result();
     try {
+      final vPing = await UtilConextion.internetConnectivity();
+      if (vPing == false) {
+        respuesta.verifyUserResult=VerifyUserResult();
+        respuesta.verifyUserResult!.codeBase = UtilConextion.errorInternet;
+        respuesta.verifyUserResult!.state = 3;
+        respuesta.verifyUserResult!.message = "No tiene acceso a internet";
+        return respuesta;
+      }
     final vCredencialVeryUser = Credential(
         user: pTarjetaPan,
         password: pFinger,

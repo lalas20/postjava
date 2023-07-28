@@ -15,7 +15,12 @@ class UtilConextion {
   static String server = 'https://bancaelectronica-test.prodem.bo';
   //static String server = 'https://bancaelectronica.prd.com.bo:3211'; //PRODUCCION
   static String puerto = ':3211/';
+  static String puertoATM = ':3210/';
+
   static String hangarSafe = 'HangarSafeGate/';
+
+  //ATM savinaccount
+  static String transferAccounts = 'rest/ATM.Services.IAtmServices/TransferAccounts';
 
 //OperacionesController
   static String verifyUser = 'rest/VerifyUser';
@@ -32,6 +37,16 @@ class UtilConextion {
     'Content-Type': 'application/json',
     'HangarAuthentication': UtilPreferences.getToken()
   };
+
+  static Map<String, String> vHeaderByTokken (String pTokken) {
+    return
+      {
+      'Content-Type': 'application/json',
+      'HangarAuthentication': pTokken
+    };
+  }
+
+
 
   static Future<bool> internetConnectivity() async {
     try {
@@ -73,11 +88,19 @@ class UtilConextion {
     return 'ok';
   }
 
+  static Future<http.Response> httpPostByNewTokken(
+  {required String pAction,required String pJsonEncode, required String pTokken}
+      ) async {
+    final vUrl = Uri.parse(server + puertoATM + pAction);
+    final response =
+        await http.post(vUrl, headers:vHeaderByTokken(pTokken) , body: pJsonEncode);
+    return response;
+  }
+
   static Future<http.Response> httpPostSin(
       String pAction, String pJsonEncode) async {
-    final vUrl = Uri.parse(server + puerto + hangarSafe + pAction);
-    final response =
-        await http.post(vUrl, headers: vHeaderSin, body: pJsonEncode);
+    final vUrl = Uri.parse(server + puerto+ hangarSafe + pAction);
+    final response = await http.post(vUrl, headers: vHeaderSin, body: pJsonEncode);
     return response;
   }
 

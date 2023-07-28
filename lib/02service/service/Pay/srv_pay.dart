@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:postjava/03dominio/pos/request_transfer_accounts.dart';
 import 'package:postjava/03dominio/pos/resul_moves.dart';
+import 'package:postjava/03dominio/user/result.dart';
+import 'package:postjava/03dominio/user/verify_user_result.dart';
 import 'package:postjava/helper/util_preferences.dart';
 
 import '../../../03dominio/QR/get_encrypted_qr_string_result.dart';
@@ -73,21 +76,42 @@ class SrvPay {
     return respuesta;
   }
 
-  static Future<ResulGetUserSessionInfo> savingsAccountByCiAndFinger(
-      String pCI, String pFinger) async {
-    ResulGetUserSessionInfo respuesta = ResulGetUserSessionInfo();
-    respuesta.getUserSessionInfoResult = GetUserSessionInfoResult();
-    try {
-      respuesta.getUserSessionInfoResult!.state = 1;
-      respuesta.getUserSessionInfoResult!.code = "1";
-      respuesta.getUserSessionInfoResult!.codeBase = "1";
-      respuesta.getUserSessionInfoResult!.message =
-          "Registro recuperado correctamente";
-    } catch (e) {
-      respuesta.getUserSessionInfoResult!.state = 3;
-      respuesta.getUserSessionInfoResult!.code = "3";
-      respuesta.getUserSessionInfoResult!.codeBase = "3";
-      respuesta.getUserSessionInfoResult!.message = e.toString();
+  static Future<Result> savingsTransferAccounts(
+      {required String pCodeSavingAccount,
+        required String pIdMoneyTrans,
+        required double pAmountTrans,
+        required String pCodeSavingAccountTarget,
+        required String pTokken  }
+      )
+  async
+  {
+    dynamic jsonResponse;
+    Result respuesta = Result();
+    try{
+      final vPing = await UtilConextion.internetConnectivity();
+      if (vPing == false) {
+        respuesta.verifyUserResult=VerifyUserResult();
+        respuesta.verifyUserResult!.codeBase = UtilConextion.errorInternet;
+        respuesta.verifyUserResult!.state = 3;
+        respuesta.verifyUserResult!.message = "No tiene acceso a internet";
+        return respuesta;
+      }
+      final objRequesTrans=RequestTransferAccounts(objParameter: ObjParameter(amountTrans: pAmountTrans,codeSavingAccount: pCodeSavingAccount,codeSavingAccountTarget: pCodeSavingAccountTarget,idMoneyTrans: pIdMoneyTrans));
+      String vJSON = jsonEncode(objRequesTrans.toJson());
+      final response =
+      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.transferAccounts,pJsonEncode:  vJSON,pTokken: pTokken);
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        respuesta = Result.fromJson(jsonResponse);
+      } else {
+        respuesta = respuesta.errorRespuesta(response.statusCode);
+      }
+    }
+    catch(e)
+    {
+      respuesta.verifyUserResult = VerifyUserResult();
+      respuesta.verifyUserResult?.message = "error sub: ${e.toString()}";
+      respuesta.verifyUserResult?.state = 3;
     }
     return respuesta;
   }

@@ -56,21 +56,27 @@ public class FingerChannelDP {
 
     private Reader.Status status=null;
 
-    private void displayReaderNotFound()
+
+   private void displayReaderNotFound(String msg)
     {
-        m_deviceName="displayReaderNotFound";
+        Log.i("displayReaderNotFound", msg );
+        //m_deviceName="displayReaderNotFound";
     }
+
+
     protected void CheckDevice()
     {
         try
         {
+            Log.i("CheckDevice","ini"  );
             m_reader.Open(Priority.EXCLUSIVE);
-           // Reader.Capabilities cap = m_reader.GetCapabilities();
             m_reader.Close();
+            Log.i("CheckDevice","fin"  );
         }
         catch (UareUException e1)
         {
-            displayReaderNotFound();
+            Log.i("CheckDevice",e1.toString()  );
+            displayReaderNotFound(e1.toString());
         }
     }
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver()
@@ -100,21 +106,31 @@ public class FingerChannelDP {
         Log.i("captureFinger", "ini:" );
         String vResul="";
         try {
-            m_reader = Globals.getInstance().getReader(m_deviceName, applContext);
-            m_reader.Open(Priority.EXCLUSIVE);
-            m_DPI = Globals.GetFirstDPI(m_reader);
-            m_engine = UareUGlobal.GetEngine();
+            Log.i("captureFinger", "m_deviceName: "+  m_deviceName);
+            readers = UareUGlobal.GetReaderCollection(applContext);Log.i("captureFinger", "readers: " );
+            readers.GetReaders();Log.i("captureFinger", "GetReaders: " );
+            m_reader= readers.get(0);Log.i("captureFinger", "m_reader: " );
+            m_deviceName=readers.get(0).GetDescription().name;Log.i("captureFinger", "m_deviceName: "+m_deviceName );
+            //m_reader = Globals.getInstance().getReader(m_deviceName, applContext);
+           // Log.i("captureFinger", "m_reader: "+m_reader.GetStatus().status.name() );
+            m_reader.Open(Priority.EXCLUSIVE);Log.i("captureFinger", "open: ");
+            m_DPI = Globals.GetFirstDPI(m_reader);Log.i("captureFinger", "m_dpi: "+m_DPI);
+            m_engine = UareUGlobal.GetEngine();Log.i("captureFinger", "m_engine: ");
             try
             {
+                Log.i("captureFinger","init Capture");
                 cap_result = m_reader.Capture(Fid.Format.ISO_19794_4_2005, Globals.DefaultImageProcessing, m_DPI, -1);
+                Log.i("captureFinger","fin Capture");
             }
             catch (Exception e)
             {
+                Log.i("captureFinger","ex:113 "+e.getMessage());
                 m_deviceName = "";
                 onBackPressed();
             }
             // an error occurred
             if (cap_result == null || cap_result.image == null) {
+                Log.i("captureFinger","cap_result es nullo o la imagen es null");
                 onBackPressed();
                 map.put("state","01");
                 map.put("message","intente nuevamente la captura");
@@ -143,6 +159,7 @@ public class FingerChannelDP {
             }
             catch (Exception e)
             {
+                Log.i("captureFinger","ex:147 "+e.getMessage());
                 map.put("state","02");
                 map.put("message","excepcion CreateFmd: "+e.getMessage());
                 //vResul = e.toString();
@@ -152,6 +169,7 @@ public class FingerChannelDP {
         }
         catch (Exception e)
         {
+            Log.i("captureFinger","ex:157 "+e.getMessage());
             map.put("state","02");
             map.put("message","excepcion caturefinger: "+e.getMessage());
             //vResul="error reader";
@@ -176,7 +194,7 @@ public class FingerChannelDP {
 
     public HashMap<String, String>   initFingerDP(Context applContext){
         Log.i(TAG, "initFingerDP: 31 ini" );
-        m_deviceName="sin data";
+        m_deviceName="";
         map.clear();
         try {
 
@@ -185,15 +203,15 @@ public class FingerChannelDP {
             readers.GetReaders();
             if (readers.size()==0)
             {
-                m_deviceName="Dispositivo no reconocido";
+                m_deviceName="";
                 map.put("state","01");
                 map.put("message","Dispositivo no reconocido ");
                 return map;
             }
-/*            Log.i(TAG, "cantidad reader:" + readers.size() );
-            Log.i(TAG,"NAME READER:"+readers.get(0).GetDescription().name);
+            Log.i(TAG, "cantidad reader:" + readers.size() );
+           Log.i(TAG,"NAME READER:"+readers.get(0).GetDescription().name);
             Log.i(TAG,"NAME READER:"+readers.get(0).GetDescription().id.product_name);
- */
+
             m_reader= readers.get(0);
             m_deviceName=readers.get(0).GetDescription().name;
             //add permisos usb
@@ -201,28 +219,46 @@ public class FingerChannelDP {
             {
                 try
                 {
+                    Log.i("initFingerDP","revisando permisos");
                     PendingIntent mPermissionIntent;
+                    Log.i("initFingerDP","mPermissionIntent");
                     mPermissionIntent = PendingIntent.getBroadcast(applContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    Log.i("initFingerDP","mPermissionIntent");
                     IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+                    Log.i("initFingerDP","filter");
                     applContext.registerReceiver(mUsbReceiver, filter);
+                    Log.i("initFingerDP","registerReceiver");
                     if(DPFPDDUsbHost.DPFPDDUsbCheckAndRequestPermissions(applContext, mPermissionIntent, m_deviceName))
                     {
-                        CheckDevice();
+                        Log.i("initFingerDP","ini CheckDevice");
+                        //CheckDevice();
+                        m_reader.Open(Priority.EXCLUSIVE);
+                        m_reader.Close();
+                        Log.i("initFingerDP","fin CheckDevice");
                     }
 
                 } catch (DPFPDDUsbException e)
                 {
-                    displayReaderNotFound();
+                    Log.i("initFingerDP","sin permisos" + e.getMessage());
+                    displayReaderNotFound(e.getMessage());
+                    map.put("state","02");
+                    map.put("message","excepcion: "+e.toString() );
+                    return map;
                 }
 
             } else
             {
-                displayReaderNotFound();
+                m_deviceName="";
+                map.put("state","01");
+                map.put("message","dispositivo no tiene nombre ");
             }
-            m_reader.Open(Priority.COOPERATIVE);
+            m_reader.Open(Priority.EXCLUSIVE);
+            map.put("state","00");
+            map.put("message",m_deviceName);
         }
         catch (Exception e)
         {
+            Log.i("initFingerDP","ex"+e.getMessage());
             map.put("state","03");
             map.put("message","excepcion: " + e.getMessage());
         }

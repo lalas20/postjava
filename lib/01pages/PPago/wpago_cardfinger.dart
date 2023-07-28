@@ -27,7 +27,7 @@ class WPagoCardFinger extends StatefulWidget {
 }
 
 class _WPagoCardFingerState extends State<WPagoCardFinger> {
-  final _txtCard = TextEditingController();
+  final _txtCard = TextEditingController( text: "7265210000050007");
 
   late UtilResponsive responsive;
   late PagoProvider provider;
@@ -49,7 +49,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _listenStreamCard(value) {
-    _txtCard.text = value;
+    //_txtCard.text = value;
     getCboSavingAcount();
   }
 
@@ -59,7 +59,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
       return;
     }
     UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
-    await provider.getDocIdentidadPago(_txtCard.text);
+    await provider.getSavingAcountByCardFinger(pCard: _txtCard.text);
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
@@ -79,11 +79,8 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _findFinger() async {
-   /* _streamSubscriptionFinger = resul.fingerChannel.event
-        .receiveBroadcastStream()
-        .listen(_listenStreamFinger);
-    */
   await  provider.getNameDeviceDP();
+
   if(provider.resp.state==RespProvider.incorrecto.toString())
     {
       tieneFinger = false;
@@ -98,6 +95,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
               () {});
       return;
     }
+
   await provider.getFingerDP();
   if(provider.resp.state==RespProvider.incorrecto.toString())
   {
@@ -116,46 +114,12 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   tieneFinger = true;
   }
 
-  void _listenStreamFinger(value) {
-    if (value == null) {
-      tieneFinger = false;
-    } else {
-      print("finger: " + value.toString());
-      tieneFinger = true;
-      provider.fingerWIdentityCard = value.toString();
-    }
-    /*imagePath = value;
-    File imgfile = File(value);
-    image = Image.file(
-      imgfile,
-      fit: BoxFit.cover,
-      width: responsive.anchoPorcentaje(50),
-      height: responsive.altoPorcentaje(40),
-    );*/
-    print('_listenStreamFinger:39');
-    setState(() {});
-  }
-
   @override
   void dispose() {
     resul.fingerChannel.dispose();
 
     resul.cardChannel.dispose();
     super.dispose();
-  }
-
-  void _converBase64() async {
-    print('imagePath');
-    File imagefile = File(imagePath);
-    Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
-    String base64string = base64.encode(imagebytes);
-
-    print(base64string);
-
-    var file =
-        await File('/sdcard/dataFinger1.txt').writeAsString(base64string);
-    //final vstring = await imagefile.readAsString();
-    //print(vstring);
   }
 
   _saveCardFinger() async {
@@ -299,7 +263,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
         ),
         WBtnConstante(
           pName: "",
-          fun: _findCardNumber,
+          fun:getCboSavingAcount,// _findCardNumber,
           ico: const Icon(Icons.find_in_page),
         )
       ],

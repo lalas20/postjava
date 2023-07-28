@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class PagoProvider with ChangeNotifier {
   String nameDeviceDP="";
   List<SavingAccounts> vListaCuentaByCi=[];
   Uint8List vImgQR = Uint8List(0);
+  String tokkeSavinAcountTransfer='';
 
   bool tieneFinger = false;
 
@@ -64,8 +66,8 @@ class PagoProvider with ChangeNotifier {
 
   getFingerDP() async {
     final resul = PlaformChannel();
-    fingerDP=  await resul.fingerChannel.captureFingerISODP();
-    if(fingerDP.isEmpty) {
+    fingerWIdentityCard=  await resul.fingerChannel.captureFingerISODP();
+    if(fingerWIdentityCard.isEmpty) {
       resp = ResulProvider(
         message: "Huella no capturada",
         state: RespProvider.incorrecto.toString(),
@@ -76,7 +78,7 @@ class PagoProvider with ChangeNotifier {
       resp = ResulProvider(
         message: "Registro recuperado satisfactoriamente",
         state: RespProvider.correcto.toString(),
-        obj: fingerDP,
+        obj: fingerWIdentityCard,
       );
     }
   }
@@ -181,12 +183,14 @@ class PagoProvider with ChangeNotifier {
     AditionalItems addItems = resul.verifyUserResult!.object!.aditionalItems!
         .firstWhere((element) => element.key == "SavingAccounts");
     addItems.value=addItems.value?.replaceAll("\\", "");
-    vListaCuentaByCi=(addItems.value as List).map((dynamic e) => SavingAccounts.fromJson(e as Map<String,dynamic>)).toList();
-
+    List<dynamic>  jsonResponse = json.decode(addItems.value!);
+    final aux=jsonResponse
+                    .map((e) =>
+                    SavingAccounts.fromJson(e))
+                    .toList();
+    vListaCuentaByCi=aux;
+     tokkeSavinAcountTransfer=resul.verifyUserResult!.object!.token!;
     }
-
-
-
     if (vListaCuentaByCi.isEmpty) {
       resp = ResulProvider(
         message: "No tiene cuentas asociado al documento de identidad",
@@ -219,6 +223,7 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
+  /* se usa saveCardFinger*/
   saveCardFinger({
     required String pOperationCodeCliente,
     required String pIdOperationEntity,
@@ -239,6 +244,12 @@ class PagoProvider with ChangeNotifier {
     if (UtilPreferences.getAcount().isEmpty) {
       vmessge.add("Depósito a la cuenta.");
     }
+    if (tokkeSavinAcountTransfer.isEmpty) {
+      vmessge.add("tokken de autenticación es obligatorio.");
+    }
+
+
+
     if (vmessge.isNotEmpty) {
       if (vmessge.length > 1) {
         vmessge.add("son campos requeridos.");
@@ -253,16 +264,20 @@ class PagoProvider with ChangeNotifier {
       return;
     }
 
-    await Future.delayed(const Duration(seconds: 3));
-    final resul = await SrvPay.savingsAccountByCiAndFinger('', '');
-    if (resul.getUserSessionInfoResult!.state == 1) {
+    final resul = await SrvPay.savingsTransferAccounts(pCodeSavingAccount: pOperationCodeCliente,
+                                                      pIdMoneyTrans: "1",
+                                                      pAmountTrans: montoWIdentityCard,
+                                                      pCodeSavingAccountTarget: UtilPreferences.getAcount(),
+                                                      pTokken: tokkeSavinAcountTransfer
+    );
+    if (resul.verifyUserResult!.state == 1) {
       resp = ResulProvider(
         message: "Registro guardado correctamente",
         state: RespProvider.correcto.toString(),
       );
     } else {
       resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
+        message: resul.verifyUserResult!.message!,
         state: RespProvider.incorrecto.toString(),
       );
     }
@@ -271,16 +286,25 @@ class PagoProvider with ChangeNotifier {
   /* evento de registrar el proceso de pago caso WIDENTITYCAR*/
   savingsAccountByCiAndFinger(String pCi, String pFinger) async {
     await Future.delayed(const Duration(seconds: 3));
-    final resul = await SrvPay.savingsAccountByCiAndFinger(pCi, pFinger);
-    if (resul.getUserSessionInfoResult!.state == 1) {
+    resp = ResulProvider(
+      message: "error",
+      state: RespProvider.incorrecto.toString(),
+    );
+    return ;
+    final resul = await SrvPay.savingsTransferAccounts(pCodeSavingAccount: "",
+        pIdMoneyTrans: "1",
+        pAmountTrans: montoWIdentityCard,
+        pCodeSavingAccountTarget: UtilPreferences.getAcount(),
+        pTokken: tokkeSavinAcountTransfer
+    );
+    if (resul.verifyUserResult!.state == 1) {
       resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
+        message: "Registro guardado correctamente",
         state: RespProvider.correcto.toString(),
-        obj: vLista,
       );
     } else {
       resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
+        message: resul.verifyUserResult!.message!,
         state: RespProvider.incorrecto.toString(),
       );
     }
@@ -345,6 +369,11 @@ class PagoProvider with ChangeNotifier {
       return;
     }
     await Future.delayed(const Duration(seconds: 3));
+    resp = ResulProvider(
+      message: "error",
+      state: RespProvider.incorrecto.toString(),
+    );
+/*
     final resul =
         await SrvPay.savingsAccountByCiAndFinger(pCi, fingerWIdentityCard);
     if (resul.getUserSessionInfoResult!.state == 1) {
@@ -357,7 +386,7 @@ class PagoProvider with ChangeNotifier {
         message: resul.getUserSessionInfoResult!.message!,
         state: RespProvider.incorrecto.toString(),
       );
-    }
+    }*/
   }
 
   List<ListCodeSavingsAccount> vLista = [
