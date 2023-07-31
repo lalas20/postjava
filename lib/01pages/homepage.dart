@@ -93,12 +93,13 @@ class _HomePageState extends State<HomePage> {
                   pElevation: 10,
                   pFun: () => processMethod('EMV'),
                   pImg: UtilConstante.iConfiguration,
-                  pName: 'EMV'),*/
+                  pName: 'EMV'),
               WCarPage(
                   pElevation: 10,
                   pFun: () => processMethod('Finger'),
                   pImg: UtilConstante.iFinger,
                   pName: 'Finger'),
+               */
               WCarPage(
                   pElevation: 10,
                   pFun: () => processMethod('Configuración'),

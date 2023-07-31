@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 enum RespProvider { correcto, incorrecto }
 
-enum TipoPago { QR, TARJETA, DOC_IDENTIDAD }
+enum TipoPago { QR}//, TARJETA, DOC_IDENTIDAD }
 
 class UtilConstante {
   static Color colorAppPrimario = const Color.fromRGBO(80, 99, 136, 88);
