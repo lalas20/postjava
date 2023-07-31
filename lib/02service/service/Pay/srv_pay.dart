@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:postjava/02service/service/User/srv_cliente_pos.dart';
 import 'package:postjava/03dominio/pos/request_transfer_accounts.dart';
 import 'package:postjava/03dominio/pos/resul_moves.dart';
 import 'package:postjava/03dominio/user/result.dart';
 import 'package:postjava/03dominio/user/verify_user_result.dart';
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:postjava/helper/utilmethod.dart';
 
 import '../../../03dominio/QR/get_encrypted_qr_string_result.dart';
 import '../../../03dominio/pos/resul_voucher.dart';
@@ -12,10 +14,25 @@ import '../../../03dominio/user/resul_get_user_session_info.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvPay {
-  static Future<List<ResulMoves>> getLasMoves() async {
-    List<ResulMoves> vLista = ResulMoves.vCarga;
 
-    return vLista;
+  static Future<MasterResulMoves> getLasMoves() async {
+    List<ResulMoves> vLista =[];// ResulMoves.vCarga;
+    MasterResulMoves vEntidad= MasterResulMoves();
+     final resul=await SrvClientePos.SavingsAccountExtractDataTransactionable();
+     if(resul.state==1){
+       vEntidad.accountBalance=resul.object!.accountBalance;
+       vEntidad.codeSavingsAccount=resul.object!.codeSavingsAccount;
+       vEntidad.moneyCode=resul.object!.moneyCode;
+       vEntidad.processDate= UtilMethod.formatteDate(UtilMethod.parseJsonDate(resul.object!.processDate!));
+       for(var item in resul.object!.colDetailsMovemment! )
+         {
+           vLista.add(ResulMoves(agencia: item.officeTransaction,
+               fechaTransaccion: UtilMethod.formatteDate(UtilMethod.parseJsonDate(item.dateTransaction!)),
+             monto:item.deposit==0?-1*item.withdrawal!:item.deposit,nroTransaccion: item.descriptionOperation,referencia: item.reference,saldo: item.amountBalance));
+         }
+       vEntidad.listResulMoves=vLista;
+     }
+    return vEntidad;
   }
 
   static Future<GetEncryptedQrStringResult> getQrPay(
@@ -24,7 +41,7 @@ class SrvPay {
 
     Map<String, dynamic> toMap =
     {
-          'idPerson': UtilPreferences.getIdWebPersonClient(),
+          'idPerson': UtilPreferences.getsIdPerson(),
           'accountCode': UtilPreferences.getAcount(),
           'moneyCode': UtilPreferences.getCodMoney(),
           'amount': pAmount,

@@ -9,11 +9,11 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 class WPagoQR extends StatelessWidget {
   const WPagoQR({
     super.key,
-    required this.imgQR,
     required this.monto,
     required this.fun,
+    required this.imgTxt,
   });
-  final Uint8List imgQR;
+  final String imgTxt;
   final double monto;
   final Function() fun;
 
@@ -29,27 +29,12 @@ class WPagoQR extends StatelessWidget {
             style: TextStyle(color: UtilConstante.colorAppPrimario),
           ),
           PrettyQr(
-            size: 300,
-            data: "holmunfo",
-            errorCorrectLevel: QrErrorCorrectLevel.M,
+            size: 250,
+            data: imgTxt,
+            errorCorrectLevel: QrErrorCorrectLevel.H,
             typeNumber: null,
             roundEdges: true,
-          ),
-          Image.memory(
-            imgQR,
-            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
-                child: child,
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: Image.asset(UtilConstante.iTest),
-              );
-            },
-            width: 250,
+            //image:AssetImage(UtilConstante.iprdBlue),
           ),
           WBtnConstante(
               pName: "Salir",

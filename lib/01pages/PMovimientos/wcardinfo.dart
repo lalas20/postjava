@@ -45,7 +45,7 @@ class WCardInfo extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       height: responsive.altoPorcentaje(50),
-      width: responsive.anchoPorcentaje(70),
+      //width: responsive.anchoPorcentaje(70),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +78,7 @@ class WCardInfo extends StatelessWidget {
                   value: " ${resulMoves.fechaTransaccion}",
                 ),
                 WRowOpcion(
-                  label: "Nro. Transacción:",
+                  label: "Transacción:",
                   value: " ${resulMoves.nroTransaccion}",
                 ),
                 WRowOpcion(

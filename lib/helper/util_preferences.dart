@@ -5,6 +5,17 @@ class UtilPreferences {
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
 
+  static const _keysIdPerson = 'sIdPerson';
+  static Future setsIdPerson(String psIdPerson) async {
+    if (_preferences == null) return null;
+    await _preferences!.setString(_keysIdPerson, psIdPerson);
+  }
+
+  static String getsIdPerson({String defValue = '0'}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getString(_keysIdPerson) ?? defValue;
+  }
+
   static const _keyIdUsuario = 'IdUsuario';
   static Future setIdUsuario(String pIdUsuario) async {
     if (_preferences == null) return null;

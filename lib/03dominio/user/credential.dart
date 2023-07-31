@@ -21,15 +21,6 @@ class Credential {
                 AditionalItems.fromJson(e as Map<String, dynamic>))
             .toList();
 
-  // Credential.fromJson(Map<String, dynamic> json)
-  //     : user = json['User'] as String?,
-  //       password = json['Password'] as String?,
-  //       channel = json['Channel'] as int?,
-  //       aditionalItems = (json['AditionalItems'] as List?)
-  //           ?.map((dynamic e) =>
-  //               AditionalItems.fromJson(e as Map<String, dynamic>))
-  //           .toList();
-
   Map<String, dynamic> toJson() => {
         'User': user,
         'Password': password,

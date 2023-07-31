@@ -27,13 +27,15 @@ class _LastMovesState extends State<LastMoves> {
   late UtilResponsive responsive;
   bool esIngreso = true;
   bool cargando = true;
+  MasterResulMoves? vEntidad;
   List<ResulMoves> vLista = [];
 
   _getLastMoves() async {
     await provider.getLasMovimiento();
     cargando = false;
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      vLista = provider.resp.obj as List<ResulMoves>;
+     vEntidad=provider.resp.obj as MasterResulMoves; //vLista = provider.resp.obj as List<ResulMoves>;
+      vLista=vEntidad!.listResulMoves!;
     } else {
       vLista = [];
     }
@@ -85,8 +87,9 @@ class _LastMovesState extends State<LastMoves> {
               ),
               WRowOpcion(
                   label: 'Fecha: ',
-                  value: UtilMethod.formatteOnlyDate(DateTime.now())),
-              const WRowOpcion(label: 'Saldo: ', value: '1548.50 Bs'),
+                  value:vEntidad==null?"":vEntidad!.processDate!,
+              ),
+              WRowOpcion(label: 'Saldo: ', value: vEntidad==null?"0":vEntidad!.accountBalance.toString(),),
               cargando ? UtilModal.iniCircularProgres() : ListVacia()
             ],
           ),

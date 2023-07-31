@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:postjava/03dominio/user/aditional_item.dart';
 import 'package:postjava/03dominio/user/credential.dart';
 import 'package:postjava/03dominio/user/result.dart';
+import 'package:postjava/03dominio/user/savings_account_extract_data_transactionable_result.dart';
 import 'package:postjava/helper/util_preferences.dart';
 
 import '../../../03dominio/user/credential_verify_user.dart';
@@ -11,6 +12,47 @@ import '../../../03dominio/user/verify_user_result.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvClientePos {
+
+  static Future<SavingsAccountExtractDataTransactionableResult> SavingsAccountExtractDataTransactionable() async {
+    SavingsAccountExtractDataTransactionableResult respuesta = SavingsAccountExtractDataTransactionableResult();
+
+    dynamic jsonResponse;
+    try {
+      final vPing = await UtilConextion.internetConnectivity();
+      if (vPing == false) {
+       respuesta.codeBase = UtilConextion.errorInternet;
+       respuesta.state = 3;
+       respuesta.message = "No tiene acceso a internet";
+        return respuesta;
+      }
+      Map<String, String> vParam = {
+        "CodeSavingAccount":UtilPreferences.getAcount(),
+        "IdPerson":UtilPreferences.getsIdPerson(),
+        "IdUser":UtilPreferences.getIdUsuario(),
+        "IMEI":"",
+        "location":"",
+        "IpAddress":"0.0.0.0"
+      };
+
+      String vJSON = jsonEncode(vParam);
+      final response =
+      await UtilConextion.httpPost(UtilConextion.savingsAccountExtractDataTransactionable, vJSON);
+
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        respuesta = SavingsAccountExtractDataTransactionableResult.fromJson(jsonResponse['SavingsAccountExtractDataTransactionableResult']);
+      } else {
+        respuesta = respuesta.errorRespuesta(response.statusCode);
+      }
+    } catch (e) {
+      respuesta = SavingsAccountExtractDataTransactionableResult();
+      respuesta.message =
+      "error sub: ${e.toString()}";
+      respuesta.state = 3;
+    }
+    return respuesta;
+  }
+
   static Future<ResulGetUserSessionInfo> getUserSessionInfo(
       String pIdWebClient) async {
     ResulGetUserSessionInfo respuesta = ResulGetUserSessionInfo();

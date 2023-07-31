@@ -228,16 +228,17 @@ class _PagoViewState extends State<PagoView> {
         // }
         break;
       case TipoPago.QR:
-        resul = WPagoQR(
-          imgQR: provider.resp.obj as Uint8List,
+        /*resul = WPagoQR(
+
           monto: provider.vMontoPagar,
           fun: closeQr,
-        );
-        /*if (provider.resp.state == RespProvider.correcto.toString()) {
+          imgTxt: provider.resp.obj.toString(),
+        );*/
+        if (provider.resp.state == RespProvider.correcto.toString()) {
           resul = WPagoQR(
-            imgQR: provider.resp.obj as Uint8List,
             monto: provider.vMontoPagar,
             fun: closeQr,
+    imgTxt: provider.resp.obj.toString(),
           );
         } else {
           resul = SizedBox(
@@ -246,7 +247,7 @@ class _PagoViewState extends State<PagoView> {
                 provider.resp.message,
                 style: const TextStyle(color: Colors.red, fontSize: 20),
               ));
-        }*/
+        }
         break;
       default:
         resul = const SizedBox(height: 100, child: Text("seleccione registro"));

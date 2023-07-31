@@ -8,6 +8,13 @@ class UtilMethod {
     debugPrint(vtrace == null ? 'error: ->$pMessage' : '$vtrace->$pMessage');
     //}
   }
+  static DateTime parseJsonDate(String jsonDate) {
+    // Obtener el valor numérico entre los paréntesis del formato "/Date(...)/"
+    int timestamp = int.parse(jsonDate.substring(6, jsonDate.length - 7));
+
+    // Crear un objeto DateTime usando el timestamp en milisegundos
+    return DateTime.fromMillisecondsSinceEpoch(timestamp);
+  }
 
   static String formatteDate(DateTime pFecha) {
     return '${pFecha.year}-${_twoDigits(pFecha.month)}-${_twoDigits(pFecha.day)} ${_twoDigits(pFecha.hour)}:${_twoDigits(pFecha.minute)}:${_twoDigits(pFecha.second)}';

@@ -132,7 +132,7 @@ class PagoProvider with ChangeNotifier {
       resp = ResulProvider(
         message: resul.message!,
         state: RespProvider.correcto.toString(),
-        obj:Uint8List(0)// generateQRCode(resul.object?.qrValue ?? '0'),
+        obj:resul.object?.qrValue,  //Uint8List(0)// generateQRCode(resul.object?.qrValue ?? '0'),
       );
       vMontoPagar = pMonto;
     } else {

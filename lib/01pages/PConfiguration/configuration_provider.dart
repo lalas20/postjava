@@ -38,6 +38,7 @@ class ConfigurationProvider with ChangeNotifier {
     final resul = await SrvClientePos.getUserSessionInfo(
         UtilPreferences.getIdWebPersonClient());
     if (resul.getUserSessionInfoResult!.state == 1) {
+     UtilPreferences.setsIdPerson(resul.getUserSessionInfoResult!.objectGetUserSessionInfoResult!.sIdPerson!);
       resp = ResulProvider(
         message: resul.getUserSessionInfoResult!.message!,
         state: RespProvider.correcto.toString(),
