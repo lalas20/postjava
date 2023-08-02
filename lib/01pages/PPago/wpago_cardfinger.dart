@@ -129,21 +129,25 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
             ? ''
             : selecAcount!.idSavingsAccount.toString(),
         pOperationCodeCliente:
-            selecAcount == null ? '' : selecAcount!.codeAccount!);
+            selecAcount == null ? '' : selecAcount!.codeAccount!,
+    );
+
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
+      final print=(provider.resp.obj as String).replaceAll('&', '') .split('|');
+
       final resul = PlaformChannel();
       final voucher = ResulVoucher(
         bancoDestino: 'BANCO PRODEM',
-        cuentaDestino: UtilPreferences.getAcount(), // '117-2-1-11208-1',
-        cuentaOrigen: selecAcount!.codeAccount!, // '117-2-1-XXXX-1',
-        fechaTransaccion: UtilMethod.formatteDate(DateTime.now()),
-        glosa: provider.glosaWIdentityCard,
-        montoPago: provider.montoWIdentityCard,
-        nroTransaccion: 122245547,
-        titular: UtilPreferences.getClientePos(),
-        tipoPago: 'Tarjeta débito y huella',
+        cuentaDestino:print[5],// UtilPreferences.getAcount(), // '117-2-1-11208-1',
+        cuentaOrigen:print[3], //selecAcount!.operationCode!, // '117-2-1-XXXX-1',
+        fechaTransaccion:print[1], //UtilMethod.formatteDate(DateTime.now()),
+        glosa:print[8],// provider.glosaWIdentityCard,
+        montoPago:print[2], //provider.montoWIdentityCard,
+        nroTransaccion:print[0],
+        titular:print[7],// UtilPreferences.getClientePos(),
+        tipoPago: 'Tarjeta y huella',
       );
 
       final res = await resul.printMethod.printVoucherChannel(voucher);

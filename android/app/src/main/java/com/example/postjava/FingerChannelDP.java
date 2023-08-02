@@ -105,6 +105,8 @@ public class FingerChannelDP {
         map.clear();
         Log.i("captureFinger", "ini:" );
         String vResul="";
+        m_fmd=null;
+
         try {
             Log.i("captureFinger", "m_deviceName: "+  m_deviceName);
             readers = UareUGlobal.GetReaderCollection(applContext);Log.i("captureFinger", "readers: " );
@@ -120,7 +122,7 @@ public class FingerChannelDP {
             {
                 Log.i("captureFinger","init Capture");
                 cap_result = m_reader.Capture(Fid.Format.ISO_19794_4_2005, Globals.DefaultImageProcessing, m_DPI, -1);
-                Log.i("captureFinger","fin Capture");
+                Log.i("captureFinger","fin Capture 123");
             }
             catch (Exception e)
             {
@@ -128,6 +130,7 @@ public class FingerChannelDP {
                 m_deviceName = "";
                 onBackPressed();
             }
+
             // an error occurred
             if (cap_result == null || cap_result.image == null) {
                 Log.i("captureFinger","cap_result es nullo o la imagen es null");
@@ -139,9 +142,11 @@ public class FingerChannelDP {
             };
             try
             {
+                Log.i("captureFinger","143 ");
                 vResul="";
                 if (m_fmd == null)
                 {
+                    Log.i("captureFinger","147 ");
                     m_fmd = m_engine.CreateFmd(cap_result.image, Fmd.Format.ISO_19794_2_2005);
                     Log.i("captureFinger", "ConverBase64byte getData:" +Globals.ConverBase64byte(m_fmd.getData()) );
 /*                  Globals.save2File("/sdcard/raw.data",m_fmd.getData());
@@ -155,6 +160,9 @@ public class FingerChannelDP {
                     map.put("message",Globals.ConverBase64byte(m_fmd.getData()));
 
                     //vResul="se creo el obj m_fmd";
+                }
+                else {
+                    Log.i("captureFinger","m_fmd no es null ");
                 }
             }
             catch (Exception e)
@@ -183,12 +191,18 @@ public class FingerChannelDP {
     {
         try
         {
-            try { m_reader.CancelCapture(); } catch (Exception e) {}
+            try {
+                if(m_reader!=null)
+                m_reader.CancelCapture();
+            } catch (Exception e) {
+                Log.w("UareUSampleJava", "error during reader CancelCapture: " + e.getMessage());
+            }
+           if(m_reader!=null)
             m_reader.Close();
         }
         catch (Exception e)
         {
-            Log.w("UareUSampleJava", "error during reader shutdown");
+            Log.w("UareUSampleJava", "error during reader shutdown: " + e.getMessage());
         }
     }
 

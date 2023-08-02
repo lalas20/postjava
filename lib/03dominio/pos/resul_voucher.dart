@@ -1,9 +1,9 @@
 class ResulVoucher {
   //datos transferencia
-  int? nroTransaccion;
+  String? nroTransaccion;
   String? titular;
   String? fechaTransaccion;
-  double? montoPago;
+  String? montoPago;
 
   //cuenta origen
   String? cuentaOrigen;

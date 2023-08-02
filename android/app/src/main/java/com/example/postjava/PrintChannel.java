@@ -47,27 +47,25 @@ public class PrintChannel {
             format.setAli(Layout.Alignment.ALIGN_NORMAL);
             mPrinter.setPrintAppendString(" ", format);
             mPrinter.setPrintAppendString(printVoucher.bancoDestino, format);
-            mPrinter.setPrintAppendString("Nro. transacción: "+printVoucher.nroTransaccion, format);
-            mPrinter.setPrintAppendString("Titular: " +printVoucher.titular, format);
-            mPrinter.setPrintAppendString("Fecha: " +printVoucher.fechaTransaccion, format);
-            mPrinter.setPrintAppendString("Monto: " +printVoucher.montoPago, format);
+            mPrinter.setPrintAppendString(printVoucher.nroTransaccion, format);
+            mPrinter.setPrintAppendString(printVoucher.titular, format);
+            mPrinter.setPrintAppendString(printVoucher.fechaTransaccion, format);
+            mPrinter.setPrintAppendString(printVoucher.montoPago, format);
             format.setTextSize(20);
-            mPrinter.setPrintAppendString("Cta. Origen: " +printVoucher.cuentaOrigen, format);
-            mPrinter.setPrintAppendString("Cta. Destino: " +printVoucher.cuentaDestino, format);
-            mPrinter.setPrintAppendString("Tipo Pago: " +printVoucher.tipoPago, format);
+            mPrinter.setPrintAppendString(printVoucher.cuentaOrigen, format);
+            mPrinter.setPrintAppendString(printVoucher.cuentaDestino, format);
+            mPrinter.setPrintAppendString(printVoucher.tipoPago, format);
             format.setTextSize(20);
             format.setStyle(PrnTextStyle.NORMAL);
             format.setAli(Layout.Alignment.ALIGN_NORMAL);
-            mPrinter.setPrintAppendString("Glosa: " +printVoucher.glosa, format);
+            mPrinter.setPrintAppendString(printVoucher.glosa, format);
 
             mPrinter.setPrintAppendString(" ", format);
             mPrinter.setPrintAppendString(" -----------------------------", format);
 
             mPrinter.setPrintAppendString(" ", format);
             mPrinter.setPrintAppendString(" ", format);
-
             printStatus = mPrinter.setPrintStart();
-            Log.i("printStatus", "printStatus: "+printStatus);
             vRespuesta="ejecucion del print " + printStatus;
 
         }
@@ -162,10 +160,10 @@ public class PrintChannel {
 }
 
 class PrintVoucher{
-   public  int nroTransaccion;
+   public  String nroTransaccion;
     public String titular;
     public String fechaTransaccion;
-    public double montoPago;
+    public String montoPago;
 
     //cuenta origen
     public    String cuentaOrigen;

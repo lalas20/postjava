@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:postjava/02service/service/User/srv_cliente_pos.dart';
+import 'package:postjava/03dominio/pos/request_savings_account_transfer_pos_result.dart';
 import 'package:postjava/03dominio/pos/request_transfer_accounts.dart';
 import 'package:postjava/03dominio/pos/resul_moves.dart';
 import 'package:postjava/03dominio/user/result.dart';
@@ -97,42 +98,64 @@ class SrvPay {
     return respuesta;
   }
 
-  static Future<Result> savingsTransferAccounts(
+  static Future<RequestSavingsAccountTransferPOSResult> savingsTransferAccounts(
       {required String pCodeSavingAccount,
         required String pIdMoneyTrans,
         required double pAmountTrans,
         required String pCodeSavingAccountTarget,
-        required String pTokken  }
+        required String pBeneficiarioName,
+        required String pTokken,
+      required String pGlosa,
+      }
       )
   async
   {
     dynamic jsonResponse;
-    Result respuesta = Result();
+    RequestSavingsAccountTransferPOSResult respuesta = RequestSavingsAccountTransferPOSResult();
     try{
       final vPing = await UtilConextion.internetConnectivity();
       if (vPing == false) {
-        respuesta.verifyUserResult=VerifyUserResult();
-        respuesta.verifyUserResult!.codeBase = UtilConextion.errorInternet;
-        respuesta.verifyUserResult!.state = 3;
-        respuesta.verifyUserResult!.message = "No tiene acceso a internet";
+        respuesta.savingsAccountTransferPOSResult=SavingsAccountTransferPOSResult();
+        respuesta.savingsAccountTransferPOSResult!.codeBase = UtilConextion.errorInternet;
+        respuesta.savingsAccountTransferPOSResult!.state = 3;
+        respuesta.savingsAccountTransferPOSResult!.message = "No tiene acceso a internet";
         return respuesta;
       }
-      final objRequesTrans=RequestTransferAccounts(objParameter: ObjParameter(amountTrans: pAmountTrans,codeSavingAccount: pCodeSavingAccount,codeSavingAccountTarget: pCodeSavingAccountTarget,idMoneyTrans: pIdMoneyTrans));
-      String vJSON = jsonEncode(objRequesTrans.toJson());
+
+      Map<String,dynamic>map={
+          "CodeSavingAccountSource":pCodeSavingAccount,
+          "IdPerson":UtilPreferences.getsIdPerson(),
+          "CodeSavingAccountTarget": pCodeSavingAccountTarget,
+          "AmountTransfer":pAmountTrans,
+          "IdMoneyTransfer":pIdMoneyTrans,
+          "Observation":pGlosa,
+          "IsNaturalClient": true,
+          "reasonDestiny":"",
+          "ApplyGeneratePCC01":false,
+          "IdUser":UtilPreferences.getIdUsuario(),
+          "IMEI":"",
+          "location":"",
+          "IpAddress":"0.0.0.0",
+          "BeneficiaryName":pBeneficiarioName
+      };
+
+      //final objRequesTrans=RequestTransferAccounts(objParameter: ObjParameter(amountTrans: pAmountTrans,codeSavingAccount: pCodeSavingAccount,codeSavingAccountTarget: pCodeSavingAccountTarget,idMoneyTrans: pIdMoneyTrans));
+      String vJSON = jsonEncode(map);
       final response =
-      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.transferAccounts,pJsonEncode:  vJSON,pTokken: pTokken);
+      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.SavingsAccountTransferPOS,pJsonEncode:  vJSON,pTokken: UtilPreferences.getToken());
+     // await UtilConextion.httpPost(UtilConextion.SavingsAccountTransferMobile,vJSON);
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
-        respuesta = Result.fromJson(jsonResponse);
+        respuesta=RequestSavingsAccountTransferPOSResult.fromJson(jsonResponse);
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
       }
     }
     catch(e)
     {
-      respuesta.verifyUserResult = VerifyUserResult();
-      respuesta.verifyUserResult?.message = "error sub: ${e.toString()}";
-      respuesta.verifyUserResult?.state = 3;
+      respuesta.savingsAccountTransferPOSResult = SavingsAccountTransferPOSResult();
+      respuesta.savingsAccountTransferPOSResult?.message = "error sub: ${e.toString()}";
+      respuesta.savingsAccountTransferPOSResult?.state = 3;
     }
     return respuesta;
   }
@@ -144,8 +167,8 @@ class SrvPay {
         cuentaOrigen: '117-2-1-XXXX-1',
         fechaTransaccion: DateTime.now().toString(),
         glosa: 'Pago de algo',
-        montoPago: 180,
-        nroTransaccion: 122245547,
+        montoPago: "1802",
+        nroTransaccion: "122245547",
         titular: 'Perlita perlita');
 
     return vResul;

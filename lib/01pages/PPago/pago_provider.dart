@@ -34,6 +34,7 @@ class PagoProvider with ChangeNotifier {
   List<SavingAccounts> vListaCuentaByCi=[];
   Uint8List vImgQR = Uint8List(0);
   String tokkeSavinAcountTransfer='';
+  String beneficiarioName='';
 
   bool tieneFinger = false;
 
@@ -85,18 +86,28 @@ class PagoProvider with ChangeNotifier {
 
 
 
-  getDocIdentidadPago(String pCi) async {
+  getDocIdentidadPago({required String pCi}) async {
     if (pCi.isEmpty) {
       resp = ResulProvider(
-        message: "El Documento de identidad es campo obligatorio",
+        message: "La Tarjeta es obligatorio",
         state: RespProvider.incorrecto.toString(),
       );
       return;
     }
 
-    await Future.delayed(const Duration(seconds: 2));
-   //vListaCuentaByCi = vLista;
-
+    final resul=await SrvVerifyUser.ObtieneCuentaByCI(pCI: pCi, pFinger: huellaPan);
+    if(resul.verifyUserResult!.state==1) {
+      AditionalItems addItems = resul.verifyUserResult!.object!.aditionalItems!
+          .firstWhere((element) => element.key == "SavingAccounts");
+      addItems.value=addItems.value?.replaceAll("\\", "");
+      List<dynamic>  jsonResponse = json.decode(addItems.value!);
+      final aux=jsonResponse
+          .map((e) =>
+          SavingAccounts.fromJson(e))
+          .toList();
+      vListaCuentaByCi=aux;
+      tokkeSavinAcountTransfer=resul.verifyUserResult!.object!.token!;
+    }
     if (vListaCuentaByCi.isEmpty) {
       resp = ResulProvider(
         message: "No tiene cuentas asociado al documento de identidad",
@@ -106,7 +117,7 @@ class PagoProvider with ChangeNotifier {
       resp = ResulProvider(
         message: "Registro recuperado satisfactoriamente",
         state: RespProvider.correcto.toString(),
-        obj:vLista,// vListaCuentaByCi,
+        obj: vListaCuentaByCi,
       );
     }
   }
@@ -144,29 +155,7 @@ class PagoProvider with ChangeNotifier {
     }
   }
 
-  Uint8List generateQRCode(String data) {
-    /*final encode = EncodeParams(
-      eccLevel: EccLevel.low,
-      format: Format.qrCode,
-      width: 120,
-      height: 120,
-      margin: 10,
-    );
-    final qrCode = zx.encodeBarcode(contents: data, params: encode);
 
-    if (qrCode.isValid) {
-      final buffer = qrCode.data?.buffer;
-      final img = imglib.Image.fromBytes(
-          bytes: buffer!,
-          height: 150,
-          width: 150); //(bytes:  width, height, result.data);
-      final encodedBytes = Uint8List.fromList(imglib.encodeJpg(img));
-      return encodedBytes;
-    } else {
-      print('error');
-    }*/
-    return Uint8List(0);
-  }
 
 /*eventos y metodos de card y finger*/
 
@@ -239,9 +228,10 @@ class PagoProvider with ChangeNotifier {
     if (pOperationCodeCliente.isEmpty) {
       vmessge.add("Cuenta cliente.");
     }
+    /*
     if (fingerWIdentityCard.isEmpty) {
       vmessge.add("Captura de huella.");
-    }
+    }*/
     if (UtilPreferences.getAcount().isEmpty) {
       vmessge.add("Depósito a la cuenta.");
     }
@@ -269,16 +259,19 @@ class PagoProvider with ChangeNotifier {
                                                       pIdMoneyTrans: "1",
                                                       pAmountTrans: montoWIdentityCard,
                                                       pCodeSavingAccountTarget: UtilPreferences.getAcount(),
-                                                      pTokken: tokkeSavinAcountTransfer
+                                                      pTokken: tokkeSavinAcountTransfer,
+                                                      pBeneficiarioName:UtilPreferences.getClientePos(),
+       pGlosa: glosaWIdentityCard
     );
-    if (resul.verifyUserResult!.state == 1) {
+    if (resul.savingsAccountTransferPOSResult!.state == 1) {
       resp = ResulProvider(
         message: "Registro guardado correctamente",
         state: RespProvider.correcto.toString(),
+        obj: resul.savingsAccountTransferPOSResult!.object!
       );
     } else {
       resp = ResulProvider(
-        message: resul.verifyUserResult!.message!,
+        message: resul.savingsAccountTransferPOSResult!.message!,
         state: RespProvider.incorrecto.toString(),
       );
     }
@@ -296,16 +289,18 @@ class PagoProvider with ChangeNotifier {
         pIdMoneyTrans: "1",
         pAmountTrans: montoWIdentityCard,
         pCodeSavingAccountTarget: UtilPreferences.getAcount(),
-        pTokken: tokkeSavinAcountTransfer
+        pTokken: tokkeSavinAcountTransfer,
+        pBeneficiarioName: UtilPreferences.getClientePos()
     );
-    if (resul.verifyUserResult!.state == 1) {
+    if (resul.savingsAccountTransferPOSResult!.state == 1) {
       resp = ResulProvider(
-        message: "Registro guardado correctamente",
-        state: RespProvider.correcto.toString(),
+          message: "Registro guardado correctamente",
+          state: RespProvider.correcto.toString(),
+          obj: resul.savingsAccountTransferPOSResult!.object!
       );
     } else {
       resp = ResulProvider(
-        message: resul.verifyUserResult!.message!,
+        message: resul.savingsAccountTransferPOSResult!.message!,
         state: RespProvider.incorrecto.toString(),
       );
     }
@@ -350,9 +345,9 @@ class PagoProvider with ChangeNotifier {
     if (pOperationCodeCliente.isEmpty) {
       vmessge.add("Cuenta cliente.");
     }
-    if (fingerWIdentityCard.isEmpty) {
+    /*if (fingerWIdentityCard.isEmpty) {
       vmessge.add("Captura de huella.");
-    }
+    }*/
     if (UtilPreferences.getAcount().isEmpty) {
       vmessge.add("Depósito a la cuenta.");
     }

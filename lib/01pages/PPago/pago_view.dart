@@ -180,14 +180,12 @@ class _PagoViewState extends State<PagoView> {
       UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
     }
     switch (selectTipoPago) {
-      /*case TipoPago.TARJETA:
+      case TipoPago.TARJETA:
         await provider.getNameDeviceDP();// provider.getCardFinger();
         break;
       case TipoPago.DOC_IDENTIDAD:
         await provider.getinitDocIdentidadPago();
         break;
-
-       */
       case TipoPago.QR:
         await provider.getQRPago(
             double.tryParse(_montoController.text) ?? 0, _GlosaController.text);
@@ -208,7 +206,7 @@ class _PagoViewState extends State<PagoView> {
     final Widget resul;
 
     switch (selectTipoPago) {
-     /* case TipoPago.TARJETA:
+      case TipoPago.TARJETA:
         UtilMethod.imprimir(provider.resp.state.toString());
        // if (provider.resp.state == RespProvider.correcto.toString()) {
 
@@ -228,7 +226,7 @@ class _PagoViewState extends State<PagoView> {
         // } else {
         //   resul = SizedBox(height: 100, child: Text(provider.resp.message));
         // }
-        break;*/
+        break;
       case TipoPago.QR:
         /*resul = WPagoQR(
 

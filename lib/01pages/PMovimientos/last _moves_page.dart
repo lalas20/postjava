@@ -40,6 +40,17 @@ class _LastMovesState extends State<LastMoves> {
       vLista = [];
     }
   }
+  _refresh()async{
+    UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
+    await provider.getLasMovimiento();
+    Navigator.of(context).pop();
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      vEntidad=provider.resp.obj as MasterResulMoves; //vLista = provider.resp.obj as List<ResulMoves>;
+      vLista=vEntidad!.listResulMoves!;
+    } else {
+      vLista = [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +63,7 @@ class _LastMovesState extends State<LastMoves> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ultimos movimientos"),
+        actions: [ IconButton(onPressed: _refresh, icon:const Icon(Icons.refresh)) ],
       ),
       body: SingleChildScrollView(
         child: Container(

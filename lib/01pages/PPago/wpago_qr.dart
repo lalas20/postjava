@@ -19,7 +19,6 @@ class WPagoQR extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //Uint8List bytes = const Base64Decoder().convert(imgQR);
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(

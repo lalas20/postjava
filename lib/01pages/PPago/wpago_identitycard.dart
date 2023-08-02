@@ -55,7 +55,7 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
       return;
     }
     UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
-    await provider.getDocIdentidadPago(_ciController.text);
+    await provider.getDocIdentidadPago(pCi: _ciController.text);
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
@@ -183,16 +183,18 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
+      final print=(provider.resp.obj as String).replaceAll('&', '') .split('|');
+
       final resul = PlaformChannel();
       final voucher = ResulVoucher(
         bancoDestino: 'BANCO PRODEM',
-        cuentaDestino: UtilPreferences.getAcount(), // '117-2-1-11208-1',
-        cuentaOrigen: selecAcount!.operationCode!, // '117-2-1-XXXX-1',
-        fechaTransaccion: UtilMethod.formatteDate(DateTime.now()),
-        glosa: provider.glosaWIdentityCard,
-        montoPago: provider.montoWIdentityCard,
-        nroTransaccion: 122245547,
-        titular: UtilPreferences.getClientePos(),
+        cuentaDestino:print[5],// UtilPreferences.getAcount(), // '117-2-1-11208-1',
+        cuentaOrigen:print[3], //selecAcount!.operationCode!, // '117-2-1-XXXX-1',
+        fechaTransaccion:print[1], //UtilMethod.formatteDate(DateTime.now()),
+        glosa:print[8],// provider.glosaWIdentityCard,
+        montoPago:print[2], //provider.montoWIdentityCard,
+        nroTransaccion:print[0],
+        titular:print[7],// UtilPreferences.getClientePos(),
         tipoPago: 'Doc. Identidad y huella',
       );
 

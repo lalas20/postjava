@@ -19,8 +19,8 @@ class UtilConextion {
 
   static String hangarSafe = 'HangarSafeGate/';
 
-  //ATM savinaccount
-  static String transferAccounts = 'rest/ATM.Services.IAtmServices/TransferAccounts';
+  //ATM SavingsAccountTransferMobile
+  static String SavingsAccountTransferPOS = 'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountTransferPOS';
 
 //OperacionesController
   static String verifyUser = 'rest/VerifyUser';
@@ -91,7 +91,7 @@ class UtilConextion {
   static Future<http.Response> httpPostByNewTokken(
   {required String pAction,required String pJsonEncode, required String pTokken}
       ) async {
-    final vUrl = Uri.parse(server + puertoATM + pAction);
+    final vUrl = Uri.parse(server + puerto + pAction);
     final response =
         await http.post(vUrl, headers:vHeaderByTokken(pTokken) , body: pJsonEncode);
     return response;

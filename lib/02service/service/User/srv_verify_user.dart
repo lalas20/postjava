@@ -11,7 +11,48 @@ import '../../helper/util_conextion.dart';
 
 class SrvVerifyUser {
 
+  static Future<Result> ObtieneCuentaByCI(
+      {required String pCI,
+        required String pFinger
+      }  ) async {
+    dynamic jsonResponse;
+    Result respuesta = Result();
+    try {
+      final vPing = await UtilConextion.internetConnectivity();
+      if (vPing == false) {
+        respuesta.verifyUserResult=VerifyUserResult();
+        respuesta.verifyUserResult!.codeBase = UtilConextion.errorInternet;
+        respuesta.verifyUserResult!.state = 3;
+        respuesta.verifyUserResult!.message = "No tiene acceso a internet";
+        return respuesta;
+      }
+      final vCredencialVeryUser = Credential(
+          user: pCI,
+          password: pFinger,
+          channel: 3,
+          aditionalItems: [
+            AditionalItems(key: 'IdATM', value: '9'),
+            AditionalItems(key: 'TypeAuthentication', value: 'IdentityCard'),
+          ]);
+      final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 
+      String vJSON = jsonEncode(vRes.toJson());
+      final response =
+      await UtilConextion.httpPostSin(UtilConextion.verifyUser, vJSON);
+
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        respuesta = Result.fromJson(jsonResponse);
+      } else {
+        respuesta = respuesta.errorRespuesta(response.statusCode);
+      }
+    } catch (e) {
+      respuesta.verifyUserResult = VerifyUserResult();
+      respuesta.verifyUserResult?.message = "error sub: ${e.toString()}";
+      respuesta.verifyUserResult?.state = 3;
+    }
+    return respuesta;
+  }
 
   static Future<Result> ObtieneCuentaByTarjetaPan(
   {required String pTarjetaPan,
