@@ -215,6 +215,9 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
           _iconFinger(),
           _cardNumber(),
           _cboSavingAcount(),
+          const SizedBox(
+            height: 50,
+          ),
           WBtnConstante(
             pName: "Grabar",
             fun: _saveCardFinger,

@@ -31,7 +31,7 @@ class SrvVerifyUser {
           password: pFinger,
           channel: 3,
           aditionalItems: [
-            AditionalItems(key: 'IdATM', value: '9'),
+            AditionalItems(key: 'IdATM', value: '1'),
             AditionalItems(key: 'TypeAuthentication', value: 'IdentityCard'),
           ]);
       final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);

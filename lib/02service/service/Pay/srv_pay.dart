@@ -138,12 +138,9 @@ class SrvPay {
           "IpAddress":"0.0.0.0",
           "BeneficiaryName":pBeneficiarioName
       };
-
-      //final objRequesTrans=RequestTransferAccounts(objParameter: ObjParameter(amountTrans: pAmountTrans,codeSavingAccount: pCodeSavingAccount,codeSavingAccountTarget: pCodeSavingAccountTarget,idMoneyTrans: pIdMoneyTrans));
       String vJSON = jsonEncode(map);
       final response =
-      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.SavingsAccountTransferPOS,pJsonEncode:  vJSON,pTokken: UtilPreferences.getToken());
-     // await UtilConextion.httpPost(UtilConextion.SavingsAccountTransferMobile,vJSON);
+      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.SavingsAccountTransferPOS,pJsonEncode:  vJSON,pTokken:UtilPreferences.getToken());// pTokken);// UtilPreferences.getToken());
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
         respuesta=RequestSavingsAccountTransferPOSResult.fromJson(jsonResponse);

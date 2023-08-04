@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
 import 'package:postjava/01pages/helper/wbtnconstante.dart';
 import 'package:postjava/03dominio/pos/resul_voucher.dart';
+import 'package:postjava/03dominio/user/saving_accounts.dart';
 import 'package:postjava/helper/utilmethod.dart';
 import 'package:provider/provider.dart';
 
@@ -25,11 +26,11 @@ class WPagoIdentityCard extends StatefulWidget {
 }
 
 class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
-  final _ciController = TextEditingController();
+  final _ciController = TextEditingController(text:"6148817LP" );
   late PagoProvider provider;
   late UtilResponsive responsive;
-  List<ListCodeSavingsAccount>? vListaCuentaByCi;
-  ListCodeSavingsAccount? selecAcount;
+  List<SavingAccounts>? vListaCuentaByCi;
+  SavingAccounts? selecAcount;
 
   final resul = PlaformChannel();
   late StreamSubscription _streamSubscription;
@@ -59,7 +60,7 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      vListaCuentaByCi = provider.resp.obj as List<ListCodeSavingsAccount>;
+      vListaCuentaByCi = provider.resp.obj as List<SavingAccounts>;
     } else {
       vListaCuentaByCi = List.empty();
       UtilModal.mostrarDialogoNativo(
@@ -98,17 +99,17 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
   }
 
   Widget _cboSavingAcount() {
-    return DropdownButtonFormField<ListCodeSavingsAccount>(
+    return DropdownButtonFormField<SavingAccounts>(
       items: vListaCuentaByCi == null
           ? null
-          : vListaCuentaByCi!.map<DropdownMenuItem<ListCodeSavingsAccount>>(
-              (ListCodeSavingsAccount pCuenta) {
+          : vListaCuentaByCi!.map<DropdownMenuItem<SavingAccounts>>(
+              (SavingAccounts pCuenta) {
                 return DropdownMenuItem(
                   value: pCuenta,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child:
-                        Text("${pCuenta.operationCode!}  ${pCuenta.codMoney}"),
+                        Text("${pCuenta.codeAccount!}  ${pCuenta.moneyDescription}"),
                   ),
                 );
               },
@@ -177,9 +178,9 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
         pCi: _ciController.text,
         pIdOperationEntity: selecAcount == null
             ? ''
-            : selecAcount!.idOperationEntity.toString(),
+            : selecAcount!.idSavingsAccount.toString(),
         pOperationCodeCliente:
-            selecAcount == null ? '' : selecAcount!.operationCode!);
+            selecAcount == null ? '' : selecAcount!.codeAccount!);
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {

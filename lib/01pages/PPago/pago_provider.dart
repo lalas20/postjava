@@ -95,7 +95,7 @@ class PagoProvider with ChangeNotifier {
       return;
     }
 
-    final resul=await SrvVerifyUser.ObtieneCuentaByCI(pCI: pCi, pFinger: huellaPan);
+    final resul=await SrvVerifyUser.ObtieneCuentaByCI(pCI: pCi, pFinger: huellaCI,);
     if(resul.verifyUserResult!.state==1) {
       AditionalItems addItems = resul.verifyUserResult!.object!.aditionalItems!
           .firstWhere((element) => element.key == "SavingAccounts");
@@ -168,7 +168,7 @@ class PagoProvider with ChangeNotifier {
       return;
     }
 
-    final resul=await SrvVerifyUser.ObtieneCuentaByTarjetaPan(pTarjetaPan: pCard, pFinger: huellaPan);
+    final resul=await SrvVerifyUser.ObtieneCuentaByTarjetaPan(pTarjetaPan: pCard, pFinger: huellaPan,);
     if(resul.verifyUserResult!.state==1) {
     AditionalItems addItems = resul.verifyUserResult!.object!.aditionalItems!
         .firstWhere((element) => element.key == "SavingAccounts");
@@ -278,35 +278,7 @@ class PagoProvider with ChangeNotifier {
   }
 
   /* evento de registrar el proceso de pago caso WIDENTITYCAR*/
-  savingsAccountByCiAndFinger(String pCi, String pFinger) async {
-    await Future.delayed(const Duration(seconds: 3));
-    resp = ResulProvider(
-      message: "error",
-      state: RespProvider.incorrecto.toString(),
-    );
-    return ;
-    final resul = await SrvPay.savingsTransferAccounts(pCodeSavingAccount: "",
-        pIdMoneyTrans: "1",
-        pAmountTrans: montoWIdentityCard,
-        pCodeSavingAccountTarget: UtilPreferences.getAcount(),
-        pTokken: tokkeSavinAcountTransfer,
-        pBeneficiarioName: UtilPreferences.getClientePos()
-    );
-    if (resul.savingsAccountTransferPOSResult!.state == 1) {
-      resp = ResulProvider(
-          message: "Registro guardado correctamente",
-          state: RespProvider.correcto.toString(),
-          obj: resul.savingsAccountTransferPOSResult!.object!
-      );
-    } else {
-      resp = ResulProvider(
-        message: resul.savingsAccountTransferPOSResult!.message!,
-        state: RespProvider.incorrecto.toString(),
-      );
-    }
-  }
-
-  String glosaWIdentityCard = '';
+    String glosaWIdentityCard = '';
   String fingerWIdentityCard = '';
   double montoWIdentityCard = 0;
 
@@ -364,25 +336,27 @@ class PagoProvider with ChangeNotifier {
       );
       return;
     }
-    await Future.delayed(const Duration(seconds: 3));
-    resp = ResulProvider(
-      message: "error",
-      state: RespProvider.incorrecto.toString(),
+
+    final resul = await SrvPay.savingsTransferAccounts(pCodeSavingAccount: pOperationCodeCliente,
+        pIdMoneyTrans: "1",
+        pAmountTrans: montoWIdentityCard,
+        pCodeSavingAccountTarget: UtilPreferences.getAcount(),
+        pTokken: tokkeSavinAcountTransfer,
+        pBeneficiarioName:UtilPreferences.getClientePos(),
+        pGlosa: glosaWIdentityCard
     );
-/*
-    final resul =
-        await SrvPay.savingsAccountByCiAndFinger(pCi, fingerWIdentityCard);
-    if (resul.getUserSessionInfoResult!.state == 1) {
+    if (resul.savingsAccountTransferPOSResult!.state == 1) {
       resp = ResulProvider(
-        message: "Registro guardado correctamente",
-        state: RespProvider.correcto.toString(),
+          message: "Registro guardado correctamente",
+          state: RespProvider.correcto.toString(),
+          obj: resul.savingsAccountTransferPOSResult!.object!
       );
     } else {
       resp = ResulProvider(
-        message: resul.getUserSessionInfoResult!.message!,
+        message: resul.savingsAccountTransferPOSResult!.message!,
         state: RespProvider.incorrecto.toString(),
       );
-    }*/
+    }
   }
 
   List<ListCodeSavingsAccount> vLista = [
@@ -428,4 +402,6 @@ class PagoProvider with ChangeNotifier {
 
   final huellaPan="AAEAAAD/////AQAAAAAAAAAEAQAAAH9TeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5MaXN0YDFbW1N5c3RlbS5TdHJpbmcsIG1zY29ybGliLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OV1dAwAAAAZfaXRlbXMFX3NpemUIX3ZlcnNpb24GAAAICAkCAAAAAgAAAAIAAAARAgAAAAQAAAAGAwAAAKoEPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48RmlkPjxCeXRlcz5BT2hMQWNncDQzTmN3RUUzODFhSzY1WmNaMlljblhDc2tYWnk5bXdwbG5xc205aGZHU1BZWjJYUmhtUGRMdzlsbEhsZFZqZmhPc1BoZm1EdjM0QWs5eXZZQmRFcm85bjJabnl1eWpndTFSMkNpdlo2bklzbVU3VG9TVkRuZ3BuUFNZSGExU3Y5S3VnMmM2QUZJTlNtZGUzaHdhSVlYaUlHTGtkekdzNS9XVHE4Z0tFRlI5ZTFBUVRua0pFd3NDeVVCcDh5T0xKb1VVaW95QUx3T3V5d1pLU1FvMmdBOUZDM2k1WW9CcnNOV3FOaVJHQi9OdUdXVlp6NS83ZUNnTjM4dGZkdkdMNlEwOE9udWZEbXhoWG04M1d1TnBPUzBBVm1FMzNpbHcrd0JLK05Mb1FGbkhyVFBBSHNLZDNZdEJia2RLTkc3M0RJdVBtcDhFaXZMTmh3cUxmWHF5enM1U0tndG9WcFVSYXJXVUcxK0xsQ2dsbG9peXhNcUFlMFpCa1RndDg1b1NNU0swN1UvNnpndTlFdE15RkZ4N2ozUVdtVHcySXR2QnB1aUxGcEcyQ1pNVnhJVnFjRVlTZzN1VnB2PC9CeXRlcz48Rm9ybWF0PjI8L0Zvcm1hdD48VmVyc2lvbj4xLjAuMDwvVmVyc2lvbj48L0ZpZD4GBAAAALkFPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48RmlkPjxCeXRlcz5SazFTQUNBeU1BQUFBQUcyQUFBQk9nRmlBTVVBeFFFQUFBQldSRUR1QU4zVFlZQ0JBRy83WUlEZkFQL0hYNEE5QU55MVhVRFNBRlp5WFVCUUFKNFhYRUJmQUkrWFdFQkpBSytnV0lCREFQL0ZWNEQyQVZpNVYwRHZBUnJEVm9Db0FHbjFWVUN0QUlsNVU0REVBUEhEVTRDWUFUR2dVMEJOQVZSM1VvRFBBR2ZzVDREUUFKVGpUMENFQVBsRFRZRDhBUzg1VFlDSEFPakdUWUNsQUhSN1RFRFVBTXZUVEVBeUFTdlNUSUVLQVVJMVRFQXpBSzhhU1lDVkFUYVdTWURRQUtyaFNZRWZBUld6U1lCMUFWYUFTWUMyQUdoN1NFQnZBVGhwU0VFV0FUaTFSWUI3QU5DdFJZQzBBUktyUkVDakFVcVlSSUNOQVJxaFJJRUFBUDNNUTREOEFTVkhRa0VGQVJOUVFrRUZBUzB6UW9FTEFQL09RVUM0QVJDd1FVREVBSTdvUUVDM0FKcHdQa0JEQUpZU1BVQjdBUWpPTzRDSEFOek5PWUNIQUZCOE9JRVZBUTFZT0VFQUFSNVFOa0F0QVRySU5rRUlBVG93TmdDR0FPTExOUUF6QUxVZ05BRVBBVE16TXdFY0FVQTdNd0VWQVA1Wk13RUlBVFl5TWdFVkFSYzNNQUVYQVMwNE1BQWhBT0k1TUFBaUFOaXRMd0VnQVF6QUxRRFpBVml6TFFBaUFNcXJMUUM5QVZ5d0xRRWZBVFc1S3dBQTwvQnl0ZXM+PEZvcm1hdD4xNjg0Mjc1MzwvRm9ybWF0PjxWZXJzaW9uPjEuMC4wPC9WZXJzaW9uPjwvRmlkPg0CCw==";
 final cardPan="7265210000050007";
+
+final huellaCI="AAEAAAD/////AQAAAAAAAAAEAQAAAH9TeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5MaXN0YDFbW1N5c3RlbS5TdHJpbmcsIG1zY29ybGliLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OV1dAwAAAAZfaXRlbXMFX3NpemUIX3ZlcnNpb24GAAAICAkCAAAAAgAAAAIAAAARAgAAAAQAAAAGAwAAAJIDPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48RmlkPjxCeXRlcz5BT2pZQU1ncDQzTmN3RUUzODFhS3E1SmNaMmJQd0RqeVBpV2Q2M2tUa0ZxdXBOVWx4eWs0VHdqUU5jWi90QUhxZTg4K3BkTUNmclpKZjMxTyszUTJmS1VCT3dKQmJRd2Rzc2ZrWHBlTmNhY3VMSThnbElSMExZOVZpbG1GSlo3STJ4eGhSdExOMXdyWE1MelNncWFOdEZHbmt4NnVLTU85S1MvTmhabm1zOHNwb2kzZVJhM0JLa2FOUk84aGZkaGQ5dWRSVEtWMnV5UEYwcDhNSzNXVjNNWktia0lTUFZmTThuT21OZTQrUE9vUXhIR21lM2xmREZIU2VIU0lyTWtNckMvYnZQNGljT2p2eEFJUVV2MlZUVFRUeXJiWGQrdXJHc1pVbFc4PTwvQnl0ZXM+PEZvcm1hdD4yPC9Gb3JtYXQ+PFZlcnNpb24+MS4wLjA8L1ZlcnNpb24+PC9GaWQ+BgQAAACBAzw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9IlVURi04Ij8+PEZpZD48Qnl0ZXM+UmsxU0FDQXlNQUFBQUFETUFBQUJPZ0ZpQU1VQXhRRUFBQUJXSFlESEFSaFNYb0RiQVBkTlhvQnZBSVNWWFlCREFVOVlYSUM4QUw1WFc0RENBSnZUV2tEVUFITmdXVUJGQUtDaFdVQ2VBU2xRV0VDNEFGeHBWMERyQVBMT1ZrQmJBTXUxVllCbUFHT1FWSURlQVRoVlZJQ1RBSmFEVWtDUkFEenRUMER4QUlyVFQwQTRBUGZBVGtESkFHL2RUVURvQU1KUVRVRHZBUDFKVFlCR0FNZXlUSUR3QU1YVVMwQ05BTzdKU0lDS0FOWEtSSUNRQU1mVFBrQ0JBVnhnT2dDSEFNS3VNd0NOQU0vT01RQUE8L0J5dGVzPjxGb3JtYXQ+MTY4NDI3NTM8L0Zvcm1hdD48VmVyc2lvbj4xLjAuMDwvVmVyc2lvbj48L0ZpZD4NAgs=";
 }
