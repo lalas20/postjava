@@ -187,7 +187,7 @@ public class EmvChannel implements EventChannel.StreamHandler {
                 final String exp = track2[0].substring(index, index + 4);
                 Log.d("onConfirmCardNo", "pan: "+ pan[0]);
                 Log.d("onConfirmCardNo", "exp: "+ exp);
-                txtPanExp=pan[0] +" :: "+exp;
+                txtPanExp=pan[0];
                 return 0;
             }
 
@@ -208,7 +208,7 @@ public class EmvChannel implements EventChannel.StreamHandler {
                     final String exp = track2[0].substring(index, index + 4);
                     Log.d("onInputPIN", "pan: "+ pan[0]);
                     Log.d("onInputPIN", "exp: "+ exp);
-                    txtPanExp=pan[0] +" :: "+exp;
+                    txtPanExp=pan[0];
                 }
                 Log.d("Debug", "onInputPIN");
                 int iRet = 0;

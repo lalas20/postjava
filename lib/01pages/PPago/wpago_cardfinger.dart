@@ -27,7 +27,7 @@ class WPagoCardFinger extends StatefulWidget {
 }
 
 class _WPagoCardFingerState extends State<WPagoCardFinger> {
-  final _txtCard = TextEditingController( text: "7265210000050007");
+  final _txtCard = TextEditingController( text:"0");// "7265210000050007");
 
   late UtilResponsive responsive;
   late PagoProvider provider;
@@ -49,7 +49,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _listenStreamCard(value) {
-    //_txtCard.text = value;
+    _txtCard.text = value;
     getCboSavingAcount();
   }
 
@@ -270,7 +270,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
         ),
         WBtnConstante(
           pName: "",
-          fun:getCboSavingAcount,// _findCardNumber,
+          fun:_findCardNumber,//getCboSavingAcount,// _findCardNumber,
           ico: const Icon(Icons.find_in_page),
         )
       ],

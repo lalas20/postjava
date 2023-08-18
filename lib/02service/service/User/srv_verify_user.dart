@@ -29,10 +29,12 @@ class SrvVerifyUser {
       final vCredencialVeryUser = Credential(
           user: pCI,
           password: pFinger,
-          channel: 3,
+          channel: 6,
           aditionalItems: [
-            AditionalItems(key: 'IdATM', value: '1'),
-            AditionalItems(key: 'TypeAuthentication', value: 'IdentityCard'),
+            AditionalItems(key: 'IP', value: '255.255.255.255'),
+            AditionalItems(key: 'TypeAuthentication', value: 'MasterCard'),
+            AditionalItems(key: 'Subchanel', value: 'ClientComerce'),
+            AditionalItems(key: 'IdPOS', value: '0'),
           ]);
       final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 
@@ -72,10 +74,12 @@ class SrvVerifyUser {
     final vCredencialVeryUser = Credential(
         user: pTarjetaPan,
         password: pFinger,
-        channel: 3,
+        channel: 6,
         aditionalItems: [
-          AditionalItems(key: 'IdATM', value: '9'),
+          AditionalItems(key: 'IP', value: '255.255.255.255'),
           AditionalItems(key: 'TypeAuthentication', value: 'MasterCard'),
+          AditionalItems(key: 'Subchanel', value: 'ClientComerce'),
+          AditionalItems(key: 'IdPOS', value: '0'),
         ]);
     final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 

@@ -183,7 +183,7 @@ class PagoProvider with ChangeNotifier {
     }
     if (vListaCuentaByCi.isEmpty) {
       resp = ResulProvider(
-        message: "No tiene cuentas asociado al documento de identidad",
+        message: "No tiene cuentas: ${resul.verifyUserResult!.message!}",
         state: RespProvider.incorrecto.toString(),
       );
     } else {

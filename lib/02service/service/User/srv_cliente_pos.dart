@@ -109,9 +109,12 @@ class SrvClientePos {
       final vCredencialVeryUser = Credential(
           user: pDI,
           password: pPass,
-          channel: 1,
+          channel: 6,
           aditionalItems: [
-            AditionalItems(key: 'IP', value: '255.255.255.255')
+            AditionalItems(key: 'IP', value: '255.255.255.255'),
+            AditionalItems(key: 'TypeAuthentication', value: '0'),
+            AditionalItems(key: 'Subchanel', value: 'OwnerComerce'),
+            AditionalItems(key: 'IdPOS', value: '0')
           ]);
       final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 
