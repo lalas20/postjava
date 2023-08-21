@@ -32,7 +32,7 @@ class SrvVerifyUser {
           channel: 6,
           aditionalItems: [
             AditionalItems(key: 'IP', value: '255.255.255.255'),
-            AditionalItems(key: 'TypeAuthentication', value: 'MasterCard'),
+            AditionalItems(key: 'TypeAuthentication', value: 'IdentityCard'),
             AditionalItems(key: 'Subchanel', value: 'ClientComerce'),
             AditionalItems(key: 'IdPOS', value: '0'),
           ]);

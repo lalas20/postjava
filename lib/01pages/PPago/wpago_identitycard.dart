@@ -26,7 +26,7 @@ class WPagoIdentityCard extends StatefulWidget {
 }
 
 class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
-  final _ciController = TextEditingController(text:"6148817LP" );
+  final _ciController = TextEditingController(text:"756674BE" );
   late PagoProvider provider;
   late UtilResponsive responsive;
   List<SavingAccounts>? vListaCuentaByCi;

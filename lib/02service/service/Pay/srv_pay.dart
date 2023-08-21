@@ -79,25 +79,6 @@ class SrvPay {
     return respuesta;
   }
 
-  static Future<ResulGetUserSessionInfo> savingsAccountByCard(
-      String pCard) async {
-    ResulGetUserSessionInfo respuesta = ResulGetUserSessionInfo();
-    respuesta.getUserSessionInfoResult = GetUserSessionInfoResult();
-    try {
-      respuesta.getUserSessionInfoResult!.state = 1;
-      respuesta.getUserSessionInfoResult!.code = "1";
-      respuesta.getUserSessionInfoResult!.codeBase = "1";
-      respuesta.getUserSessionInfoResult!.message =
-          "Registro recuperado correctamente";
-    } catch (e) {
-      respuesta.getUserSessionInfoResult!.state = 3;
-      respuesta.getUserSessionInfoResult!.code = "3";
-      respuesta.getUserSessionInfoResult!.codeBase = "3";
-      respuesta.getUserSessionInfoResult!.message = e.toString();
-    }
-    return respuesta;
-  }
-
   static Future<RequestSavingsAccountTransferPOSResult> savingsTransferAccounts(
       {required String pCodeSavingAccount,
         required String pIdMoneyTrans,
@@ -111,6 +92,7 @@ class SrvPay {
   async
   {
     dynamic jsonResponse;
+    String vAux="0";
     RequestSavingsAccountTransferPOSResult respuesta = RequestSavingsAccountTransferPOSResult();
     try{
       final vPing = await UtilConextion.internetConnectivity();
@@ -121,7 +103,7 @@ class SrvPay {
         respuesta.savingsAccountTransferPOSResult!.message = "No tiene acceso a internet";
         return respuesta;
       }
-
+      vAux="125";
       Map<String,dynamic>map={
           "CodeSavingAccountSource":pCodeSavingAccount,
           "IdPerson":UtilPreferences.getsIdPerson(),
@@ -138,20 +120,27 @@ class SrvPay {
           "IpAddress":"0.0.0.0",
           "BeneficiaryName":pBeneficiarioName
       };
+      vAux="142";
       String vJSON = jsonEncode(map);
+      vAux="144";
       final response =
-      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.SavingsAccountTransferPOS,pJsonEncode:  vJSON,pTokken:UtilPreferences.getToken());// pTokken);// UtilPreferences.getToken());
+      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.SavingsAccountTransferPOS,pJsonEncode:  vJSON,pTokken:UtilPreferences.getToken());
+      vAux="147";
       if (response.statusCode == 200) {
+        vAux="149";
         jsonResponse = json.decode(response.body);
+        vAux="151";
         respuesta=RequestSavingsAccountTransferPOSResult.fromJson(jsonResponse);
+        vAux="153";
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
+        vAux="156";
       }
     }
     catch(e)
     {
       respuesta.savingsAccountTransferPOSResult = SavingsAccountTransferPOSResult();
-      respuesta.savingsAccountTransferPOSResult?.message = "error sub: ${e.toString()}";
+      respuesta.savingsAccountTransferPOSResult?.message = "error $vAux: ${e.toString()}";
       respuesta.savingsAccountTransferPOSResult?.state = 3;
     }
     return respuesta;
