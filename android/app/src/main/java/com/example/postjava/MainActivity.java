@@ -60,9 +60,10 @@ public class MainActivity extends FlutterActivity {
                         Log.i("onMethodCall", "disposeEMV: 55");
                         break;
                     case "searchEMV":
+                        Log.i("searchEMV", "inicial verificaGetIcCard ");
                         emvChannel.initSdk();
-                        result.success("searchEMV");
                         Log.i("onMethodCall", "searchEMV: 55");
+                        result.success("searchEMV");
                         break;
                     case "disposeCardIc":
                         cardChannel.disposeCardIc();

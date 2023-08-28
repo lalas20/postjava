@@ -39,6 +39,11 @@ public class EmvChannel implements EventChannel.StreamHandler {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private Runnable runnable = new Runnable() {
     public void run() {
+        if (txtPanExp=="onNoCard"){
+            EmvEventSink.success(txtPanExp);
+            Log.i("runnable", "onNoCard");
+            return;
+        }
         Log.i("runnable", "run: 42");
         if (count > maxcount) {
             Log.i("runnable", "count > maxcount");
@@ -78,7 +83,6 @@ public class EmvChannel implements EventChannel.StreamHandler {
         mHandler.postDelayed(this, 2000);
     }
 };
-
 
     void initSdk() {
         // Config the SDK base info
@@ -122,6 +126,7 @@ public class EmvChannel implements EventChannel.StreamHandler {
         @Override
         public void onNoCard(CardReaderTypeEnum arg0, boolean arg1) {
             Log.i("OnSearchCardListener", " onNoCard");
+            txtPanExp="onNoCard";
         }
     };
     void readIc() {

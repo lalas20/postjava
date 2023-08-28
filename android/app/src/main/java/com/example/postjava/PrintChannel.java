@@ -25,49 +25,59 @@ public class PrintChannel {
     }
 
     public String printVoucher(PrintVoucher printVoucher ){
-
         String vRespuesta;
-        mDriverManager = DriverManager.getInstance();
-        if(mDriverManager==null){ vRespuesta="drive"; return vRespuesta;}
-        Log.d("pengzhan","zcs_model_code = ");
-        mPrinter = mDriverManager.getPrinter();
-        if(mPrinter==null){ vRespuesta="mPrinter"; return vRespuesta;}
-        int printStatus = mPrinter.getPrinterStatus();
-        if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
-            vRespuesta="Error";
-        } else {
-            PrnStrFormat format = new PrnStrFormat();
-            format.setTextSize(30);
-            format.setAli(Layout.Alignment.ALIGN_CENTER);
-            format.setStyle(PrnTextStyle.BOLD);
-            format.setFont(PrnTextFont.SANS_SERIF);
-            mPrinter.setPrintAppendString("PRODEM - POS ", format);
-            format.setTextSize(20);
-            format.setStyle(PrnTextStyle.NORMAL);
-            format.setAli(Layout.Alignment.ALIGN_NORMAL);
-            mPrinter.setPrintAppendString(" ", format);
-            mPrinter.setPrintAppendString(printVoucher.bancoDestino, format);
-            mPrinter.setPrintAppendString(printVoucher.nroTransaccion, format);
-            mPrinter.setPrintAppendString(printVoucher.titular, format);
-            mPrinter.setPrintAppendString(printVoucher.fechaTransaccion, format);
-            mPrinter.setPrintAppendString(printVoucher.montoPago, format);
-            format.setTextSize(20);
-            mPrinter.setPrintAppendString(printVoucher.cuentaOrigen, format);
-            mPrinter.setPrintAppendString(printVoucher.cuentaDestino, format);
-            mPrinter.setPrintAppendString(printVoucher.tipoPago, format);
-            format.setTextSize(20);
-            format.setStyle(PrnTextStyle.NORMAL);
-            format.setAli(Layout.Alignment.ALIGN_NORMAL);
-            mPrinter.setPrintAppendString(printVoucher.glosa, format);
+        try {
 
-            mPrinter.setPrintAppendString(" ", format);
-            mPrinter.setPrintAppendString(" -----------------------------", format);
-
-            mPrinter.setPrintAppendString(" ", format);
-            mPrinter.setPrintAppendString(" ", format);
-            printStatus = mPrinter.setPrintStart();
-            vRespuesta="ejecucion del print " + printStatus;
-
+            mDriverManager = DriverManager.getInstance();
+            if (mDriverManager == null) {
+                vRespuesta = "drive";
+                return vRespuesta;
+            }
+            Log.d("pengzhan", "zcs_model_code = ");
+            mPrinter = mDriverManager.getPrinter();
+            if (mPrinter == null) {
+                vRespuesta = "mPrinter";
+                return vRespuesta;
+            }
+            int printStatus = mPrinter.getPrinterStatus();
+            if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                vRespuesta = "Error";
+            } else {
+                PrnStrFormat format = new PrnStrFormat();
+                format.setTextSize(30);
+                format.setAli(Layout.Alignment.ALIGN_CENTER);
+                format.setStyle(PrnTextStyle.BOLD);
+                format.setFont(PrnTextFont.SANS_SERIF);
+                mPrinter.setPrintAppendString("PRODEM - POS ", format);
+                format.setTextSize(20);
+                format.setStyle(PrnTextStyle.NORMAL);
+                format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                mPrinter.setPrintAppendString(" ", format);
+                mPrinter.setPrintAppendString(printVoucher.bancoDestino, format);
+                mPrinter.setPrintAppendString(printVoucher.nroTransaccion, format);
+                mPrinter.setPrintAppendString(printVoucher.titular, format);
+                mPrinter.setPrintAppendString(printVoucher.fechaTransaccion, format);
+                mPrinter.setPrintAppendString(printVoucher.montoPago, format);
+                format.setTextSize(20);
+                mPrinter.setPrintAppendString(printVoucher.cuentaOrigen, format);
+                mPrinter.setPrintAppendString(printVoucher.cuentaDestino, format);
+                mPrinter.setPrintAppendString(printVoucher.tipoPago, format);
+                format.setTextSize(20);
+                format.setStyle(PrnTextStyle.NORMAL);
+                format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                mPrinter.setPrintAppendString(printVoucher.glosa, format);
+                mPrinter.setPrintAppendString(" ", format);
+                mPrinter.setPrintAppendString(" -----------------------------", format);
+                mPrinter.setPrintAppendString(" ", format);
+                mPrinter.setPrintAppendString(" ", format);
+                printStatus = mPrinter.setPrintStart();
+                vRespuesta = "ejecucion del print " + printStatus;
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d("printVoucher","excepcion:" + e.getMessage());
+            vRespuesta=e.getMessage();
         }
         return  vRespuesta;
     }

@@ -109,7 +109,7 @@ class SrvPay {
           "IdPerson":UtilPreferences.getsIdPerson(),
           "CodeSavingAccountTarget": pCodeSavingAccountTarget,
           "AmountTransfer":pAmountTrans,
-          "IdMoneyTransfer":pIdMoneyTrans,
+          "IdMoneyTransfer":1,
           "Observation":pGlosa,
           "IsNaturalClient": true,
           "reasonDestiny":"",

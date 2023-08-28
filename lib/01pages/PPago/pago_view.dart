@@ -84,7 +84,10 @@ class _PagoViewState extends State<PagoView> {
       },
       decoration: UtilConstante.entrada(
         labelText: "Glosa",
-        icon: Icon(Icons.edit_document, color: UtilConstante.btnColor),
+        icon: Icon(Icons.edit_document,
+            color: provider.glosaWIdentityCard.isEmpty
+                ? Colors.red
+                : UtilConstante.btnColor),
       ),
       keyboardType: TextInputType.multiline,
       maxLength: 60,
@@ -115,7 +118,10 @@ class _PagoViewState extends State<PagoView> {
       },
       decoration: UtilConstante.entrada(
         labelText: "Monto a pagar",
-        icon: Icon(Icons.monetization_on, color: UtilConstante.btnColor),
+        icon: Icon(Icons.monetization_on,
+            color: provider.montoWIdentityCard == 0
+                ? Colors.red
+                : UtilConstante.btnColor),
       ),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       onChanged: (value) {
@@ -140,7 +146,10 @@ class _PagoViewState extends State<PagoView> {
       },
       decoration: UtilConstante.entrada(
         labelText: "Depósito a la cuenta",
-        icon: Icon(Icons.card_travel, color: UtilConstante.btnColor),
+        icon: Icon(Icons.card_travel,
+            color: _depositoController.text.isEmpty
+                ? Colors.red
+                : UtilConstante.btnColor),
       ),
       keyboardType: TextInputType.text,
     );
@@ -171,7 +180,10 @@ class _PagoViewState extends State<PagoView> {
       hint: const Text("Seleccion un tipo"),
       decoration: UtilConstante.entrada(
           labelText: "Tipo de Pago",
-          icon: Icon(Icons.list_outlined, color: UtilConstante.btnColor)),
+          icon: Icon(Icons.list_outlined,
+              color: selectTipoPago == null
+                  ? Colors.red
+                  : UtilConstante.btnColor)),
     );
   }
 
@@ -181,7 +193,7 @@ class _PagoViewState extends State<PagoView> {
     }
     switch (selectTipoPago) {
       case TipoPago.TARJETA:
-        await provider.getNameDeviceDP();// provider.getCardFinger();
+        await provider.getNameDeviceDP(); // provider.getCardFinger();
         break;
       case TipoPago.DOC_IDENTIDAD:
         await provider.getinitDocIdentidadPago();
@@ -207,12 +219,12 @@ class _PagoViewState extends State<PagoView> {
 
     switch (selectTipoPago) {
       case TipoPago.TARJETA:
-        UtilMethod.imprimir(provider.resp.state.toString());
-       // if (provider.resp.state == RespProvider.correcto.toString()) {
+        // UtilMethod.imprimir(provider.resp.state.toString());
+        // if (provider.resp.state == RespProvider.correcto.toString()) {
 
-          resul = const WPagoCardFinger();
+        resul = const WPagoCardFinger();
         //} else {
-          //resul = SizedBox(height: 100, child: Text(provider.resp.message));
+        //resul = SizedBox(height: 100, child: Text(provider.resp.message));
         //}
         break;
       case TipoPago.DOC_IDENTIDAD:
@@ -238,7 +250,7 @@ class _PagoViewState extends State<PagoView> {
           resul = WPagoQR(
             monto: provider.vMontoPagar,
             fun: closeQr,
-    imgTxt: provider.resp.obj.toString(),
+            imgTxt: provider.resp.obj.toString(),
           );
         } else {
           resul = SizedBox(

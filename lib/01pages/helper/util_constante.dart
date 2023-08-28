@@ -35,7 +35,7 @@ class UtilConstante {
       icon: icon,
       prefixIconColor: Colors.red,
       floatingLabelStyle: TextStyle(
-          color: UtilConstante.btnColor,
+          color:UtilConstante.btnColor,
           fontSize: 18,
           fontWeight: FontWeight.bold),
       hintText: hintText,

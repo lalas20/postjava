@@ -1,3 +1,7 @@
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -37,24 +41,46 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.postjava"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-       // se debe cambiar si se puede compilar el min de sdk 19 target 26, compile version 26
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+        debug {
             signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs'] // Ruta relativa a los archivos .so28082023
         }
     }
 }
 
+flutter {
+    source '../..'
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -62,13 +88,5 @@ dependencies {
     implementation files('libs/scan_activate_2.1.6.jar')
     implementation files('libs/gson-2.2.4.jar')
     implementation files('libs/scan_activate_2.1.6.jar')
-    implementation files('libs/SmartPos_1.6.8_R230206.jar')
-
-
-}
-
-
-
-flutter {
-    source '../..'
+    implementation files('libs/dpuareu.aar')
 }

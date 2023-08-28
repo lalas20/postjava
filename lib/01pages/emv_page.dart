@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../02service/channel/plataformchannel.dart';
-
+/* clase a eliminar*/
 class EmvPage extends StatefulWidget {
   const EmvPage({super.key});
   static String route = '/EmvPage';
@@ -21,7 +21,7 @@ class _EmvPageState extends State<EmvPage> {
   void _researchICC() {
     _streamSubscription =
         resul.emvChannel.event.receiveBroadcastStream().listen(_listenStream);
-    resul.emvChannel.emvSearch();
+   // resul.emvChannel.emvSearch();
   }
 
   void _listenStream(value) {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:postjava/02service/channel/plataformchannel.dart';
+import 'package:postjava/helper/utilmethod.dart';
 
 class EmvChannel extends ChannelMethod {
   static const searchEMV = "searchEMV";
@@ -23,8 +24,8 @@ class EmvChannel extends ChannelMethod {
   Future<String> emvSearch() async {
     String rpt = '';
     try {
-      await _channel.invokeMethod(searchEMV);
-      rpt = 'ingreso';
+    rpt=  await _channel.invokeMethod(searchEMV);
+      UtilMethod.imprimir('emvSearch: $rpt');
     } catch (e) {
       rpt = e.toString();
     }

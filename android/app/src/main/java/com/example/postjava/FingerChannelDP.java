@@ -30,6 +30,7 @@ import com.digitalpersona.uareu.dpfpddusbhost.DPFPDDUsbException;
 import com.digitalpersona.uareu.dpfpddusbhost.DPFPDDUsbHost;
 import com.digitalpersona.uareu.jni.DpfjQuality;
 import com.example.postjava.utils.Globals;
+import com.example.postjava.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -193,12 +194,15 @@ public class FingerChannelDP {
         {
             try {
                 if(m_reader!=null)
-                m_reader.CancelCapture();
+                {
+                    m_reader.CancelCapture();
+                }
             } catch (Exception e) {
                 Log.w("UareUSampleJava", "error during reader CancelCapture: " + e.getMessage());
             }
-           if(m_reader!=null)
-            m_reader.Close();
+           if(m_reader!=null) {
+               m_reader.Close();
+           }
         }
         catch (Exception e)
         {
@@ -207,13 +211,25 @@ public class FingerChannelDP {
     }
 
     public HashMap<String, String>   initFingerDP(Context applContext){
-        Log.i(TAG, "initFingerDP: 31 ini" );
+        Log.i(TAG, "initFingerDP: 31 ini" );Utils.writeToLogFile("initFingerDP: 31 ini");
         m_deviceName="";
-        map.clear();
+        map.clear();Utils.writeToLogFile("despues de borrar map");
         try {
-
-            readers = UareUGlobal.GetReaderCollection(applContext);
+            Utils.writeToLogFile("antes de GetReaderCollection");
+            try {
+                Utils.writeToLogFile("antes de getReaders");
+                //readers = UareUGlobal.GetReaderCollection(applContext);
+                readers =Globals.getInstance().getReaders(applContext);
+                Utils.writeToLogFile("despues de getReaders");
+            }catch(Exception e){
+                Utils.writeToLogFile("ex"+e.getMessage());
+                map.put("state","03");
+                map.put("message","excepcion: " + e.getMessage());
+                onBackPressed();
+                return  map;
+            }
             Log.i(TAG, "initFingerDP: 36" );
+            Utils.writeToLogFile("initFingerDP: 36");
             readers.GetReaders();
             if (readers.size()==0)
             {
@@ -228,32 +244,34 @@ public class FingerChannelDP {
 
             m_reader= readers.get(0);
             m_deviceName=readers.get(0).GetDescription().name;
+            Utils.writeToLogFile("m_deviceName: " +m_deviceName);
             //add permisos usb
             if((m_deviceName != null) && !m_deviceName.isEmpty())
             {
+                Utils.writeToLogFile("m_deviceName: NO ES VACIO");
                 try
                 {
-                    Log.i("initFingerDP","revisando permisos");
+                    Log.i("initFingerDP","revisando permisos");Utils.writeToLogFile("revisando permisos");
                     PendingIntent mPermissionIntent;
-                    Log.i("initFingerDP","mPermissionIntent");
+                    Log.i("initFingerDP","mPermissionIntent"); Utils.writeToLogFile("mPermissionIntent 246");
                     mPermissionIntent = PendingIntent.getBroadcast(applContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                    Log.i("initFingerDP","mPermissionIntent");
+                    Log.i("initFingerDP","mPermissionIntent");Utils.writeToLogFile("mPermissionIntent 248");
                     IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-                    Log.i("initFingerDP","filter");
+                    Log.i("initFingerDP","filter"); Utils.writeToLogFile("filter 250");
                     applContext.registerReceiver(mUsbReceiver, filter);
-                    Log.i("initFingerDP","registerReceiver");
+                    Log.i("initFingerDP","registerReceiver"); Utils.writeToLogFile("registerReceiver 252");
                     if(DPFPDDUsbHost.DPFPDDUsbCheckAndRequestPermissions(applContext, mPermissionIntent, m_deviceName))
                     {
-                        Log.i("initFingerDP","ini CheckDevice");
+                        Log.i("initFingerDP","ini CheckDevice"); Utils.writeToLogFile("ini CheckDevice 255");
                         //CheckDevice();
                         m_reader.Open(Priority.EXCLUSIVE);
                         m_reader.Close();
-                        Log.i("initFingerDP","fin CheckDevice");
+                        Log.i("initFingerDP","fin CheckDevice");  Utils.writeToLogFile("fin CheckDevice 259");
                     }
 
                 } catch (DPFPDDUsbException e)
                 {
-                    Log.i("initFingerDP","sin permisos" + e.getMessage());
+                    Log.i("initFingerDP","sin permisos" + e.getMessage()); Utils.writeToLogFile("sin permisos" + e.getMessage());
                     displayReaderNotFound(e.getMessage());
                     map.put("state","02");
                     map.put("message","excepcion: "+e.toString() );
@@ -264,7 +282,7 @@ public class FingerChannelDP {
             {
                 m_deviceName="";
                 map.put("state","01");
-                map.put("message","dispositivo no tiene nombre ");
+                map.put("message","dispositivo no tiene nombre ");Utils.writeToLogFile("dispositivo no tiene nombre");
             }
             m_reader.Open(Priority.EXCLUSIVE);
             map.put("state","00");
@@ -272,7 +290,7 @@ public class FingerChannelDP {
         }
         catch (Exception e)
         {
-            Log.i("initFingerDP","ex"+e.getMessage());
+            Log.i("initFingerDP","ex"+e.getMessage()); Utils.writeToLogFile("ex"+e.getMessage());
             map.put("state","03");
             map.put("message","excepcion: " + e.getMessage());
         }
