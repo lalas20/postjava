@@ -8,3 +8,6 @@
 
 #Aquí lo que indica el plugin
 -keep class com.digitalpersona.uareu.** { *; }
+-keep class com.zcs.base.SmartPosJni{*;}
+-keep class com.zcs.sdk.DriverManager{*;}
+-keep class com.zcs.sdk.emv.**{*;}
