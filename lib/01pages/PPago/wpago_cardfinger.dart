@@ -27,7 +27,7 @@ class WPagoCardFinger extends StatefulWidget {
 }
 
 class _WPagoCardFingerState extends State<WPagoCardFinger> {
-  final _txtCard = TextEditingController();// "7265210000050007");
+  final _txtCard = TextEditingController(); // "7265210000050007");
 
   late UtilResponsive responsive;
   late PagoProvider provider;
@@ -42,7 +42,6 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   final resul = PlaformChannel();
 
   void _findCardNumber() {
-
     UtilModal.mostrarDialogoSinCallback(context, "Buscando Tarjeta...");
     _streamSubscriptionCard = resul.emvChannel.event
         .receiveBroadcastStream()
@@ -51,14 +50,14 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   }
 
   void _listenStreamCard(value) {
-    if(value!="onNoCard"){
+    if (value != "onNoCard") {
       _txtCard.text = value;
     }
     getCboSavingAcount();
   }
 
   void getCboSavingAcount() async {
-    selecAcount=null;
+    selecAcount = null;
     Navigator.of(context).pop();
     if (_txtCard.text.isEmpty) {
       UtilModal.mostrarDialogoNativo(
@@ -69,7 +68,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
             style: TextStyle(color: UtilConstante.btnColor),
           ),
           "Aceptar",
-              () {});
+          () {});
       return;
     }
     UtilModal.mostrarDialogoSinCallback(context, "Buscando Cuenta...");
@@ -95,10 +94,9 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   void _findFinger() async {
     UtilModal.mostrarDialogoSinCallback(context, "Buscando...");
 
-  await  provider.getNameDeviceDP();
+    await provider.getNameDeviceDP();
 
-  if(provider.resp.state==RespProvider.incorrecto.toString())
-    {
+    if (provider.resp.state == RespProvider.incorrecto.toString()) {
       Navigator.of(context).pop();
       tieneFinger = false;
       UtilModal.mostrarDialogoNativo(
@@ -109,27 +107,26 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
             style: TextStyle(color: UtilConstante.btnColor),
           ),
           "Aceptar",
-              () {});
+          () {});
       return;
     }
 
-  await provider.getFingerDP();
+    await provider.getFingerDP();
     Navigator.of(context).pop();
-  if(provider.resp.state==RespProvider.incorrecto.toString())
-  {
-    tieneFinger = false;
-    UtilModal.mostrarDialogoNativo(
-        context,
-        "Atención",
-        Text(
-          provider.resp.message,
-          style: TextStyle(color: UtilConstante.btnColor),
-        ),
-        "Aceptar",
-            () {});
-    return;
-  }
-  tieneFinger = true;
+    if (provider.resp.state == RespProvider.incorrecto.toString()) {
+      tieneFinger = false;
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
+      return;
+    }
+    tieneFinger = true;
   }
 
   @override
@@ -142,28 +139,30 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
   _saveCardFinger() async {
     UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
     await provider.saveCardFinger(
-        pIdOperationEntity: selecAcount == null
-            ? ''
-            : selecAcount!.idSavingsAccount.toString(),
-        pOperationCodeCliente:
-            selecAcount == null ? '' : selecAcount!.codeAccount!,
+      pIdOperationEntity:
+          selecAcount == null ? '' : selecAcount!.idSavingsAccount.toString(),
+      pOperationCodeCliente:
+          selecAcount == null ? '' : selecAcount!.codeAccount!,
     );
 
     Navigator.of(context).pop();
 
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      final print=(provider.resp.obj as String).replaceAll('&', '') .split('|');
+      final print =
+          (provider.resp.obj as String).replaceAll('&', '').split('|');
 
       final resul = PlaformChannel();
       final voucher = ResulVoucher(
         bancoDestino: 'BANCO PRODEM',
-        cuentaDestino:print[5],// UtilPreferences.getAcount(), // '117-2-1-11208-1',
-        cuentaOrigen:print[3], //selecAcount!.operationCode!, // '117-2-1-XXXX-1',
-        fechaTransaccion:print[1], //UtilMethod.formatteDate(DateTime.now()),
-        glosa:print[8],// provider.glosaWIdentityCard,
-        montoPago:print[2], //provider.montoWIdentityCard,
-        nroTransaccion:print[0],
-        titular:print[7],// UtilPreferences.getClientePos(),
+        cuentaDestino:
+            print[5], // UtilPreferences.getAcount(), // '117-2-1-11208-1',
+        cuentaOrigen:
+            print[3], //selecAcount!.operationCode!, // '117-2-1-XXXX-1',
+        fechaTransaccion: print[1], //UtilMethod.formatteDate(DateTime.now()),
+        glosa: print[8], // provider.glosaWIdentityCard,
+        montoPago: print[2], //provider.montoWIdentityCard,
+        nroTransaccion: print[0],
+        titular: print[7], // UtilPreferences.getClientePos(),
         tipoPago: 'Tarjeta y huella',
       );
 
@@ -259,8 +258,8 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
                   value: pCuenta,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child:
-                        Text("${pCuenta.codeAccount!}  ${pCuenta.moneyDescription}"),
+                    child: Text(
+                        "${pCuenta.codeAccount!}  ${pCuenta.moneyDescription}"),
                   ),
                 );
               },
@@ -273,7 +272,9 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
       hint: const Text("Seleccione una cuenta"),
       decoration: UtilConstante.entrada(
           labelText: "Cuenta cliente",
-          icon: Icon(Icons.list_outlined, color:selecAcount == null?Colors.red: UtilConstante.btnColor)),
+          icon: Icon(Icons.list_outlined,
+              color:
+                  selecAcount == null ? Colors.red : UtilConstante.btnColor)),
     );
   }
 
@@ -287,14 +288,20 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
             readOnly: true,
             decoration: UtilConstante.entrada(
                 labelText: "Tarjeta Debito",
-                icon:
-                    Icon(Icons.card_membership, color:_txtCard.text.isEmpty?Colors.red: UtilConstante.btnColor)),
+                icon: Icon(Icons.card_membership,
+                    color: _txtCard.text.isEmpty
+                        ? Colors.red
+                        : UtilConstante.btnColor)),
           ),
         ),
         WBtnConstante(
           pName: "",
-          fun:_findCardNumber,//getCboSavingAcount,// _findCardNumber,
-          ico: Icon(Icons.find_in_page,color:vListaCuentaByCi==null?Colors.red:UtilConstante.btnColor,),
+          fun: _findCardNumber, //getCboSavingAcount,// _findCardNumber,
+          ico: Icon(
+            Icons.find_in_page,
+            color:
+                vListaCuentaByCi == null ? Colors.red : UtilConstante.btnColor,
+          ),
         )
       ],
     );

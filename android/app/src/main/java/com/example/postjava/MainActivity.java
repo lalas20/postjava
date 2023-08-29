@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -77,9 +79,8 @@ public class MainActivity extends FlutterActivity {
                         cardChannel.searchICCard();
                         result.success("researchICC");
                         break;
-                    case "horaversion":
-                        String vHoraVersion=getHoraVersion ();
-                        result.success(vHoraVersion);
+                    case "getAndroidID":
+                        result.success(getAndroidID ());
                         break;
                     case "printtext":
                         String vRes= printChannel.printText();
@@ -171,17 +172,17 @@ public class MainActivity extends FlutterActivity {
 
     }
 
-    String getHoraVersion(){
-        int sdkversion=Build.VERSION.SDK_INT;
-        String release=Build.VERSION.RELEASE;
-        return "Android version: " +sdkversion+" (" + release+")";
+    String getAndroidID(){
+        String myID;
+        int myversion = Integer.parseInt(android.os.Build.VERSION.SDK);
+        if (myversion < 23) {
+            TelephonyManager mngr = (TelephonyManager)getSystemService(getApplicationContext().TELEPHONY_SERVICE);
+            myID= mngr.getDeviceId();
+        }
+        else
+        {
+            myID = Settings.Secure.getString(getApplicationContext().getContentResolver(),Settings.Secure.ANDROID_ID);
+        }
+        return "Prd-"+myversion +"-" +myID;
     }
-
-/*
-    void test()
-    {
-        Sys sys = DriverManager.getInstance().getBaseSysDevice();
-    }
-    */
-
 }

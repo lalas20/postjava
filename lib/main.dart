@@ -5,6 +5,7 @@ import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
 import 'package:postjava/01pages/PMovimientos/last_moves_provider.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/PPago/pago_view.dart';
+import 'package:postjava/01pages/PTipoPago/tipo_pago_view.dart';
 import 'package:postjava/01pages/Plogin/login.dart';
 
 import 'package:postjava/01pages/Plogin/login_provider.dart';
@@ -12,6 +13,9 @@ import 'package:provider/provider.dart';
 
 import '01pages/PConfiguration/configuration_view.dart';
 import '01pages/PMovimientos/last _moves_page.dart';
+import '01pages/PPago/tipopago_otrobanco.dart';
+import '01pages/PPago/tipopago_qr.dart';
+import '01pages/PPago/tipopago_tarjetahuella.dart';
 import '01pages/Plogin/login_autentica.dart';
 import '01pages/emv_page.dart';
 import '01pages/helper/util_constante.dart';
@@ -40,11 +44,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'PRODEM POS',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+      title: 'PRODEM POS',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: AnimatedSplashScreen(
         splash: Image.asset(UtilConstante.iprdBlue),
         nextScreen: const LoginAutentica(),
@@ -68,8 +72,14 @@ class MyApp extends StatelessWidget {
         EmvPage.route: (BuildContext context) => const EmvPage(),
         PagoView.route: (BuildContext context) => const PagoView(),
         ConfigurationView.route: (BuildContext context) =>
-        const ConfigurationView(),
+            const ConfigurationView(),
         LastMoves.route: (BuildContext context) => const LastMoves(),
+        TipoPagoView.route: (BuildContext context) => const TipoPagoView(),
+        TipoPagoQR.route: (BuildContext context) => const TipoPagoQR(),
+        TipoPagoOtroBanco.route: (BuildContext context) =>
+            const TipoPagoOtroBanco(),
+        TipoPagoTarjetaHuella.route: (BuildContext context) =>
+            const TipoPagoTarjetaHuella(),
       },
     );
   }

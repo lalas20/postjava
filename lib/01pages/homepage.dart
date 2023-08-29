@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_view.dart';
 import 'package:postjava/01pages/PMovimientos/last%20_moves_page.dart';
-import 'package:postjava/01pages/PPago/pago_view.dart';
+import 'package:postjava/01pages/PTipoPago/tipo_pago_view.dart';
 import 'package:postjava/01pages/emv_page.dart';
 import 'package:postjava/01pages/fingerpageDP.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
+import 'package:postjava/01pages/helper/wappbar.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
+import 'package:postjava/helper/util_preferences.dart';
 
 import 'cardpage.dart';
-import 'fingerpage.dart';
 import 'printpage.dart';
 import 'testpage.dart';
 
@@ -52,24 +53,19 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(builder: (context) => const EmvPage()),
       );
     } else if (pClasse == 'Pago') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PagoView()),
-      );
+      Navigator.of(context)
+          .push(UtilConstante.customPageRoute(const TipoPagoView()));
     } else if (pClasse == 'UltimoMovimiento') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LastMoves()),
-      );
+      Navigator.of(context)
+          .push(UtilConstante.customPageRoute(const LastMoves()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Menu POS"),
-      ),
+      appBar:
+          WAppBar(pTitle: "Opciones", pSubTitle: UtilPreferences.getNamePos()),
       body: Container(
         decoration: BoxDecoration(color: UtilConstante.colorFondo),
         child: GridView.count(
@@ -100,20 +96,21 @@ class _HomePageState extends State<HomePage> {
                   pImg: UtilConstante.iFinger,
                   pName: 'Finger'),
                */
-              WCarPage(
-                  pElevation: 10,
-                  pFun: () => processMethod('Configuración'),
-                  pImg: UtilConstante.iConfiguration,
-                  pName: 'Configuración'),
+              if (!UtilPreferences.getIsSetting())
+                WCarPage(
+                    pElevation: 10,
+                    pFun: () => processMethod('Configuración'),
+                    pImg: UtilConstante.isvgConfig,
+                    pName: 'Configuración'),
               WCarPage(
                   pElevation: 10,
                   pFun: () => processMethod('Pago'),
-                  pImg: UtilConstante.iPago,
-                  pName: 'Pago'),
+                  pImg: UtilConstante.isvgTipoPago,
+                  pName: 'Tipo de Pago'),
               WCarPage(
                   pElevation: 10,
                   pFun: () => processMethod('UltimoMovimiento'),
-                  pImg: UtilConstante.iLastMoves,
+                  pImg: UtilConstante.isvgRpt,
                   pName: 'Ultimos Movimientos'),
             ]),
       ),

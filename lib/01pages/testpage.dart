@@ -14,7 +14,7 @@ class _TestPageState extends State<TestPage> {
 
   void _verificar() async {
     final resul = PlaformChannel();
-    final res = await resul.testMethod.horaVersionChannel();
+    final res = await resul.settingPos.getAndroidIDPos();
     setState(() {
       txtcontroller.text = res ?? "vacio";
     });

@@ -103,4 +103,27 @@ class UtilPreferences {
     if (_preferences == null) return defValue;
     return _preferences!.getString(_keyCodMoney) ?? defValue;
   }
+
+/*name pos*/
+  static const _keyNamePos = 'NamePos';
+  static Future setNamePos(String pNamePos) async {
+    if (_preferences == null) return null;
+    await _preferences!.setString(_keyNamePos, pNamePos);
+  }
+
+  static String getNamePos({String defValue = ''}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getString(_keyNamePos) ?? defValue;
+  }
+
+  static const _keyIsSetting = 'IsSetting';
+  static Future setIsSetting(bool pIsSetting) async {
+    if (_preferences == null) return null;
+    await _preferences!.setBool(_keyIsSetting, pIsSetting);
+  }
+
+  static bool getIsSetting() {
+    if (_preferences == null) return false;
+    return _preferences!.getBool(_keyIsSetting) ?? false;
+  }
 }

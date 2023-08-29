@@ -8,14 +8,14 @@ class PlaformChannel {
   static const methodChannelName = "com.prodem/mc";
   final MethodChannel methodChannel = const MethodChannel(methodChannelName);
 
-  late TestMethod testMethod;
+  late SettingPos settingPos;
   late PrintMethod printMethod;
   late FingerChannel fingerChannel;
   late CardChannel cardChannel;
   late EmvChannel emvChannel;
 
   PlaformChannel() {
-    testMethod = TestMethod(methodChannel);
+    settingPos = SettingPos(methodChannel);
     printMethod = PrintMethod(methodChannel);
     fingerChannel = FingerChannel(methodChannel);
     cardChannel = CardChannel(methodChannel);
@@ -78,16 +78,15 @@ class PrintMethod extends ChannelMethod {
   }
 }
 
-class TestMethod extends ChannelMethod {
-  static const horaVersion = "horaversion";
+class SettingPos extends ChannelMethod {
+  static const getAndroidID = "getAndroidID";
 
-  TestMethod(MethodChannel methodChannel) : super(methodChannel);
+  SettingPos(MethodChannel methodChannel) : super(methodChannel);
 
-  Future<String?> horaVersionChannel() async {
+  Future<String?> getAndroidIDPos() async {
     try {
-      final vRespuesta = await methodChannel.invokeMethod<String?>(horaVersion);
-      // ignore: avoid_print
-      print({"exito  $vRespuesta"});
+      final vRespuesta =
+          await methodChannel.invokeMethod<String?>(getAndroidID);
       return vRespuesta;
     } catch (e) {
       // ignore: avoid_print

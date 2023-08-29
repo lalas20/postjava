@@ -15,6 +15,7 @@ import 'package:postjava/helper/utilmethod.dart';
 import 'package:provider/provider.dart';
 
 import '../helper/util_responsive.dart';
+import '../helper/wappbar.dart';
 
 class PagoView extends StatefulWidget {
   static String route = '/PagoView';
@@ -46,12 +47,12 @@ class _PagoViewState extends State<PagoView> {
     responsive = UtilResponsive.of(context);
     provider = Provider.of<PagoProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text("Pago de Servicio")),
+      appBar:
+          WAppBar(pTitle: "Tipo Pago", pSubTitle: UtilPreferences.getNamePos()),
+      backgroundColor: UtilConstante.colorFondo,
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          height: responsive.vAlto - 10,
-          decoration: BoxDecoration(color: UtilConstante.colorFondo),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
             child: Column(

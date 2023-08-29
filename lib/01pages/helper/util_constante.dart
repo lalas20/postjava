@@ -24,6 +24,14 @@ class UtilConstante {
   static String iLastMoves = "assets/images/lastMoves.png";
   static String iprdBlue = "assets/images/prd_blue.png";
 
+  static String isvgCI = "assets/images/svg/ci.svg";
+  static String isvgConfig = "assets/images/svg/config.svg";
+  static String isvgFingerPrint = "assets/images/svg/fingerprint.svg";
+  static String isvgOtroBanco = "assets/images/svg/otrobanco.svg";
+  static String isvgRpt = "assets/images/svg/rpt.svg";
+  static String isvgTarjeta = "assets/images/svg/tarjeta.svg";
+  static String isvgTipoPago = "assets/images/svg/tipopago.svg";
+
   static Color colorFondo = const Color.fromRGBO(221, 247, 233, 1);
 
   static String fondo = "assets/images/bg_fondo.jpg";
@@ -35,13 +43,29 @@ class UtilConstante {
       icon: icon,
       prefixIconColor: Colors.red,
       floatingLabelStyle: TextStyle(
-          color:UtilConstante.btnColor,
+          color: UtilConstante.btnColor,
           fontSize: 18,
           fontWeight: FontWeight.bold),
       hintText: hintText,
       labelText: labelText,
       labelStyle: TextStyle(fontSize: 14.0, color: UtilConstante.btnColor),
       hintStyle: TextStyle(fontSize: 12.0, color: UtilConstante.btnColor),
+    );
+  }
+
+  static PageRouteBuilder customPageRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
     );
   }
 }

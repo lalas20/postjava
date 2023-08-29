@@ -24,10 +24,13 @@ class _ConfigurationViewState extends State<ConfigurationView> {
   late UtilResponsive responsive;
   ObjectGetUserSessionInfoResult? sessionInfo;
   final _txtClientePos = TextEditingController();
+  final _txtNamePos = TextEditingController();
+  final _txtAndroidID = TextEditingController();
   bool ingreso = false;
   bool sinData = false;
   String vMensajeValida = "Seleccione la cuenta";
   ListCodeSavingsAccount? account;
+
   void initConfiguration() async {
     await provider.getUserSessionInfo();
     if (provider.resp.state == RespProvider.correcto.toString()) {
@@ -47,11 +50,29 @@ class _ConfigurationViewState extends State<ConfigurationView> {
         setState(() {});
       });
     }
+    //obtenemos el androidid
+    await provider.getAndroidIDPos();
+    if (provider.resp.state == RespProvider.correcto.toString()) {
+      _txtAndroidID.text = provider.resp.obj.toString();
+    } else {
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención!",
+          Text(
+            provider.resp.message,
+            style: TextStyle(color: UtilConstante.colorAppPrimario),
+          ),
+          "Aceptar", () {
+        _txtAndroidID.text = "";
+        setState(() {});
+      });
+    }
   }
 
   void saveConfiguration() async {
-    UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
-    await provider.saveDataIni(account, sessionInfo!);
+    UtilModal.mostrarDialogoSinCallback(context, "Grabando...");
+    await provider.saveDataIni(account, sessionInfo!,
+        pNamePos: _txtNamePos.text, pAndroidID: _txtAndroidID.text);
     Navigator.of(context).pop();
     if (provider.resp.state == RespProvider.correcto.toString()) {
       Navigator.of(context).pop();
@@ -81,11 +102,8 @@ class _ConfigurationViewState extends State<ConfigurationView> {
       appBar: AppBar(
         title: const Text("Configuración de cuenta"),
       ),
-      body: Container(
-        //height: responsive.vAlto - 100,
-        decoration: BoxDecoration(
-          color: UtilConstante.colorFondo,
-        ),
+      backgroundColor: UtilConstante.colorFondo,
+      body: SingleChildScrollView(
         child: sessionInfo != null
             ? Padding(
                 padding: const EdgeInsets.only(right: 10, left: 10),
@@ -101,6 +119,8 @@ class _ConfigurationViewState extends State<ConfigurationView> {
                         height: 100,
                         alignment: Alignment.topRight,
                       ),
+                      txtAndroidIDPos(),
+                      txtNamePos(),
                       txtClientePos(),
                       cboCuentas(),
                       account == null
@@ -131,6 +151,65 @@ class _ConfigurationViewState extends State<ConfigurationView> {
     );
   }
 
+  Widget txtAndroidIDPos() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: TextFormField(
+        controller: _txtAndroidID,
+        onEditingComplete: () {
+          _formKey.currentState!.validate();
+        },
+        readOnly: true,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Identificador del dispositivo, es campo obligatorio';
+          }
+          return null;
+        },
+        decoration: UtilConstante.entrada(
+            labelText: "Identificador POS",
+            hintText: "Identificador POS",
+            icon: Icon(
+              Icons.description,
+              color: _txtAndroidID.text.isEmpty
+                  ? Colors.red
+                  : UtilConstante.btnColor,
+            )),
+        keyboardType: TextInputType.text,
+      ),
+    );
+  }
+
+  Widget txtNamePos() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: TextFormField(
+        controller: _txtNamePos,
+        onEditingComplete: () {
+          _formKey.currentState!.validate();
+        },
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Nombre del dispositivo, es campo obligatorio';
+          }
+          return null;
+        },
+        decoration: UtilConstante.entrada(
+            labelText: "Nombre POS",
+            hintText: "Nombre POS",
+            icon: Icon(
+              Icons.devices_sharp,
+              color: _txtNamePos.text.isEmpty
+                  ? Colors.red
+                  : UtilConstante.btnColor,
+            )),
+        keyboardType: TextInputType.text,
+      ),
+    );
+  }
+
   Widget txtClientePos() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -152,7 +231,9 @@ class _ConfigurationViewState extends State<ConfigurationView> {
             hintText: "Cliente POS",
             icon: Icon(
               Icons.person_3,
-              color: UtilConstante.btnColor,
+              color: _txtClientePos.text.isEmpty
+                  ? Colors.red
+                  : UtilConstante.btnColor,
             )),
         keyboardType: TextInputType.text,
       ),
