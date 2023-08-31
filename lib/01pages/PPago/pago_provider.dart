@@ -2,12 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-
-// ignore: depend_on_referenced_packages
-import 'package:image/image.dart' as imglib;
 import 'package:postjava/02service/channel/plataformchannel.dart';
 import 'package:postjava/02service/service/Pay/srv_pay.dart';
-import 'package:postjava/02service/service/User/srv_cliente_pos.dart';
 import 'package:postjava/02service/service/User/srv_verify_user.dart';
 import 'package:postjava/03dominio/user/aditional_item.dart';
 import 'package:postjava/03dominio/user/saving_accounts.dart';
@@ -50,7 +46,7 @@ class PagoProvider with ChangeNotifier {
     try {
       final resul = PlaformChannel();
       nameDeviceDP = await resul.fingerChannel.captureNameDeviceDP();
-      //nameDeviceDP='test';
+      //nameDeviceDP = 'test';
       if (nameDeviceDP.isEmpty) {
         resp = ResulProvider(
           message: "Dispositivo no encontrado",
@@ -74,7 +70,8 @@ class PagoProvider with ChangeNotifier {
   getFingerDP() async {
     final resul = PlaformChannel();
     fingerWIdentityCard = await resul.fingerChannel.captureFingerISODP();
-    //fingerWIdentityCard="Rk1SACAyMAAAAAEgAAABQAFoAMgAyAEAAABWK0CEAVJ3ZICaAGt5X0CmAVWF  X0BoAICLXUDmASGgXUBSARZgW0CqAGTvWoDEAKfWWoByANDPWoCcAIiAWoDaAQOmWUBsALKrWIC2AKloWIBQALiuV4DTARAuV4CuAMdYVkBGAKajVUAmAQfPVUBJAObJVEBzAUn7UoBJAS1rUYDfANbDUIA3APTLT4CKAKCDTYCkAOVjSkB5AT5zSYB/AMjcR0AsARxJR4CFALzkR4CiALnhRYAoASFHRYC7APiLRICXALDqP0CQALWHP0DiAT4VPoB8AJf1PYCdALNpPYAaAK2mOUAUANOtNQD0AGtoMwAgARY5MAAYAMEmLgEGAJ7cKQAA";
+    /*fingerWIdentityCard =
+        "Rk1SACAyMAAAAAEgAAABQAFoAMgAyAEAAABWK0CEAVJ3ZICaAGt5X0CmAVWF  X0BoAICLXUDmASGgXUBSARZgW0CqAGTvWoDEAKfWWoByANDPWoCcAIiAWoDaAQOmWUBsALKrWIC2AKloWIBQALiuV4DTARAuV4CuAMdYVkBGAKajVUAmAQfPVUBJAObJVEBzAUn7UoBJAS1rUYDfANbDUIA3APTLT4CKAKCDTYCkAOVjSkB5AT5zSYB/AMjcR0AsARxJR4CFALzkR4CiALnhRYAoASFHRYC7APiLRICXALDqP0CQALWHP0DiAT4VPoB8AJf1PYCdALNpPYAaAK2mOUAUANOtNQD0AGtoMwAgARY5MAAYAMEmLgEGAJ7cKQAA";*/
     if (fingerWIdentityCard.isEmpty) {
       resp = ResulProvider(
         message: "Huella no capturada",

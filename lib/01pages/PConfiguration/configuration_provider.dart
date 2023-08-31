@@ -9,6 +9,7 @@ import '../helper/util_constante.dart';
 
 class ConfigurationProvider with ChangeNotifier {
   late ResulProvider _resp;
+  String namePos = UtilPreferences.getNamePos();
   ResulProvider get resp => _resp;
   set resp(ResulProvider value) {
     _resp = value;

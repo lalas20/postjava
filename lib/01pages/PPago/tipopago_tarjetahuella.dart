@@ -61,6 +61,10 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
 
   @override
   void dispose() {
+    _depositoController.dispose();
+    _glosaController.dispose();
+    _montoController.dispose();
+    provider.clearIdentityCard();
     resul.fingerChannel.dispose();
     resul.cardChannel.dispose();
     super.dispose();
@@ -226,29 +230,32 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
   }
 
   Widget _iconFinger() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 30),
-      child: Column(
-        children: [
-          tieneFinger
-              ? Text(
-                  "Huella reconocida",
-                  style: TextStyle(color: UtilConstante.headerColor),
-                )
-              : const Text(
-                  "Huella no reconocida",
-                  style: TextStyle(color: Colors.red),
-                ),
-          WBtnConstante(
-            pName: '',
-            fun: _findFinger,
-            ico: Icon(
-              Icons.fingerprint,
-              color: tieneFinger ? UtilConstante.headerColor : Colors.red,
-              size: 64,
-            ),
-          )
-        ],
+    return GestureDetector(
+      onTap: _findFinger,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 5, bottom: 25),
+        child: Column(
+          children: [
+            tieneFinger
+                ? Text(
+                    "Huella reconocida",
+                    style: TextStyle(color: UtilConstante.headerColor),
+                  )
+                : const Text(
+                    "Huella no reconocida",
+                    style: TextStyle(color: Colors.red),
+                  ),
+            WBtnConstante(
+              pName: '',
+              fun: _findFinger,
+              ico: Icon(
+                Icons.fingerprint,
+                color: tieneFinger ? UtilConstante.headerColor : Colors.red,
+                size: 64,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -283,7 +290,7 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
   }
 
   _saveCardFinger() async {
-    UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
+    UtilModal.mostrarDialogoSinCallback(context, "Grabando...");
     await provider.saveCardFinger(
       pIdOperationEntity:
           selecAcount == null ? '' : selecAcount!.idSavingsAccount.toString(),
@@ -338,6 +345,7 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
 
   Widget _cboSavingAcount() {
     return DropdownButtonFormField<SavingAccounts>(
+      value: selecAcount,
       items: vListaCuentaByCi == null
           ? null
           : vListaCuentaByCi!.map<DropdownMenuItem<SavingAccounts>>(

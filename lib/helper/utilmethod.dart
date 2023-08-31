@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:stack_trace/stack_trace.dart';
 
@@ -8,6 +10,7 @@ class UtilMethod {
     debugPrint(vtrace == null ? 'error: ->$pMessage' : '$vtrace->$pMessage');
     //}
   }
+
   static DateTime parseJsonDate(String jsonDate) {
     // Obtener el valor numérico entre los paréntesis del formato "/Date(...)/"
     int timestamp = int.parse(jsonDate.substring(6, jsonDate.length - 7));
@@ -27,5 +30,28 @@ class UtilMethod {
   static String _twoDigits(int n) {
     if (n >= 10) return "$n";
     return "0$n";
+  }
+
+  static writeToLog(String text) async {
+    try {
+      // Obtén la ruta de la carpeta de descargas según la plataforma
+      final downloadsDir = Platform.isAndroid
+          ? '/storage/emulated/0/Download' // Ejemplo de ruta en Android
+          : Platform.isIOS
+              ? '/private/var/mobile/Containers/Data/Application/<app_id>/Documents' // Ejemplo de ruta en iOS
+              : null; // Otras plataformas
+
+      if (downloadsDir == null) {
+        print(
+            'No es posible acceder a la carpeta de descargas en esta plataforma.');
+        return;
+      }
+      final vfecha = formatteOnlyDate(DateTime.now());
+      final file = File('$downloadsDir/log_$vfecha.txt');
+
+      await file.writeAsString('$text\n', mode: FileMode.append);
+    } catch (e) {
+      print('Error writing to log: $e');
+    }
   }
 }

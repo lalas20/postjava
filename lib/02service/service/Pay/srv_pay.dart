@@ -15,42 +15,44 @@ import '../../../03dominio/user/resul_get_user_session_info.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvPay {
-
   static Future<MasterResulMoves> getLasMoves() async {
-    List<ResulMoves> vLista =[];// ResulMoves.vCarga;
-    MasterResulMoves vEntidad= MasterResulMoves();
-     final resul=await SrvClientePos.SavingsAccountExtractDataTransactionable();
-     if(resul.state==1){
-       vEntidad.accountBalance=resul.object!.accountBalance;
-       vEntidad.codeSavingsAccount=resul.object!.codeSavingsAccount;
-       vEntidad.moneyCode=resul.object!.moneyCode;
-       vEntidad.processDate= UtilMethod.formatteDate(UtilMethod.parseJsonDate(resul.object!.processDate!));
-       for(var item in resul.object!.colDetailsMovemment! )
-         {
-           vLista.add(ResulMoves(agencia: item.officeTransaction,
-               fechaTransaccion: UtilMethod.formatteDate(UtilMethod.parseJsonDate(item.dateTransaction!)),
-             monto:item.deposit==0?-1*item.withdrawal!:item.deposit,nroTransaccion: item.descriptionOperation,referencia: item.reference,saldo: item.amountBalance));
-         }
-       vEntidad.listResulMoves=vLista;
-     }
+    List<ResulMoves> vLista = []; // ResulMoves.vCarga;
+    MasterResulMoves vEntidad = MasterResulMoves();
+    final resul =
+        await SrvClientePos.SavingsAccountExtractDataTransactionable();
+    if (resul.state == 1) {
+      vEntidad.accountBalance = resul.object!.accountBalance;
+      vEntidad.codeSavingsAccount = resul.object!.codeSavingsAccount;
+      vEntidad.moneyCode = resul.object!.moneyCode;
+      vEntidad.processDate = UtilMethod.formatteDate(
+          UtilMethod.parseJsonDate(resul.object!.processDate!));
+      for (var item in resul.object!.colDetailsMovemment!) {
+        vLista.add(ResulMoves(
+            agencia: item.officeTransaction,
+            fechaTransaccion: UtilMethod.formatteDate(
+                UtilMethod.parseJsonDate(item.dateTransaction!)),
+            monto: item.deposit == 0 ? -1 * item.withdrawal! : item.deposit,
+            nroTransaccion: item.descriptionOperation,
+            referencia: item.reference,
+            saldo: item.amountBalance));
+      }
+      vEntidad.listResulMoves = vLista;
+    }
     return vEntidad;
   }
 
   static Future<GetEncryptedQrStringResult> getQrPay(
       {required double pAmount, required String pGlosa}) async {
-
-
-    Map<String, dynamic> toMap =
-    {
-          'idPerson': UtilPreferences.getsIdPerson(),
-          'accountCode': UtilPreferences.getAcount(),
-          'moneyCode': UtilPreferences.getCodMoney(),
-          'amount': pAmount,
-          'isUniqueUse': true,
-          'expiredOption': 10,
-          'reference': pGlosa,
-          'IdQuickResponse': 0
-        };
+    Map<String, dynamic> toMap = {
+      'idPerson': UtilPreferences.getsIdPerson(),
+      'accountCode': UtilPreferences.getAcount(),
+      'moneyCode': UtilPreferences.getCodMoney(),
+      'amount': pAmount,
+      'isUniqueUse': true,
+      'expiredOption': 10,
+      'reference': pGlosa,
+      'IdQuickResponse': 0
+    };
     GetEncryptedQrStringResult respuesta = GetEncryptedQrStringResult();
     final vPing = await UtilConextion.internetConnectivity();
     if (vPing == false) {
@@ -63,15 +65,14 @@ class SrvPay {
     try {
       String vJSON = jsonEncode(toMap);
       final response = await UtilConextion.httpPost(
-          UtilConextion.getEncryptedQrString,vJSON );
+          UtilConextion.getEncryptedQrString, vJSON);
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
-        respuesta = GetEncryptedQrStringResult.fromJson(jsonResponse['GetEncryptedQrStringResult']);
+        respuesta = GetEncryptedQrStringResult.fromJson(
+            jsonResponse['GetEncryptedQrStringResult']);
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
       }
-
-
     } catch (e) {
       respuesta.message = "error sub: ${e.toString()}";
       respuesta.state = 3;
@@ -79,68 +80,80 @@ class SrvPay {
     return respuesta;
   }
 
-  static Future<RequestSavingsAccountTransferPOSResult> savingsTransferAccounts(
-      {required String pCodeSavingAccount,
-        required String pIdMoneyTrans,
-        required double pAmountTrans,
-        required String pCodeSavingAccountTarget,
-        required String pBeneficiarioName,
-        required String pTokken,
-      required String pGlosa,
-      }
-      )
-  async
-  {
+  static Future<RequestSavingsAccountTransferPOSResult>
+      savingsTransferAccounts({
+    required String pCodeSavingAccount,
+    required String pIdMoneyTrans,
+    required double pAmountTrans,
+    required String pCodeSavingAccountTarget,
+    required String pBeneficiarioName,
+    required String pTokken,
+    required String pGlosa,
+  }) async {
     dynamic jsonResponse;
-    String vAux="0";
-    RequestSavingsAccountTransferPOSResult respuesta = RequestSavingsAccountTransferPOSResult();
-    try{
+    String vAux = "0";
+    RequestSavingsAccountTransferPOSResult respuesta =
+        RequestSavingsAccountTransferPOSResult();
+    String vJSON = '';
+    try {
       final vPing = await UtilConextion.internetConnectivity();
       if (vPing == false) {
-        respuesta.savingsAccountTransferPOSResult=SavingsAccountTransferPOSResult();
-        respuesta.savingsAccountTransferPOSResult!.codeBase = UtilConextion.errorInternet;
+        respuesta.savingsAccountTransferPOSResult =
+            SavingsAccountTransferPOSResult();
+        respuesta.savingsAccountTransferPOSResult!.codeBase =
+            UtilConextion.errorInternet;
         respuesta.savingsAccountTransferPOSResult!.state = 3;
-        respuesta.savingsAccountTransferPOSResult!.message = "No tiene acceso a internet";
+        respuesta.savingsAccountTransferPOSResult!.message =
+            "No tiene acceso a internet";
         return respuesta;
       }
-      vAux="125";
-      Map<String,dynamic>map={
-          "CodeSavingAccountSource":pCodeSavingAccount,
-          "IdPerson":UtilPreferences.getsIdPerson(),
-          "CodeSavingAccountTarget": pCodeSavingAccountTarget,
-          "AmountTransfer":pAmountTrans,
-          "IdMoneyTransfer":1,
-          "Observation":pGlosa,
-          "IsNaturalClient": true,
-          "reasonDestiny":"",
-          "ApplyGeneratePCC01":false,
-          "IdUser":UtilPreferences.getIdUsuario(),
-          "IMEI":"",
-          "location":"",
-          "IpAddress":"0.0.0.0",
-          "BeneficiaryName":pBeneficiarioName
+      vAux = "125";
+      Map<String, dynamic> map = {
+        "CodeSavingAccountSource": pCodeSavingAccount,
+        "IdPerson": UtilPreferences.getsIdPerson(),
+        "CodeSavingAccountTarget": pCodeSavingAccountTarget,
+        "AmountTransfer": pAmountTrans,
+        "IdMoneyTransfer": 1,
+        "Observation": pGlosa,
+        "IsNaturalClient": true,
+        "reasonDestiny": "",
+        "ApplyGeneratePCC01": false,
+        "IdUser": UtilPreferences.getIdUsuario(),
+        "IMEI": "",
+        "location": "",
+        "IpAddress": "0.0.0.0",
+        "BeneficiaryName": pBeneficiarioName
       };
-      vAux="142";
-      String vJSON = jsonEncode(map);
-      vAux="144";
-      final response =
-      await UtilConextion.httpPostByNewTokken(pAction: UtilConextion.SavingsAccountTransferPOS,pJsonEncode:  vJSON,pTokken:UtilPreferences.getToken());
-      vAux="147";
+      vAux = "142";
+      vJSON = jsonEncode(map);
+      vAux = "144";
+      final response = await UtilConextion.httpPostByNewTokken(
+          pAction: UtilConextion.savingsAccountTransferPOS,
+          pJsonEncode: vJSON,
+          pTokken: UtilPreferences.getToken());
+      vAux = "147";
       if (response.statusCode == 200) {
-        vAux="149";
+        vAux = "149";
         jsonResponse = json.decode(response.body);
-        vAux="151";
-        respuesta=RequestSavingsAccountTransferPOSResult.fromJson(jsonResponse);
-        vAux="153";
+        vAux = "151";
+        respuesta =
+            RequestSavingsAccountTransferPOSResult.fromJson(jsonResponse);
+        vAux = "153";
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
-        vAux="156";
+        vAux = "156";
       }
-    }
-    catch(e)
-    {
-      respuesta.savingsAccountTransferPOSResult = SavingsAccountTransferPOSResult();
-      respuesta.savingsAccountTransferPOSResult?.message = "error $vAux: ${e.toString()}";
+    } catch (e) {
+      UtilMethod.writeToLog("error:${e.toString()}");
+      UtilMethod.writeToLog("vJSON:$vJSON");
+      UtilMethod.writeToLog(
+          "SavingsAccountTransferPOS:${UtilConextion.savingsAccountTransferPOS}");
+      UtilMethod.writeToLog("getToken:${UtilPreferences.getToken()}");
+
+      respuesta.savingsAccountTransferPOSResult =
+          SavingsAccountTransferPOSResult();
+      respuesta.savingsAccountTransferPOSResult?.message =
+          "error $vAux: ${e.toString()}";
       respuesta.savingsAccountTransferPOSResult?.state = 3;
     }
     return respuesta;

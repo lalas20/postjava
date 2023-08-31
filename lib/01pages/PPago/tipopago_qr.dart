@@ -34,6 +34,7 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
 
   @override
   void dispose() {
+    provider.clearIdentityCard();
     super.dispose();
   }
 

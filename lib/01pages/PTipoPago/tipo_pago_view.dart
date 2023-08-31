@@ -54,7 +54,7 @@ class _TipoPagoViewState extends State<TipoPagoView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WAppBar(
-        pTitle: "Tipo Pago",
+        pTitle: "Tipo de Pago",
         pSubTitle: UtilPreferences.getNamePos(),
       ),
       backgroundColor: UtilConstante.colorFondo,
@@ -70,7 +70,7 @@ class _TipoPagoViewState extends State<TipoPagoView> {
             WCarPage(
                 pElevation: 10,
                 pFun: () => _pageDireccion(pPage: 'QR'),
-                pImg: UtilConstante.isvgOtroBanco,
+                pImg: UtilConstante.isvgQR,
                 pName: "Pago QR"),
             WCarPage(
                 pElevation: 10,
@@ -82,11 +82,11 @@ class _TipoPagoViewState extends State<TipoPagoView> {
                 pFun: () => _pageDireccion(pPage: 'TARJETA'),
                 pImg: UtilConstante.isvgTarjeta,
                 pName: "Tarjeta"),
-            WCarPage(
+            /* WCarPage(
                 pElevation: 10,
                 pFun: () => _pageDireccion(pPage: 'OTRO'),
                 pImg: UtilConstante.isvgOtroBanco,
-                pName: "Otro"),
+                pName: "Otro"),*/
           ],
         ),
       ),

@@ -43,8 +43,12 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
   @override
   void dispose() {
     // TODO: implement dispose
+    _glosaController.dispose();
+    _depositoController.dispose();
+    _montoController.dispose();
     _ciController.dispose();
     resul.fingerChannel.dispose();
+    provider.clearIdentityCard();
     super.dispose();
   }
 
@@ -135,29 +139,32 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
   }
 
   Widget _iconFinger() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          tieneFinger
-              ? Text(
-                  "Huella reconocida",
-                  style: TextStyle(color: UtilConstante.headerColor),
-                )
-              : const Text(
-                  "Huella no reconocida",
-                  style: TextStyle(color: Colors.red),
-                ),
-          WBtnConstante(
-            pName: '',
-            fun: _findFinger,
-            ico: Icon(
-              Icons.fingerprint,
-              color: tieneFinger ? UtilConstante.headerColor : Colors.red,
-              size: 64,
-            ),
-          )
-        ],
+    return GestureDetector(
+      onTap: _findFinger,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 25, top: 5),
+        child: Column(
+          children: [
+            tieneFinger
+                ? Text(
+                    "Huella reconocida",
+                    style: TextStyle(color: UtilConstante.headerColor),
+                  )
+                : const Text(
+                    "Huella no reconocida",
+                    style: TextStyle(color: Colors.red),
+                  ),
+            WBtnConstante(
+              pName: '',
+              fun: _findFinger,
+              ico: Icon(
+                Icons.fingerprint,
+                color: tieneFinger ? UtilConstante.headerColor : Colors.red,
+                size: 64,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -193,20 +200,8 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
 
   Widget _cboSavingAcount() {
     return DropdownButtonFormField<SavingAccounts>(
-      items: vListaCuentaByCi == null
-          ? null
-          : vListaCuentaByCi!.map<DropdownMenuItem<SavingAccounts>>(
-              (SavingAccounts? pCuenta) {
-                return DropdownMenuItem(
-                  value: pCuenta,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                        "${pCuenta!.codeAccount!}  ${pCuenta!.moneyDescription}"),
-                  ),
-                );
-              },
-            ).toList(),
+      value: selecAcount,
+      items: vListaCuentaByCi == null ? null : llenaCuentaAll(),
       onChanged: (value) {
         selecAcount = value;
         setState(() {});
@@ -220,6 +215,24 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
             color: selecAcount == null ? Colors.red : UtilConstante.btnColor,
           )),
     );
+  }
+
+  List<DropdownMenuItem<SavingAccounts>>? llenaCuentaAll() {
+    if (vListaCuentaByCi == null) {
+      return null;
+    }
+    return vListaCuentaByCi!.map<DropdownMenuItem<SavingAccounts>>(
+      (SavingAccounts? pCuenta) {
+        return DropdownMenuItem(
+          value: pCuenta,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child:
+                Text("${pCuenta!.codeAccount!}  ${pCuenta!.moneyDescription}"),
+          ),
+        );
+      },
+    ).toList();
   }
 
   @override
@@ -256,7 +269,7 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
   }
 
   _saveIdentityCard() async {
-    UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
+    UtilModal.mostrarDialogoSinCallback(context, "Grabando...");
     await provider.saveIdentityCard(
         pCi: _ciController.text,
         pIdOperationEntity:
@@ -314,7 +327,15 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
     selecAcount = null;
     vListaCuentaByCi = null;
     if (_ciController.text.isEmpty) {
-      print('ingresando');
+      UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            "Documento de identidad es campo obligatorio",
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {});
       return;
     }
     UtilModal.mostrarDialogoSinCallback(context, "Buscando Cuenta...");

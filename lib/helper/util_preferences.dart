@@ -60,7 +60,7 @@ class UtilPreferences {
     return _preferences!.getString(_keyToken) ?? defValue;
   }
 
-  static const _keyIdOperationEntity = 'token';
+  static const _keyIdOperationEntity = 'IdOperationEntity';
   static Future setIdOperationEntity(int pIdOperationEntity) async {
     if (_preferences == null) return null;
     await _preferences!.setInt(_keyIdOperationEntity, pIdOperationEntity);

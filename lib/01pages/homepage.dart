@@ -8,7 +8,6 @@ import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wappbar.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
 import 'package:postjava/helper/util_preferences.dart';
-
 import 'cardpage.dart';
 import 'printpage.dart';
 import 'testpage.dart';
@@ -64,8 +63,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          WAppBar(pTitle: "Opciones", pSubTitle: UtilPreferences.getNamePos()),
+      appBar: WAppBar(
+        pTitle: "Opciones",
+        pSubTitle: UtilPreferences.getNamePos(),
+      ),
       body: Container(
         decoration: BoxDecoration(color: UtilConstante.colorFondo),
         child: GridView.count(
@@ -102,16 +103,18 @@ class _HomePageState extends State<HomePage> {
                     pFun: () => processMethod('Configuración'),
                     pImg: UtilConstante.isvgConfig,
                     pName: 'Configuración'),
-              WCarPage(
-                  pElevation: 10,
-                  pFun: () => processMethod('Pago'),
-                  pImg: UtilConstante.isvgTipoPago,
-                  pName: 'Tipo de Pago'),
-              WCarPage(
-                  pElevation: 10,
-                  pFun: () => processMethod('UltimoMovimiento'),
-                  pImg: UtilConstante.isvgRpt,
-                  pName: 'Ultimos Movimientos'),
+              if (UtilPreferences.getIsSetting())
+                WCarPage(
+                    pElevation: 10,
+                    pFun: () => processMethod('Pago'),
+                    pImg: UtilConstante.isvgTipoPago,
+                    pName: 'Tipo de Pago'),
+              if (UtilPreferences.getIsSetting())
+                WCarPage(
+                    pElevation: 10,
+                    pFun: () => processMethod('UltimoMovimiento'),
+                    pImg: UtilConstante.isvgRpt,
+                    pName: 'Ultimos Movimientos'),
             ]),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
 import '../helper/util_constante.dart';
 import '../helper/wbtnconstante.dart';
+import '../homepage.dart';
 
 class ConfigurationView extends StatefulWidget {
   const ConfigurationView({super.key});
@@ -75,7 +76,9 @@ class _ConfigurationViewState extends State<ConfigurationView> {
         pNamePos: _txtNamePos.text, pAndroidID: _txtAndroidID.text);
     Navigator.of(context).pop();
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      Navigator.of(context).pop();
+      //Navigator.of(context).pop();
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          HomePage.route, (Route<dynamic> route) => false);
     } else {
       UtilModal.mostrarDialogoNativo(
           context,
@@ -146,7 +149,10 @@ class _ConfigurationViewState extends State<ConfigurationView> {
                   ),
                 ),
               )
-            : UtilModal.iniCircularProgres(),
+            : Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: UtilModal.iniCircularProgres(),
+              ),
       ),
     );
   }
@@ -196,6 +202,7 @@ class _ConfigurationViewState extends State<ConfigurationView> {
           }
           return null;
         },
+        maxLength: 20,
         decoration: UtilConstante.entrada(
             labelText: "Nombre POS",
             hintText: "Nombre POS",

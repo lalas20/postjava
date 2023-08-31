@@ -20,7 +20,8 @@ class UtilConextion {
   static String hangarSafe = 'HangarSafeGate/';
 
   //ATM SavingsAccountTransferMobile
-  static String SavingsAccountTransferPOS = 'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountTransferPOS';
+  static String savingsAccountTransferPOS =
+      'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountTransferPOS';
 
 //OperacionesController
   static String verifyUser = 'rest/VerifyUser';
@@ -38,15 +39,12 @@ class UtilConextion {
     'HangarAuthentication': UtilPreferences.getToken()
   };
 
-  static Map<String, String> vHeaderByTokken (String pTokken) {
-    return
-      {
+  static Map<String, String> vHeaderByTokken(String pTokken) {
+    return {
       'Content-Type': 'application/json',
       'HangarAuthentication': pTokken
     };
   }
-
-
 
   static Future<bool> internetConnectivity() async {
     try {
@@ -89,18 +87,20 @@ class UtilConextion {
   }
 
   static Future<http.Response> httpPostByNewTokken(
-  {required String pAction,required String pJsonEncode, required String pTokken}
-      ) async {
+      {required String pAction,
+      required String pJsonEncode,
+      required String pTokken}) async {
     final vUrl = Uri.parse(server + puerto + pAction);
-    final response =
-        await http.post(vUrl, headers:vHeaderByTokken(pTokken) , body: pJsonEncode);
+    final response = await http.post(vUrl,
+        headers: vHeaderByTokken(pTokken), body: pJsonEncode);
     return response;
   }
 
   static Future<http.Response> httpPostSin(
       String pAction, String pJsonEncode) async {
-    final vUrl = Uri.parse(server + puerto+ hangarSafe + pAction);
-    final response = await http.post(vUrl, headers: vHeaderSin, body: pJsonEncode);
+    final vUrl = Uri.parse(server + puerto + hangarSafe + pAction);
+    final response =
+        await http.post(vUrl, headers: vHeaderSin, body: pJsonEncode);
     return response;
   }
 

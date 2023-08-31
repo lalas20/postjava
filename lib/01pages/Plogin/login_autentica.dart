@@ -104,7 +104,7 @@ class _LoginAutenticaState extends State<LoginAutentica> {
                     color: Colors.amber,
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 20, left: 10, right: 10),
+                    margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
                     child: Column(
                       children: [
                         builTexField(

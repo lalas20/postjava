@@ -8,7 +8,7 @@ class WAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(50);
+  Size get preferredSize => const Size.fromHeight(60);
 
   final String pTitle, pSubTitle;
 
@@ -42,6 +42,7 @@ class WAppBar extends StatelessWidget implements PreferredSizeWidget {
           textAlign: TextAlign.right,
         ),
         textColor: Colors.white,
+        contentPadding: const EdgeInsets.only(top: 20),
       ),
       elevation: 10,
     );

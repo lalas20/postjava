@@ -31,6 +31,7 @@ class UtilConstante {
   static String isvgRpt = "assets/images/svg/rpt.svg";
   static String isvgTarjeta = "assets/images/svg/tarjeta.svg";
   static String isvgTipoPago = "assets/images/svg/tipopago.svg";
+  static String isvgQR = "assets/images/svg/qr.svg";
 
   static Color colorFondo = const Color.fromRGBO(221, 247, 233, 1);
 

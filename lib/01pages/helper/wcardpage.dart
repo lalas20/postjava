@@ -41,11 +41,12 @@ class WCarPage extends StatelessWidget {
           subtitle: SvgPicture.asset(
             pImg,
             placeholderBuilder: (BuildContext context) => Container(
-              padding: const EdgeInsets.all(30.0),
+              //padding: const EdgeInsets.all(30.0),
               child: const CircularProgressIndicator(),
             ),
-            fit: BoxFit.cover,
+            fit: BoxFit.fitHeight,
             color: UtilConstante.colorAppPrimario,
+            height: 100,
             // colorFilter:
             //     const ColorFilter.mode(Colors.blueGrey, BlendMode.darken),
           ),
