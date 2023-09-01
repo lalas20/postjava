@@ -1,13 +1,20 @@
-import 'dart:ffi';
-
 import 'package:postjava/helper/utilmethod.dart';
-class MasterResulMoves{
+
+class ResulMasterMoves {
+  MasterResulMoves? masterResulMoves;
+  String message = '';
+  int state = 0;
+  String code = '';
+}
+
+class MasterResulMoves {
   double? accountBalance;
   String? codeSavingsAccount;
   String? processDate;
   String? moneyCode;
   List<ResulMoves>? listResulMoves;
 }
+
 class ResulMoves {
   //datos transferencia
   String? fechaTransaccion;

@@ -46,7 +46,7 @@ class PagoProvider with ChangeNotifier {
     try {
       final resul = PlaformChannel();
       nameDeviceDP = await resul.fingerChannel.captureNameDeviceDP();
-      //nameDeviceDP = 'test';
+      nameDeviceDP = 'test';
       if (nameDeviceDP.isEmpty) {
         resp = ResulProvider(
           message: "Dispositivo no encontrado",
@@ -110,8 +110,10 @@ class PagoProvider with ChangeNotifier {
     }
     if (vListaCuentaByCi.isEmpty) {
       resp = ResulProvider(
-        message: "No tiene cuentas asociado al documento de identidad",
+        message: resul.verifyUserResult!
+            .message!, // "No tiene cuentas asociado al documento de identidad",
         state: RespProvider.incorrecto.toString(),
+        code: resul.verifyUserResult!.code,
       );
     } else {
       resp = ResulProvider(
@@ -152,6 +154,7 @@ class PagoProvider with ChangeNotifier {
         message: resul.message!,
         state: RespProvider.incorrecto.toString(),
         obj: Uint8List(0),
+        code: resul.code,
       );
     }
   }
@@ -249,9 +252,9 @@ class PagoProvider with ChangeNotifier {
           obj: resul.savingsAccountTransferPOSResult!.object!);
     } else {
       resp = ResulProvider(
-        message: resul.savingsAccountTransferPOSResult!.message!,
-        state: RespProvider.incorrecto.toString(),
-      );
+          message: resul.savingsAccountTransferPOSResult!.message!,
+          state: RespProvider.incorrecto.toString(),
+          code: resul.savingsAccountTransferPOSResult!.code);
     }
   }
 
@@ -330,9 +333,9 @@ class PagoProvider with ChangeNotifier {
           obj: resul.savingsAccountTransferPOSResult!.object!);
     } else {
       resp = ResulProvider(
-        message: resul.savingsAccountTransferPOSResult!.message!,
-        state: RespProvider.incorrecto.toString(),
-      );
+          message: resul.savingsAccountTransferPOSResult!.message!,
+          state: RespProvider.incorrecto.toString(),
+          code: resul.savingsAccountTransferPOSResult!.code);
     }
   }
 

@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
+import 'package:postjava/01pages/Plogin/login.dart';
+import 'package:postjava/01pages/Plogin/login_autentica.dart';
 import 'package:postjava/01pages/helper/util_responsive.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +51,12 @@ class _ConfigurationViewState extends State<ConfigurationView> {
           "Aceptar", () {
         sessionInfo = ObjectGetUserSessionInfoResult();
         setState(() {});
+        if (provider.resp.obj == '99') {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              LoginAutentica.route, (Route<dynamic> route) => false);
+        }
       });
+      return;
     }
     //obtenemos el androidid
     await provider.getAndroidIDPos();

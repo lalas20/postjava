@@ -40,7 +40,6 @@ class ConfigurationProvider with ChangeNotifier {
       );
       return;
     }
-
     UtilPreferences.setNamePos(pNamePos);
     UtilPreferences.setIdOperationEntity(pOperationEntity.idOperationEntity!);
     UtilPreferences.setClientePos(pClientePos.personName!);
@@ -69,6 +68,7 @@ class ConfigurationProvider with ChangeNotifier {
       resp = ResulProvider(
         message: resul.getUserSessionInfoResult!.message!,
         state: RespProvider.incorrecto.toString(),
+        obj: resul.getUserSessionInfoResult!.code!,
       );
     }
   }

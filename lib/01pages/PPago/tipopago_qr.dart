@@ -8,6 +8,7 @@ import 'package:postjava/helper/util_preferences.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 
+import '../Plogin/login_autentica.dart';
 import '../helper/util_responsive.dart';
 import '../helper/utilmodal.dart';
 import '../helper/wbtnconstante.dart';
@@ -23,7 +24,7 @@ class TipoPagoQR extends StatefulWidget {
 class _TipoPagoQRState extends State<TipoPagoQR> {
   late PagoProvider provider;
   late UtilResponsive responsive;
-  final _GlosaController = TextEditingController();
+  final _glosaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _depositoController =
       TextEditingController(text: UtilPreferences.getAcount());
@@ -65,7 +66,7 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
 
   Widget wGlosa() {
     return TextFormField(
-      controller: _GlosaController,
+      controller: _glosaController,
       onEditingComplete: () {
         _formKey.currentState!.validate();
       },
@@ -127,7 +128,7 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
   _generarQR() async {
     UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
     await provider.getQRPago(
-        double.tryParse(_montoController.text) ?? 0, _GlosaController.text);
+        double.tryParse(_montoController.text) ?? 0, _glosaController.text);
     if (provider.resp.state != RespProvider.correcto.toString()) {
       Navigator.of(context).pop();
       UtilModal.mostrarDialogoNativo(
@@ -137,8 +138,12 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
             provider.resp.message,
             style: TextStyle(color: UtilConstante.btnColor),
           ),
-          "Aceptar",
-          () {});
+          "Aceptar", () {
+        if (provider.resp.code == '99') {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              LoginAutentica.route, (Route<dynamic> route) => false);
+        }
+      });
       return;
     }
     Navigator.of(context).pop();

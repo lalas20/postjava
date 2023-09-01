@@ -5,6 +5,7 @@ import 'package:postjava/03dominio/user/credential.dart';
 import 'package:postjava/03dominio/user/result.dart';
 import 'package:postjava/03dominio/user/savings_account_extract_data_transactionable_result.dart';
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:postjava/helper/utilmethod.dart';
 
 import '../../../03dominio/user/credential_verify_user.dart';
 import '../../../03dominio/user/resul_get_user_session_info.dart';
@@ -12,42 +13,53 @@ import '../../../03dominio/user/verify_user_result.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvClientePos {
-
-  static Future<SavingsAccountExtractDataTransactionableResult> SavingsAccountExtractDataTransactionable() async {
-    SavingsAccountExtractDataTransactionableResult respuesta = SavingsAccountExtractDataTransactionableResult();
+  static Future<SavingsAccountExtractDataTransactionableResult>
+      savingsAccountExtractDataTransactionable() async {
+    SavingsAccountExtractDataTransactionableResult respuesta =
+        SavingsAccountExtractDataTransactionableResult();
 
     dynamic jsonResponse;
     try {
       final vPing = await UtilConextion.internetConnectivity();
       if (vPing == false) {
-       respuesta.codeBase = UtilConextion.errorInternet;
-       respuesta.state = 3;
-       respuesta.message = "No tiene acceso a internet";
+        respuesta.codeBase = UtilConextion.errorInternet;
+        respuesta.state = 3;
+        respuesta.message = "No tiene acceso a internet";
         return respuesta;
       }
       Map<String, String> vParam = {
-        "CodeSavingAccount":UtilPreferences.getAcount(),
-        "IdPerson":UtilPreferences.getsIdPerson(),
-        "IdUser":UtilPreferences.getIdUsuario(),
-        "IMEI":"",
-        "location":"",
-        "IpAddress":"0.0.0.0"
+        "CodeSavingAccount": UtilPreferences.getAcount(),
+        "IdPerson": UtilPreferences.getsIdPerson(),
+        "IdUser": UtilPreferences.getIdUsuario(),
+        "IMEI": "",
+        "location": "",
+        "IpAddress": "0.0.0.0"
       };
 
       String vJSON = jsonEncode(vParam);
-      final response =
-      await UtilConextion.httpPost(UtilConextion.savingsAccountExtractDataTransactionable, vJSON);
+      final response = await UtilConextion.httpPost(
+          UtilConextion.savingsAccountExtractDataTransactionable, vJSON);
 
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
-        respuesta = SavingsAccountExtractDataTransactionableResult.fromJson(jsonResponse['SavingsAccountExtractDataTransactionableResult']);
+        respuesta = SavingsAccountExtractDataTransactionableResult.fromJson(
+            jsonResponse['SavingsAccountExtractDataTransactionableResult']);
+      } else if (response.statusCode == 400) {
+        final error400 = response.body;
+        if (error400.contains('Token Expirado') ||
+            error400.contains("Excepted Token")) {
+          respuesta.code = '99';
+          respuesta.message = UtilMethod.vMensajeError404;
+          respuesta.state = 2;
+        } else {
+          respuesta = respuesta.errorRespuesta(response.statusCode);
+        }
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
       }
     } catch (e) {
       respuesta = SavingsAccountExtractDataTransactionableResult();
-      respuesta.message =
-      "error sub: ${e.toString()}";
+      respuesta.message = "error sub: ${e.toString()}";
       respuesta.state = 3;
     }
     return respuesta;
@@ -79,6 +91,17 @@ class SrvClientePos {
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
         respuesta = ResulGetUserSessionInfo.fromJson(jsonResponse);
+      } else if (response.statusCode == 400) {
+        final error400 = response.body;
+        if (error400.contains('Token Expirado') ||
+            error400.contains("Excepted Token")) {
+          respuesta.getUserSessionInfoResult = GetUserSessionInfoResult(
+              code: '99',
+              message: "Vuelva a ingresar sus credenciales",
+              state: 2);
+        } else {
+          respuesta = respuesta.errorRespuesta(response.statusCode);
+        }
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
       }
@@ -106,16 +129,13 @@ class SrvClientePos {
         return respuesta;
       }
 
-      final vCredencialVeryUser = Credential(
-          user: pDI,
-          password: pPass,
-          channel: 6,
-          aditionalItems: [
-            AditionalItems(key: 'IP', value: '255.255.255.255'),
-            AditionalItems(key: 'TypeAuthentication', value: '0'),
-            AditionalItems(key: 'Subchanel', value: 'OwnerComerce'),
-            AditionalItems(key: 'IdPOS', value: '0')
-          ]);
+      final vCredencialVeryUser =
+          Credential(user: pDI, password: pPass, channel: 6, aditionalItems: [
+        AditionalItems(key: 'IP', value: '255.255.255.255'),
+        AditionalItems(key: 'TypeAuthentication', value: '0'),
+        AditionalItems(key: 'Subchanel', value: 'OwnerComerce'),
+        AditionalItems(key: 'IdPOS', value: '0')
+      ]);
       final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 
       String vJSON = jsonEncode(vRes.toJson());

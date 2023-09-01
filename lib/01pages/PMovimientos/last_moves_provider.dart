@@ -13,13 +13,18 @@ class LastMovesProvider with ChangeNotifier {
   }
 
   getLasMovimiento() async {
-    await Future.delayed(const Duration(seconds: 2));
     final resul = await SrvPay.getLasMoves();
-
-    resp = ResulProvider(
-      message: "Registro recuperados saatisfactoriamente",
-      state: RespProvider.correcto.toString(),
-      obj: resul,
-    );
+    if (resul.state == 1) {
+      resp = ResulProvider(
+        message: "Registro recuperados satisfactoriamente",
+        state: RespProvider.correcto.toString(),
+        obj: resul,
+      );
+    } else {
+      resp = ResulProvider(
+          message: resul.message,
+          state: RespProvider.incorrecto.toString(),
+          obj: resul.code);
+    }
   }
 }

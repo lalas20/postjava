@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 class UtilMethod {
+  static String vMensajeError404 = "Vuelva a ingresar sus credenciales";
   static void imprimir(String pMessage) {
     //if (UtilConstante.ambiente != Ambiente.ePREPROD) {
     String? vtrace = Trace.current().frames[1].member;

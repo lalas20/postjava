@@ -9,6 +9,7 @@ import '../../02service/channel/plataformchannel.dart';
 import '../../03dominio/pos/resul_voucher.dart';
 import '../../03dominio/user/saving_accounts.dart';
 import '../../helper/util_preferences.dart';
+import '../Plogin/login_autentica.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
 import '../helper/utilmodal.dart';
@@ -338,8 +339,12 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
             provider.resp.message,
             style: TextStyle(color: UtilConstante.btnColor),
           ),
-          "Aceptar",
-          () {});
+          "Aceptar", () {
+        if (provider.resp.code == '99') {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              LoginAutentica.route, (Route<dynamic> route) => false);
+        }
+      });
     }
   }
 

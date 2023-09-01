@@ -2,24 +2,21 @@ import 'dart:convert';
 
 import 'package:postjava/02service/service/User/srv_cliente_pos.dart';
 import 'package:postjava/03dominio/pos/request_savings_account_transfer_pos_result.dart';
-import 'package:postjava/03dominio/pos/request_transfer_accounts.dart';
 import 'package:postjava/03dominio/pos/resul_moves.dart';
-import 'package:postjava/03dominio/user/result.dart';
-import 'package:postjava/03dominio/user/verify_user_result.dart';
 import 'package:postjava/helper/util_preferences.dart';
 import 'package:postjava/helper/utilmethod.dart';
 
 import '../../../03dominio/QR/get_encrypted_qr_string_result.dart';
 import '../../../03dominio/pos/resul_voucher.dart';
-import '../../../03dominio/user/resul_get_user_session_info.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvPay {
-  static Future<MasterResulMoves> getLasMoves() async {
-    List<ResulMoves> vLista = []; // ResulMoves.vCarga;
+  static Future<ResulMasterMoves> getLasMoves() async {
+    List<ResulMoves> vLista = [];
+    ResulMasterMoves resultado = ResulMasterMoves();
     MasterResulMoves vEntidad = MasterResulMoves();
     final resul =
-        await SrvClientePos.SavingsAccountExtractDataTransactionable();
+        await SrvClientePos.savingsAccountExtractDataTransactionable();
     if (resul.state == 1) {
       vEntidad.accountBalance = resul.object!.accountBalance;
       vEntidad.codeSavingsAccount = resul.object!.codeSavingsAccount;
@@ -37,8 +34,15 @@ class SrvPay {
             saldo: item.amountBalance));
       }
       vEntidad.listResulMoves = vLista;
+      resultado.masterResulMoves = vEntidad;
+      resultado.state = 1;
+      resultado.message = resul.message!;
+    } else {
+      resultado.state = resul.state!;
+      resultado.message = resul.message!;
+      resultado.code = resul.code!;
     }
-    return vEntidad;
+    return resultado;
   }
 
   static Future<GetEncryptedQrStringResult> getQrPay(
@@ -70,6 +74,16 @@ class SrvPay {
         jsonResponse = json.decode(response.body);
         respuesta = GetEncryptedQrStringResult.fromJson(
             jsonResponse['GetEncryptedQrStringResult']);
+      } else if (response.statusCode == 400) {
+        final error400 = response.body;
+        if (error400.contains('Token Expirado') ||
+            error400.contains("Excepted Token")) {
+          respuesta.code = '99';
+          respuesta.message = UtilMethod.vMensajeError404;
+          respuesta.state = 2;
+        } else {
+          respuesta = respuesta.errorRespuesta(response.statusCode);
+        }
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
       }
@@ -91,7 +105,7 @@ class SrvPay {
     required String pGlosa,
   }) async {
     dynamic jsonResponse;
-    String vAux = "0";
+
     RequestSavingsAccountTransferPOSResult respuesta =
         RequestSavingsAccountTransferPOSResult();
     String vJSON = '';
@@ -107,7 +121,6 @@ class SrvPay {
             "No tiene acceso a internet";
         return respuesta;
       }
-      vAux = "125";
       Map<String, dynamic> map = {
         "CodeSavingAccountSource": pCodeSavingAccount,
         "IdPerson": UtilPreferences.getsIdPerson(),
@@ -124,24 +137,30 @@ class SrvPay {
         "IpAddress": "0.0.0.0",
         "BeneficiaryName": pBeneficiarioName
       };
-      vAux = "142";
       vJSON = jsonEncode(map);
-      vAux = "144";
       final response = await UtilConextion.httpPostByNewTokken(
           pAction: UtilConextion.savingsAccountTransferPOS,
           pJsonEncode: vJSON,
           pTokken: UtilPreferences.getToken());
-      vAux = "147";
       if (response.statusCode == 200) {
-        vAux = "149";
         jsonResponse = json.decode(response.body);
-        vAux = "151";
         respuesta =
             RequestSavingsAccountTransferPOSResult.fromJson(jsonResponse);
-        vAux = "153";
+      } else if (response.statusCode == 400) {
+        final error400 = response.body;
+        if (error400.contains('Token Expirado') ||
+            error400.contains("Excepted Token")) {
+          respuesta.savingsAccountTransferPOSResult =
+              SavingsAccountTransferPOSResult();
+          respuesta.savingsAccountTransferPOSResult?.code = '99';
+          respuesta.savingsAccountTransferPOSResult?.message =
+              UtilMethod.vMensajeError404;
+          respuesta.savingsAccountTransferPOSResult?.state = 2;
+        } else {
+          respuesta = respuesta.errorRespuesta(response.statusCode);
+        }
       } else {
         respuesta = respuesta.errorRespuesta(response.statusCode);
-        vAux = "156";
       }
     } catch (e) {
       UtilMethod.writeToLog("error:${e.toString()}");
@@ -153,7 +172,7 @@ class SrvPay {
       respuesta.savingsAccountTransferPOSResult =
           SavingsAccountTransferPOSResult();
       respuesta.savingsAccountTransferPOSResult?.message =
-          "error $vAux: ${e.toString()}";
+          "error: ${e.toString()}";
       respuesta.savingsAccountTransferPOSResult?.state = 3;
     }
     return respuesta;

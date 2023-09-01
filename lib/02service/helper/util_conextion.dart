@@ -34,10 +34,18 @@ class UtilConextion {
   //
 
   static Map<String, String> vHeaderSin = {'Content-Type': 'application/json'};
-  static Map<String, String> vHeader = {
-    'Content-Type': 'application/json',
-    'HangarAuthentication': UtilPreferences.getToken()
-  };
+  // static Map<String, String> vHeader = {
+  //   'Content-Type': 'application/json',
+  //   'HangarAuthentication': UtilPreferences.getToken()
+  // };
+
+  static Map<String, String> vHeader() {
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+      'HangarAuthentication': UtilPreferences.getToken()
+    };
+    return header;
+  }
 
   static Map<String, String> vHeaderByTokken(String pTokken) {
     return {
@@ -107,7 +115,8 @@ class UtilConextion {
   static Future<http.Response> httpPost(
       String pAction, String pJsonEncode) async {
     final vUrl = Uri.parse(server + puerto + pAction);
-    final response = await http.post(vUrl, headers: vHeader, body: pJsonEncode);
+    final response =
+        await http.post(vUrl, headers: vHeader(), body: pJsonEncode);
     return response;
   }
 

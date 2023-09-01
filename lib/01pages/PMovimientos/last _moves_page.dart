@@ -1,4 +1,4 @@
-import 'dart:math';
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PMovimientos/last_moves_provider.dart';
@@ -7,9 +7,10 @@ import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wrow_opcion.dart';
 import 'package:postjava/03dominio/pos/resul_moves.dart';
 import 'package:postjava/helper/util_preferences.dart';
-import 'package:postjava/helper/utilmethod.dart';
+
 import 'package:provider/provider.dart';
 
+import '../Plogin/login_autentica.dart';
 import '../helper/util_responsive.dart';
 import '../helper/utilmodal.dart';
 
@@ -27,26 +28,43 @@ class _LastMovesState extends State<LastMoves> {
   late UtilResponsive responsive;
   bool esIngreso = true;
   bool cargando = true;
-  MasterResulMoves? vEntidad;
+  ResulMasterMoves? vEntidad;
   List<ResulMoves> vLista = [];
 
   _getLastMoves() async {
     await provider.getLasMovimiento();
     cargando = false;
     if (provider.resp.state == RespProvider.correcto.toString()) {
-     vEntidad=provider.resp.obj as MasterResulMoves; //vLista = provider.resp.obj as List<ResulMoves>;
-      vLista=vEntidad!.listResulMoves!;
+      vEntidad = provider.resp.obj as ResulMasterMoves;
+      vLista = vEntidad!.masterResulMoves!.listResulMoves!;
     } else {
       vLista = [];
+      if (provider.resp.obj == '99') {
+        UtilModal.mostrarDialogoNativo(
+            context,
+            "Atención!",
+            Text(
+              provider.resp.message,
+              style: TextStyle(color: UtilConstante.colorAppPrimario),
+            ),
+            "Aceptar", () {
+          if (provider.resp.obj == '99') {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                LoginAutentica.route, (Route<dynamic> route) => false);
+          }
+        });
+        return;
+      }
     }
   }
-  _refresh()async{
+
+  _refresh() async {
     UtilModal.mostrarDialogoSinCallback(context, "Cargando...");
     await provider.getLasMovimiento();
     Navigator.of(context).pop();
     if (provider.resp.state == RespProvider.correcto.toString()) {
-      vEntidad=provider.resp.obj as MasterResulMoves; //vLista = provider.resp.obj as List<ResulMoves>;
-      vLista=vEntidad!.listResulMoves!;
+      vEntidad = provider.resp.obj as ResulMasterMoves;
+      vLista = vEntidad!.masterResulMoves!.listResulMoves!;
     } else {
       vLista = [];
     }
@@ -63,7 +81,9 @@ class _LastMovesState extends State<LastMoves> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ultimos movimientos"),
-        actions: [ IconButton(onPressed: _refresh, icon:const Icon(Icons.refresh)) ],
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh))
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -98,10 +118,17 @@ class _LastMovesState extends State<LastMoves> {
                 height: 10,
               ),
               WRowOpcion(
-                  label: 'Fecha: ',
-                  value:vEntidad==null?"":vEntidad!.processDate!,
+                label: 'Fecha: ',
+                value: vEntidad == null
+                    ? ""
+                    : vEntidad!.masterResulMoves!.processDate!,
               ),
-              WRowOpcion(label: 'Saldo: ', value: vEntidad==null?"0":vEntidad!.accountBalance.toString(),),
+              WRowOpcion(
+                label: 'Saldo: ',
+                value: vEntidad == null
+                    ? "0"
+                    : vEntidad!.masterResulMoves!.accountBalance.toString(),
+              ),
               cargando ? UtilModal.iniCircularProgres() : ListVacia()
             ],
           ),
