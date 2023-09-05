@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                   pImg: UtilConstante.iFinger,
                   pName: 'Finger'),
                */
-              if (UtilPreferences.getIsSetting())
+              if (!UtilPreferences.getIsSetting())
                 WCarPage(
                     pElevation: 10,
                     pFun: () => processMethod('Configuración'),

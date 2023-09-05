@@ -4,6 +4,8 @@ import 'package:postjava/02service/channel/emv_channel.dart';
 import 'package:postjava/02service/channel/fingerchannel.dart';
 import 'package:postjava/03dominio/pos/resul_voucher.dart';
 
+import '../../03dominio/pos/resul_moves.dart';
+
 class PlaformChannel {
   static const methodChannelName = "com.prodem/mc";
   final MethodChannel methodChannel = const MethodChannel(methodChannelName);
@@ -32,6 +34,7 @@ class PrintMethod extends ChannelMethod {
   static const printtext = "printtext";
   static const printtextMessage = "printMessage";
   static const printVoucher = "printVoucher";
+  static const printRptDetalle = "printRptDetalleChannel";
 
   PrintMethod(MethodChannel methodChannel) : super(methodChannel);
 
@@ -69,6 +72,19 @@ class PrintMethod extends ChannelMethod {
           await methodChannel.invokeMethod<String?>(printVoucher, map);
       // ignore: avoid_print
       print({"exito  $vRespuesta"});
+      return vRespuesta;
+    } catch (e) {
+      // ignore: avoid_print
+      print({"error  $e"});
+    }
+    return null;
+  }
+
+  Future<String?> printRptDetalleChannel(ResulMoves resulMoves) async {
+    try {
+      Map<String, dynamic> map = resulMoves.toMap();
+      final vRespuesta =
+          await methodChannel.invokeMethod<String?>(printRptDetalle, map);
       return vRespuesta;
     } catch (e) {
       // ignore: avoid_print

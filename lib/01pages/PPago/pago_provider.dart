@@ -46,7 +46,7 @@ class PagoProvider with ChangeNotifier {
     try {
       final resul = PlaformChannel();
       nameDeviceDP = await resul.fingerChannel.captureNameDeviceDP();
-      nameDeviceDP = 'test';
+      //nameDeviceDP = 'test';
       if (nameDeviceDP.isEmpty) {
         resp = ResulProvider(
           message: "Dispositivo no encontrado",

@@ -114,12 +114,13 @@ class UtilModal {
 
     if (secondButtonText != null) {
       actions.add(Container(
+        height: 35,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          color: UtilConstante.headerColor,
+          color: UtilConstante.btnColorSec,
         ),
-        padding:
-            const EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
+        // padding:
+        //     const EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
         child: TextButton(
           child: Text(secondButtonText,
               style: TextStyle(
@@ -136,22 +137,30 @@ class UtilModal {
       ));
     }
 
-    return AlertDialog(
-      title: Text(
-        title,
-        style: TextStyle(
-            color: UtilConstante.headerColor,
-            fontSize: 14,
-            fontFamily: 'Poppins',
-            decoration: TextDecoration.none),
-        textAlign: TextAlign.center,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop();
+        firstCallBack();
+        return true;
+      },
+      child: AlertDialog(
+        title: Text(
+          title,
+          style: TextStyle(
+              color: UtilConstante.headerColor,
+              fontSize: 14,
+              fontFamily: 'Poppins',
+              decoration: TextDecoration.none),
+          textAlign: TextAlign.center,
+        ),
+        content: message,
+        actions: actions,
+        backgroundColor: Colors.white, // UtilConstante.bodyColor,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        scrollable: true,
+        actionsAlignment: MainAxisAlignment.center,
       ),
-      content: message,
-      actions: actions,
-      backgroundColor: Colors.white, // UtilConstante.bodyColor,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30.0))),
-      scrollable: true,
     );
   }
 

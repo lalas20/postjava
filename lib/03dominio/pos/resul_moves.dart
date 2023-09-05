@@ -32,69 +32,12 @@ class ResulMoves {
     this.referencia,
     this.saldo,
   });
-
-  static List<ResulMoves> vCarga = [
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(DateTime.now()),
-      monto: 135.5,
-      saldo: 180,
-      nroTransaccion: '1',
-      referencia: 'PAGO DE MEDICAMENTOS',
-    ),
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(
-          DateTime.now().add(const Duration(minutes: -10))),
-      monto: 132.5,
-      saldo: 185,
-      nroTransaccion: '2',
-      referencia: 'PAGO DE ROPA',
-    ),
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(
-          DateTime.now().add(const Duration(minutes: -15))),
-      monto: 136.5,
-      saldo: 183,
-      nroTransaccion: '3',
-      referencia: 'PAGO DE ROPA Y MEDICAMENTOS',
-    ),
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(
-          DateTime.now().add(const Duration(minutes: -30))),
-      monto: 1136.5,
-      saldo: 1183,
-      nroTransaccion: '5',
-      referencia: 'PAGO DE MATERIAL DE TRABAJO',
-    ),
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(
-          DateTime.now().add(const Duration(hours: -2))),
-      monto: 2136.5,
-      saldo: 2183,
-      nroTransaccion: '6',
-      referencia: 'PAGO DE MATERIAL DE TRABAJO',
-    ),
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(
-          DateTime.now().add(const Duration(hours: -2, minutes: -10))),
-      monto: 300.5,
-      saldo: 2183,
-      nroTransaccion: '7',
-      referencia: 'PAGO DE MATERIAL DE LIMPIEZA',
-    ),
-    ResulMoves(
-      agencia: 'POS VENTA',
-      fechaTransaccion: UtilMethod.formatteDate(
-          DateTime.now().add(const Duration(hours: -2, minutes: -20))),
-      monto: 300.5,
-      saldo: 2183,
-      nroTransaccion: '8',
-      referencia: 'PAGO DE MATERIAL',
-    ),
-  ];
+  Map<String, dynamic> toMap() => {
+        'fechaTransaccion': "FechaHora:  $fechaTransaccion",
+        'nroTransaccion': "Transacción:  $nroTransaccion",
+        'agencia': "Agencia:  $agencia",
+        'referencia': "Referencia:  $referencia",
+        'montotxt': "Monto:  ${UtilMethod.stringByDouble(monto ?? 0)}",
+        'saldotxt': "Saldo:  ${UtilMethod.stringByDouble(saldo ?? 0)}",
+      };
 }

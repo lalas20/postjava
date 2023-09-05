@@ -286,31 +286,46 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
       final resul = PlaformChannel();
       final voucher = ResulVoucher(
         bancoDestino: 'BANCO PRODEM',
-        cuentaDestino:
-            print[5], // UtilPreferences.getAcount(), // '117-2-1-11208-1',
-        cuentaOrigen:
-            print[3], //selecAcount!.operationCode!, // '117-2-1-XXXX-1',
-        fechaTransaccion: print[1], //UtilMethod.formatteDate(DateTime.now()),
-        glosa: print[8], // provider.glosaWIdentityCard,
-        montoPago: print[2], //provider.montoWIdentityCard,
+        cuentaDestino: print[5],
+        cuentaOrigen: print[3],
+        fechaTransaccion: print[1],
+        glosa: print[8],
+        montoPago: print[2],
         nroTransaccion: print[0],
-        titular: print[7], // UtilPreferences.getClientePos(),
+        titular: print[7],
         tipoPago: 'Doc. Identidad y huella',
       );
 
-      Future future = resul.printMethod.printVoucherChannel(voucher);
-      future
-          .then((value) => UtilModal.mostrarDialogoNativo(
-                  context,
-                  "Atención",
-                  Text(
-                    provider.resp.message,
-                    style: TextStyle(color: UtilConstante.btnColor),
-                  ),
-                  "Aceptar", () {
-                Navigator.of(context).pop();
-              }))
-          .catchError((e) => UtilMethod.writeToLog(e.toString()));
+      await resul.printMethod.printVoucherChannel(voucher);
+      UtilModal.mostrarDialogoNativo(
+        context,
+        "Atención",
+        Text(
+          provider.resp.message,
+          style: TextStyle(color: UtilConstante.btnColor),
+        ),
+        "Aceptar",
+        () {
+          Navigator.of(context).pop();
+        },
+        secondButtonText: "Imprime Copia",
+        secondCallback: () async {
+          final voucher = ResulVoucher(
+            bancoDestino: 'Copia BANCO PRODEM',
+            cuentaDestino: print[5],
+            cuentaOrigen: print[3],
+            fechaTransaccion: print[1],
+            glosa: print[8],
+            montoPago: print[2],
+            nroTransaccion: print[0],
+            titular: print[7],
+            tipoPago: 'Doc. Identidad y huella',
+          );
+
+          await resul.printMethod.printVoucherChannel(voucher);
+          Navigator.of(context).pop();
+        },
+      );
     } else {
       UtilModal.mostrarDialogoNativo(
           context,

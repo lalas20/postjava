@@ -13,6 +13,7 @@ class UtilConstante {
 
   static Color btnColor = const Color.fromRGBO(0, 112, 175, 1);
   static Color colorBanner = const Color.fromRGBO(0, 112, 175, 1);
+  static Color btnColorSec = const Color.fromRGBO(0, 171, 99, 1);
 
   static String iCard = "assets/images/card.png";
   static String iPos = "assets/images/POS.png";

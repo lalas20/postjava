@@ -40,7 +40,7 @@ class SrvPay {
     } else {
       resultado.state = resul.state!;
       resultado.message = resul.message!;
-      resultado.code = resul.code!;
+      resultado.code = resul.code ?? '';
     }
     return resultado;
   }

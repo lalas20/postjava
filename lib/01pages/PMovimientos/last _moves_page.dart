@@ -7,6 +7,7 @@ import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wrow_opcion.dart';
 import 'package:postjava/03dominio/pos/resul_moves.dart';
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:postjava/helper/utilmethod.dart';
 
 import 'package:provider/provider.dart';
 
@@ -127,9 +128,10 @@ class _LastMovesState extends State<LastMoves> {
                 label: 'Saldo: ',
                 value: vEntidad == null
                     ? "0"
-                    : vEntidad!.masterResulMoves!.accountBalance.toString(),
+                    : UtilMethod.stringByDouble(
+                        vEntidad!.masterResulMoves!.accountBalance ?? 0),
               ),
-              cargando ? UtilModal.iniCircularProgres() : ListVacia()
+              cargando ? UtilModal.iniCircularProgres() : listVacia()
             ],
           ),
         ),
@@ -137,7 +139,7 @@ class _LastMovesState extends State<LastMoves> {
     );
   }
 
-  Widget ListVacia() {
+  Widget listVacia() {
     return vLista.isEmpty
         ? UtilModal.iniSinRegistro()
         : Container(

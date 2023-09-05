@@ -320,7 +320,7 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
         tipoPago: 'Tarjeta y huella',
       );
 
-      final res = await resul.printMethod.printVoucherChannel(voucher);
+      await resul.printMethod.printVoucherChannel(voucher);
       UtilModal.mostrarDialogoNativo(
           context,
           "Atención",
@@ -328,9 +328,26 @@ class _TipoPagoTarjetaHuellaState extends State<TipoPagoTarjetaHuella> {
             provider.resp.message,
             style: TextStyle(color: UtilConstante.btnColor),
           ),
-          "Aceptar", () {
-        Navigator.of(context).pop();
-      });
+          "Aceptar",
+          () {
+            Navigator.of(context).pop();
+          },
+          secondButtonText: "Imprime Copia",
+          secondCallback: () async {
+            final voucher = ResulVoucher(
+              bancoDestino: 'Copia BANCO PRODEM',
+              cuentaDestino: print[5],
+              cuentaOrigen: print[3],
+              fechaTransaccion: print[1],
+              glosa: print[8],
+              montoPago: print[2],
+              nroTransaccion: print[0],
+              titular: print[7],
+              tipoPago: 'Tarjeta y Huella',
+            );
+            await resul.printMethod.printVoucherChannel(voucher);
+            Navigator.of(context).pop();
+          });
     } else {
       UtilModal.mostrarDialogoNativo(
           context,

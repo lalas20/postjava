@@ -82,6 +82,59 @@ public class PrintChannel {
         return  vRespuesta;
     }
 
+    public String printRptDetalleChannel(PrintRptDetalleVoucher printVoucher ){
+        String vRespuesta; String aux="";
+        try {
+
+            mDriverManager = DriverManager.getInstance();
+            if (mDriverManager == null) {
+                vRespuesta = "drive";
+                return vRespuesta;
+            }
+            Log.d("pengzhan", "zcs_model_code = ");
+            mPrinter = mDriverManager.getPrinter();
+            if (mPrinter == null) {
+                vRespuesta = "mPrinter";
+                return vRespuesta;
+            }
+            int printStatus = mPrinter.getPrinterStatus();
+            if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                vRespuesta = "Error";
+            } else {
+                PrnStrFormat format = new PrnStrFormat(); aux="1";
+                format.setTextSize(30);
+                format.setAli(Layout.Alignment.ALIGN_CENTER);
+                format.setStyle(PrnTextStyle.BOLD);
+                format.setFont(PrnTextFont.SANS_SERIF);
+                mPrinter.setPrintAppendString("PRODEM - POS ", format);aux="2";
+                format.setTextSize(20);
+                format.setStyle(PrnTextStyle.NORMAL);
+                format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                mPrinter.setPrintAppendString(" ", format);aux="3";
+                mPrinter.setPrintAppendString(printVoucher.fechaTransaccion, format); aux="4";
+                mPrinter.setPrintAppendString(printVoucher.nroTransaccion, format);aux="5";
+                mPrinter.setPrintAppendString(printVoucher.agencia, format);
+                mPrinter.setPrintAppendString(printVoucher.montoTxt, format);
+                mPrinter.setPrintAppendString(printVoucher.saldoTxt, format);
+                mPrinter.setPrintAppendString(printVoucher.referencia, format);
+                mPrinter.setPrintAppendString(" ", format);aux="6";
+                mPrinter.setPrintAppendString(" ", format);aux="7";
+                mPrinter.setPrintAppendString(" -----------------------------", format);aux="8";
+                mPrinter.setPrintAppendString(" ", format);aux="9";
+                mPrinter.setPrintAppendString(" ", format);aux="10";
+                Log.d("printVoucher","ingresando al setPrintStart");
+                printStatus = mPrinter.setPrintStart();aux="11";
+                vRespuesta = "ejecucion del print " + printStatus;
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d("printVoucher","excepcion: " + e.getMessage() +" aux:"+aux);
+            vRespuesta=e.getMessage();
+        }
+        return  vRespuesta;
+    }
+
     public String printTextMessage(String pText){
         String vRespuesta;
         mDriverManager = DriverManager.getInstance();
@@ -167,6 +220,15 @@ public class PrintChannel {
         }
         return  vRespuesta;
     }
+}
+
+class PrintRptDetalleVoucher {
+    public String fechaTransaccion;
+    public String nroTransaccion;
+    public String agencia;
+    public String referencia;
+    public String montoTxt;
+    public String saldoTxt;
 }
 
 class PrintVoucher{

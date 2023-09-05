@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 class UtilMethod {
@@ -31,6 +32,15 @@ class UtilMethod {
   static String _twoDigits(int n) {
     if (n >= 10) return "$n";
     return "0$n";
+  }
+
+  static String stringByDouble(double pMonto) {
+    final formatter = NumberFormat.currency(
+      locale: 'es_BS', // Cambia el locale según tu necesidad
+      symbol: '\Bs', // Cambia el símbolo de la moneda según tu necesidad
+      decimalDigits: 2, // Define la cantidad de decimales
+    );
+    return formatter.format(pMonto);
   }
 
   static writeToLog(String text) async {

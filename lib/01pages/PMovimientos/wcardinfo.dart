@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/util_responsive.dart';
+import 'package:postjava/01pages/helper/wbtnconstante.dart';
 import 'package:postjava/01pages/helper/wrow_opcion.dart';
 
+import '../../02service/channel/plataformchannel.dart';
 import '../../03dominio/pos/resul_moves.dart';
+import '../../helper/utilmethod.dart';
 
 class WCardInfo extends StatelessWidget {
   const WCardInfo({required this.resulMoves, super.key});
@@ -14,7 +17,6 @@ class WCardInfo extends StatelessWidget {
     return Card(
       elevation: 5,
       child: ListTile(
-        //leading: Text('${resulMoves.nroTransaccion}'),
         title: Text(
           ' ${resulMoves.fechaTransaccion}',
           style: TextStyle(
@@ -24,13 +26,12 @@ class WCardInfo extends StatelessWidget {
           ' ${resulMoves.referencia}',
           style: TextStyle(color: UtilConstante.btnColor),
         ),
-        trailing: Text(' ${resulMoves.monto}',
+        trailing: Text(UtilMethod.stringByDouble(resulMoves.monto ?? 0),
             style: TextStyle(
                 color: UtilConstante.btnColor,
                 fontWeight: FontWeight.w400,
                 fontSize: 20)),
         onTap: () {
-          print(resulMoves.nroTransaccion);
           showDialog(
             context: context,
             builder: (BuildContext context) => _buildPopupDialog(context),
@@ -91,17 +92,27 @@ class WCardInfo extends StatelessWidget {
                 ),
                 WRowOpcion(
                   label: "Monto:",
-                  value: " ${resulMoves.monto}",
+                  value: UtilMethod.stringByDouble(resulMoves.monto ?? 0),
                 ),
                 WRowOpcion(
                   label: "Saldo:",
-                  value: " ${resulMoves.saldo}",
+                  value: UtilMethod.stringByDouble(resulMoves.saldo ?? 0),
                 ),
+                _btnImprimeCopy(),
               ],
             ),
           )
         ],
       ),
     );
+  }
+
+  _btnImprimeCopy() {
+    return WBtnConstante(pName: "Imprime Copia", fun: _rptImprimeCopy);
+  }
+
+  _rptImprimeCopy() async {
+    final resul = PlaformChannel();
+    await resul.printMethod.printRptDetalleChannel(resulMoves);
   }
 }

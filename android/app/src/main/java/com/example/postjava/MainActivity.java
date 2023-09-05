@@ -130,6 +130,40 @@ public class MainActivity extends FlutterActivity {
                         }
 
                         break;
+                    case "printRptDetalleChannel":
+                        PrintRptDetalleVoucher rptprintVoucher=new PrintRptDetalleVoucher();
+                        rptprintVoucher.fechaTransaccion = call.argument("fechaTransaccion");
+                        rptprintVoucher.nroTransaccion=call.argument("nroTransaccion");
+                        rptprintVoucher.agencia=call.argument("agencia");
+                        rptprintVoucher.referencia=call.argument("referencia");
+                        rptprintVoucher.montoTxt=call.argument("montotxt");
+                        rptprintVoucher.saldoTxt=call.argument("saldotxt");
+
+/*
+                        rptprintVoucher.fechaTransaccion ="fecha";
+                        rptprintVoucher.nroTransaccion="nroTransaccion";
+                        rptprintVoucher.agencia="agencia";
+                        rptprintVoucher.referencia="referencia";
+                        rptprintVoucher.montoTxt="montotxt";
+                        rptprintVoucher.saldoTxt="saldotxt";
+*/
+                        Log.i("printVoucher", "fechaTransaccion: "+rptprintVoucher.fechaTransaccion);
+                        Log.i("printVoucher", "nroTransaccion: "+rptprintVoucher.nroTransaccion);
+                        Log.i("printVoucher", "agencia: "+rptprintVoucher.agencia);
+                        Log.i("printVoucher", "referencia: "+rptprintVoucher.referencia);
+                        Log.i("printVoucher", "montoTxt: "+rptprintVoucher.montoTxt);
+                        Log.i("printVoucher", "saldoTxt: "+rptprintVoucher.saldoTxt);
+                        vResFinger= printChannel.printRptDetalleChannel(rptprintVoucher);
+                        Log.i("printVoucher", "fin: de impresion ");
+                        if(vResFinger=="Error"){
+                            vmssPrin="error";
+                            result.success(vResFinger);
+                        }else {
+                            vmssPrin="elsee ingreso";
+                            result.success(vResFinger);
+                        }
+
+                        break;
                     case "starFinger":
                         vResFinger=   fingerChannelEvent.initFinger();
                         result.success(vResFinger);
