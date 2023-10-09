@@ -31,6 +31,8 @@ class UtilConextion {
       'rest/SavingAccountCoreServices.Services.SavingAccountService/GetEncryptedQrString';
   static String savingsAccountExtractDataTransactionable =
       'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountExtractDataTransactionable';
+  static String getQRStateSingleUse =
+      'rest/SavingAccountCoreServices.Services.SavingAccountService/GetQRStateSingleUse';
   //
 
   static Map<String, String> vHeaderSin = {'Content-Type': 'application/json'};

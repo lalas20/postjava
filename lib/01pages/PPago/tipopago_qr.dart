@@ -1,13 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/wappbar.dart';
+import 'package:postjava/03dominio/QR/get_qr_state_single_use_result.dart';
 import 'package:postjava/helper/util_preferences.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 
+import '../../helper/utilmethod.dart';
 import '../Plogin/login_autentica.dart';
 import '../helper/util_responsive.dart';
 import '../helper/utilmodal.dart';
@@ -30,12 +34,16 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
       TextEditingController(text: UtilPreferences.getAcount());
   final _montoController = TextEditingController();
   String imgTxt = '';
+  Timer? _timer;
+  int _initTime = 5; // inicia despues de 10seg
+  int _endTime = 100;
 
   bool isGenerado = false;
 
   @override
   void dispose() {
     provider.clearIdentityCard();
+    _cancelTimer();
     super.dispose();
   }
 
@@ -126,6 +134,7 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
   }
 
   _generarQR() async {
+    FocusScope.of(context).unfocus();
     UtilModal.mostrarDialogoSinCallback(context, "Procesando...");
     await provider.getQRPago(
         double.tryParse(_montoController.text) ?? 0, _glosaController.text);
@@ -149,9 +158,66 @@ class _TipoPagoQRState extends State<TipoPagoQR> {
     Navigator.of(context).pop();
     imgTxt = provider.resp.obj.toString();
     isGenerado = true;
+    _startTimer();
   }
 
-  void closeQr() {
+  _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: _initTime), (timer) async {
+      await _getQRStateSingleUse();
+      _endTime--;
+      UtilMethod.formatteDate(DateTime.now());
+      UtilMethod.imprimir('_endTime:$_endTime fecha:${DateTime.now()}');
+      if (_endTime <= 0) {
+        _cancelTimer();
+      }
+    });
+  }
+
+  _getQRStateSingleUse() async {
+    await provider.getQRStateSingleUse();
+    if (provider.resp.state != RespProvider.correcto.toString()) {
+      if (provider.resp.code != null && provider.resp.code == '99') {
+        Navigator.of(context).pop();
+        _cancelTimer();
+        UtilModal.mostrarDialogoNativo(
+            context,
+            "Atención",
+            Text(
+              provider.resp.message,
+              style: TextStyle(color: UtilConstante.btnColor),
+            ),
+            "Aceptar", () {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              LoginAutentica.route, (Route<dynamic> route) => false);
+        });
+      }
+    } else {
+      final vQrState = provider.resp.obj as QRState;
+      if (vQrState.state == '0000') {
+        _cancelTimer();
+        UtilModal.mostrarDialogoNativo(
+          context,
+          "Atención",
+          Text(
+            "La transacción fue realizada con exíto",
+            style: TextStyle(color: UtilConstante.btnColor),
+          ),
+          "Aceptar",
+          () {
+            closeQr();
+          },
+          firstActionStyle: ActionStyle.important,
+        );
+      }
+    }
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
+  }
+
+  closeQr() {
+    _cancelTimer();
     Navigator.of(context).pop();
   }
 

@@ -7,6 +7,7 @@ import 'package:postjava/helper/util_preferences.dart';
 import 'package:postjava/helper/utilmethod.dart';
 
 import '../../../03dominio/QR/get_encrypted_qr_string_result.dart';
+import '../../../03dominio/QR/get_qr_state_single_use_result.dart';
 import '../../../03dominio/pos/resul_voucher.dart';
 import '../../helper/util_conextion.dart';
 
@@ -43,6 +44,46 @@ class SrvPay {
       resultado.code = resul.code ?? '';
     }
     return resultado;
+  }
+
+  static Future<GetQRStateSingleUseResult> getQrStateSingleUse(
+      {required String pIdQuickResponde}) async {
+    Map<String, dynamic> toMap = {'IdQuickResponse': pIdQuickResponde};
+    GetQRStateSingleUseResult respuesta = GetQRStateSingleUseResult();
+    final vPing = await UtilConextion.internetConnectivity();
+    if (vPing == false) {
+      respuesta.codeBase = UtilConextion.errorInternet;
+      respuesta.state = 3;
+      respuesta.message = "No tiene acceso a internet";
+      return respuesta;
+    }
+    dynamic jsonResponse;
+    try {
+      String vJSON = jsonEncode(toMap);
+      final response = await UtilConextion.httpPost(
+          UtilConextion.getQRStateSingleUse, vJSON);
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        respuesta = GetQRStateSingleUseResult.fromJson(
+            jsonResponse['GetQRStateSingleUseResult']);
+      } else if (response.statusCode == 400) {
+        final error400 = response.body;
+        if (error400.contains('Token Expirado') ||
+            error400.contains("Excepted Token")) {
+          respuesta.code = '99';
+          respuesta.message = UtilMethod.vMensajeError404;
+          respuesta.state = 2;
+        } else {
+          respuesta = respuesta.errorRespuesta(response.statusCode);
+        }
+      } else {
+        respuesta = respuesta.errorRespuesta(response.statusCode);
+      }
+    } catch (e) {
+      respuesta.message = "error sub: ${e.toString()}";
+      respuesta.state = 3;
+    }
+    return respuesta;
   }
 
   static Future<GetEncryptedQrStringResult> getQrPay(

@@ -8,6 +8,7 @@ import 'package:postjava/02service/service/User/srv_verify_user.dart';
 import 'package:postjava/03dominio/user/aditional_item.dart';
 import 'package:postjava/03dominio/user/saving_accounts.dart';
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:postjava/helper/utilmethod.dart';
 
 import '../../03dominio/generic/resul_provider.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
@@ -31,6 +32,7 @@ class PagoProvider with ChangeNotifier {
   Uint8List vImgQR = Uint8List(0);
   String tokkeSavinAcountTransfer = '';
   String beneficiarioName = '';
+  String vIdQuickResponse = '';
 
   bool tieneFinger = false;
 
@@ -145,15 +147,36 @@ class PagoProvider with ChangeNotifier {
       resp = ResulProvider(
         message: resul.message!,
         state: RespProvider.correcto.toString(),
-        obj: resul.object
-            ?.qrValue, //Uint8List(0)// generateQRCode(resul.object?.qrValue ?? '0'),
+        obj: resul.object?.qrValue,
       );
+      vIdQuickResponse = resul.object!.idQuickResponse.toString();
       vMontoPagar = pMonto;
+      UtilMethod.imprimir('vIdQuickResponse:$vIdQuickResponse');
     } else {
       resp = ResulProvider(
         message: resul.message!,
         state: RespProvider.incorrecto.toString(),
         obj: Uint8List(0),
+        code: resul.code,
+      );
+    }
+  }
+
+  getQRStateSingleUse() async {
+    final resul =
+        await SrvPay.getQrStateSingleUse(pIdQuickResponde: vIdQuickResponse);
+    if (resul.state == 1) {
+      UtilMethod.imprimir('resul.qrState:${resul.qrState!.state}');
+      resp = ResulProvider(
+        message: resul.message!,
+        state: RespProvider.correcto.toString(),
+        obj: resul.qrState,
+      );
+    } else {
+      UtilMethod.imprimir('resul.message:${resul.message}');
+      resp = ResulProvider(
+        message: resul.message!,
+        state: RespProvider.incorrecto.toString(),
         code: resul.code,
       );
     }
