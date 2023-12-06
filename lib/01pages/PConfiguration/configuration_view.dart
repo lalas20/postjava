@@ -80,7 +80,9 @@ class _ConfigurationViewState extends State<ConfigurationView> {
   void saveConfiguration() async {
     UtilModal.mostrarDialogoSinCallback(context, "Grabando...");
     await provider.saveDataIni(account, sessionInfo!,
-        pNamePos: _txtNamePos.text, pAndroidID: _txtAndroidID.text);
+        pNamePos: _txtNamePos.text,
+        pAndroidID: _txtAndroidID.text,
+        context: context);
     Navigator.of(context).pop();
     if (provider.resp.state == RespProvider.correcto.toString()) {
       //Navigator.of(context).pop();

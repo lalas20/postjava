@@ -22,6 +22,9 @@ class UtilConextion {
   //ATM SavingsAccountTransferMobile
   static String savingsAccountTransferPOS =
       'rest/SavingAccountCoreServices.Services.SavingAccountService/SavingsAccountTransferPOS';
+  static String ping = 'rest/POS.Services.Services.IProdemPosServices/Ping';
+  static String dTOWebPosDeviceInsert =
+      'rest/POS.Services.Services.IProdemPosServices/DTOWebPosDeviceInsert';
 
 //OperacionesController
   static String verifyUser = 'rest/VerifyUser';
@@ -54,6 +57,29 @@ class UtilConextion {
       'Content-Type': 'application/json',
       'HangarAuthentication': pTokken
     };
+  }
+
+  static Future<bool> internetConnectivityPing() async {
+    bool resul = false;
+    try {
+      final vUrl = Uri.parse(server + puerto + ping);
+      final response = await http.post(vUrl, headers: vHeader());
+
+      if (response.statusCode == 200) {
+        resul = true;
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        //treat SocketException
+        print("Socket exception: ${e.toString()}");
+      } else if (e is TimeoutException) {
+        //treat TimeoutException
+        print("Timeout exception: ${e.toString()}");
+      } else {
+        print("Unhandled exception: ${e.toString()}");
+      }
+    }
+    return resul;
   }
 
   static Future<bool> internetConnectivity() async {

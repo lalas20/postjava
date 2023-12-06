@@ -18,8 +18,8 @@ class LoginAutentica extends StatefulWidget {
 
 class _LoginAutenticaState extends State<LoginAutentica> {
   LoginProviders provider = LoginProviders();
-  TextEditingController txtuser = TextEditingController(text: "picapiedr4");
-  TextEditingController txtpass = TextEditingController(text: "WilmaPic4");
+  TextEditingController txtuser = TextEditingController(text: "personal123");
+  TextEditingController txtpass = TextEditingController(text: "Pr0d3m123");
 
   @override
   Widget build(BuildContext context) {

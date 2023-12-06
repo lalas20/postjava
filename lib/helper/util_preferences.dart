@@ -126,4 +126,15 @@ class UtilPreferences {
     if (_preferences == null) return false;
     return _preferences!.getBool(_keyIsSetting) ?? false;
   }
+
+  static const _keyIdPosDevice = 'IdPosDevice';
+  static Future setIdPosDevice(String? pIdPosDevice) async {
+    if (_preferences == null) return null;
+    await _preferences!.setString(_keyIdPosDevice, pIdPosDevice ?? '');
+  }
+
+  static String getIdPosDevice({String defValue = ''}) {
+    if (_preferences == null) return defValue;
+    return _preferences!.getString(_keyIdPosDevice) ?? defValue;
+  }
 }
