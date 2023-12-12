@@ -18,13 +18,13 @@ class WRowOpcion extends StatelessWidget {
                 fontWeight: FontWeight.bold, color: UtilConstante.btnColor),
           ),
           Container(
-            constraints: BoxConstraints(maxWidth: 200),
-           child: Text(
-            value,
-            style: TextStyle(color: UtilConstante.btnColor),
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: Text(
+              value,
+              style: TextStyle(color: UtilConstante.btnColor),
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
           ),
         ],
       ),

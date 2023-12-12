@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +7,6 @@ import '../../02service/channel/plataformchannel.dart';
 import '../../03dominio/pos/resul_voucher.dart';
 import '../../03dominio/user/saving_accounts.dart';
 import '../../helper/util_preferences.dart';
-import '../../helper/utilmethod.dart';
 import '../Plogin/login_autentica.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
@@ -38,12 +35,10 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
   List<SavingAccounts>? vListaCuentaByCi;
   SavingAccounts? selecAcount;
   final resul = PlaformChannel();
-  late StreamSubscription _streamSubscription;
   bool tieneFinger = false;
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _glosaController.dispose();
     _depositoController.dispose();
     _montoController.dispose();
@@ -229,7 +224,7 @@ class _TipoPagoCiHuellaState extends State<TipoPagoCiHuella> {
           child: Padding(
             padding: const EdgeInsets.only(left: 10),
             child:
-                Text("${pCuenta!.codeAccount!}  ${pCuenta!.moneyDescription}"),
+                Text("${pCuenta!.codeAccount!}  ${pCuenta.moneyDescription}"),
           ),
         );
       },

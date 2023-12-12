@@ -97,7 +97,7 @@ class PagoProvider with ChangeNotifier {
       return;
     }
 
-    final resul = await SrvVerifyUser.ObtieneCuentaByCI(
+    final resul = await SrvVerifyUser.obtieneCuentaByCI(
       pCI: pCi,
       pFinger: fingerWIdentityCard,
     );
@@ -193,7 +193,7 @@ class PagoProvider with ChangeNotifier {
       return;
     }
 
-    final resul = await SrvVerifyUser.ObtieneCuentaByTarjetaPan(
+    final resul = await SrvVerifyUser.obtieneCuentaByTarjetaPan(
       pTarjetaPan: pCard,
       pFinger: fingerWIdentityCard,
     );

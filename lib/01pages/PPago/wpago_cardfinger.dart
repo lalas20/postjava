@@ -1,9 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
@@ -13,9 +10,6 @@ import 'package:provider/provider.dart';
 
 import '../../02service/channel/plataformchannel.dart';
 import '../../03dominio/pos/resul_voucher.dart';
-import '../../03dominio/user/resul_get_user_session_info.dart';
-import '../../helper/util_preferences.dart';
-import '../../helper/utilmethod.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
 import '../helper/utilmodal.dart';
@@ -166,7 +160,7 @@ class _WPagoCardFingerState extends State<WPagoCardFinger> {
         tipoPago: 'Tarjeta y huella',
       );
 
-      final res = await resul.printMethod.printVoucherChannel(voucher);
+      await resul.printMethod.printVoucherChannel(voucher);
       UtilModal.mostrarDialogoNativo(
           context,
           "Atención",

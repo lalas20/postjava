@@ -1,10 +1,3 @@
-// ignore_for_file: avoid_print
-
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import '../02service/channel/plataformchannel.dart';
 
@@ -20,8 +13,6 @@ class _FingerPageDPState extends State<FingerPageDP> {
   Image? image;
   final resul = PlaformChannel();
 
-
-
   @override
   void dispose() {
     resul.fingerChannel.dispose();
@@ -30,10 +21,10 @@ class _FingerPageDPState extends State<FingerPageDP> {
   //
 
   void _getName() async {
-    final res=await resul.fingerChannel.captureNameDeviceDP();
+    final res = await resul.fingerChannel.captureNameDeviceDP();
 
     setState(() {
-      txtRespuesta.text="name: ${res!.isEmpty ?" vacio": res}";
+      txtRespuesta.text = "name: ${res.isEmpty ? " vacio" : res}";
     });
   }
 
@@ -51,11 +42,8 @@ class _FingerPageDPState extends State<FingerPageDP> {
               controller: txtRespuesta,
               readOnly: true,
             ),
-
             ElevatedButton(
-                onPressed: _getName,
-                child: const Text('get huella byte txt')),
-
+                onPressed: _getName, child: const Text('get huella byte txt')),
           ],
         ),
       ),

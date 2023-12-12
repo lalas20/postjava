@@ -12,6 +12,7 @@ import 'package:postjava/01pages/helper/wappbar.dart';
 import 'package:postjava/01pages/helper/wcardpage.dart';
 import 'package:postjava/helper/util_preferences.dart';
 import 'package:provider/provider.dart';
+import '../Plogin/login_autentica.dart';
 import '../cardpage.dart';
 import '../helper/utilmodal.dart';
 import '../printpage.dart';
@@ -83,8 +84,12 @@ class _HomePageState extends State<HomePage> {
             provider.resp.message,
             style: TextStyle(color: UtilConstante.colorAppPrimario),
           ),
-          "Aceptar",
-          () {});
+          "Aceptar", () {
+        if (provider.resp.code == '99') {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              LoginAutentica.route, (Route<dynamic> route) => false);
+        }
+      });
 
       //return;
     } else {
@@ -132,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                   pImg: UtilConstante.iFinger,
                   pName: 'Finger'),
                */
-              if (!UtilPreferences.getIsSetting())
+              if (UtilPreferences.getIsSetting())
                 WCarPage(
                     pElevation: 10,
                     pFun: () => processMethod('Configuración'),

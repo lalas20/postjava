@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'package:postjava/03dominio/pos/request_transfer_accounts.dart';
+
 import 'package:postjava/03dominio/user/aditional_item.dart';
 import 'package:postjava/03dominio/user/credential.dart';
-import 'package:postjava/03dominio/user/saving_accounts.dart';
 
 import '../../../03dominio/user/credential_verify_user.dart';
 import '../../../03dominio/user/result.dart';
@@ -11,7 +10,7 @@ import '../../../helper/utilmethod.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvVerifyUser {
-  static Future<Result> ObtieneCuentaByCI(
+  static Future<Result> obtieneCuentaByCI(
       {required String pCI, required String pFinger}) async {
     dynamic jsonResponse;
     Result respuesta = Result();
@@ -62,7 +61,7 @@ class SrvVerifyUser {
     return respuesta;
   }
 
-  static Future<Result> ObtieneCuentaByTarjetaPan(
+  static Future<Result> obtieneCuentaByTarjetaPan(
       {required String pTarjetaPan, required String pFinger}) async {
     dynamic jsonResponse;
     Result respuesta = Result();

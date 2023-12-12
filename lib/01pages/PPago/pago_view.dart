@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/PPago/wpago_cardfinger.dart';
@@ -11,7 +9,7 @@ import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
 
 import 'package:postjava/helper/util_preferences.dart';
-import 'package:postjava/helper/utilmethod.dart';
+
 import 'package:provider/provider.dart';
 
 import '../helper/util_responsive.dart';
@@ -33,11 +31,10 @@ class _PagoViewState extends State<PagoView> {
   TipoPago? selectTipoPago;
   late PagoProvider provider;
   late UtilResponsive responsive;
-  final _GlosaController = TextEditingController();
+  final _glosaController = TextEditingController();
 
   @override
   void dispose() {
-    // TODO: implement dispose
     provider.clearIdentityCard();
     super.dispose();
   }
@@ -72,7 +69,7 @@ class _PagoViewState extends State<PagoView> {
 
   Widget wGlosa() {
     return TextFormField(
-      controller: _GlosaController,
+      controller: _glosaController,
       onEditingComplete: () {
         _formKey.currentState!.validate();
       },
@@ -201,7 +198,7 @@ class _PagoViewState extends State<PagoView> {
         break;
       case TipoPago.QR:
         await provider.getQRPago(
-            double.tryParse(_montoController.text) ?? 0, _GlosaController.text);
+            double.tryParse(_montoController.text) ?? 0, _glosaController.text);
 
         break;
       default:

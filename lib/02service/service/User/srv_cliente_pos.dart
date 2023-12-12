@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:postjava/03dominio/pos/request_pos_data.dart';
 import 'package:postjava/03dominio/user/aditional_item.dart';
@@ -158,7 +157,15 @@ class SrvClientePos {
     GetUserSessionInfoResult getUserSessionInfo = GetUserSessionInfoResult();
     dynamic jsonResponse;
     try {
-      final vPing = await UtilConextion.internetConnectivity();
+// final vPing = await UtilConextion.internetConnectivityPing();
+//       if (vPing == false) {
+//         respuesta.codeBase = UtilConextion.errorInternet;
+//         respuesta.state = 3;
+//         respuesta.message = "No tiene acceso a internet";
+//         return respuesta;
+//       }
+
+      final vPing = await UtilConextion.internetConnectivityPing();
       if (vPing == false) {
         getUserSessionInfo.codeBase = UtilConextion.errorInternet;
         getUserSessionInfo.state = 3;
@@ -207,7 +214,7 @@ class SrvClientePos {
     VerifyUserResult vObjVerify = VerifyUserResult();
     dynamic jsonResponse;
     try {
-      final vPing = await UtilConextion.internetConnectivity();
+      final vPing = await UtilConextion.internetConnectivityPing();
       if (vPing == false) {
         vObjVerify.codeBase = UtilConextion.errorInternet;
         vObjVerify.state = 3;
@@ -221,7 +228,7 @@ class SrvClientePos {
         AditionalItems(key: 'IP', value: '255.255.255.255'),
         AditionalItems(key: 'TypeAuthentication', value: '0'),
         AditionalItems(key: 'Subchanel', value: 'OwnerComerce'),
-        AditionalItems(key: 'IdPOS', value: '0')
+        AditionalItems(key: 'IdPOS', value: UtilPreferences.getIdPosDevice())
       ]);
       final vRes = CredentialVerifyUser(credential: vCredencialVeryUser);
 

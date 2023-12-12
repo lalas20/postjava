@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:postjava/01pages/helper/utilmodal.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 class UtilMethod {
@@ -37,6 +38,7 @@ class UtilMethod {
   static String stringByDouble(double pMonto) {
     final formatter = NumberFormat.currency(
       locale: 'es_BS', // Cambia el locale según tu necesidad
+      // ignore: unnecessary_string_escapes
       symbol: '\Bs', // Cambia el símbolo de la moneda según tu necesidad
       decimalDigits: 2, // Define la cantidad de decimales
     );
@@ -53,7 +55,7 @@ class UtilMethod {
               : null; // Otras plataformas
 
       if (downloadsDir == null) {
-        print(
+        UtilMethod.imprimir(
             'No es posible acceder a la carpeta de descargas en esta plataforma.');
         return;
       }
@@ -62,7 +64,7 @@ class UtilMethod {
 
       await file.writeAsString('$text\n', mode: FileMode.append);
     } catch (e) {
-      print('Error writing to log: $e');
+      UtilMethod.imprimir('Error writing to log: $e');
     }
   }
 }

@@ -11,8 +11,6 @@ import 'package:postjava/helper/utilmethod.dart';
 import 'package:provider/provider.dart';
 
 import '../../02service/channel/plataformchannel.dart';
-import '../../03dominio/user/resul_get_user_session_info.dart';
-import '../../helper/util_preferences.dart';
 import '../helper/util_constante.dart';
 import '../helper/util_responsive.dart';
 import 'pago_provider.dart';
@@ -43,13 +41,11 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _ciController.dispose();
     resul.fingerChannel.dispose();
     super.dispose();
@@ -59,7 +55,6 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     selecAcount = null;
     vListaCuentaByCi = null;
     if (_ciController.text.isEmpty) {
-      print('ingresando');
       return;
     }
     UtilModal.mostrarDialogoSinCallback(context, "Buscando Cuenta...");
@@ -122,7 +117,7 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Text(
-                        "${pCuenta!.codeAccount!}  ${pCuenta!.moneyDescription}"),
+                        "${pCuenta!.codeAccount!}  ${pCuenta.moneyDescription}"),
                   ),
                 );
               },
@@ -172,7 +167,7 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
 
   @override
   Widget build(BuildContext context) {
-    final keyfrm = widget.frmKey;
+    //final keyfrm = widget.frmKey;
     provider = Provider.of<PagoProvider>(context);
     responsive = UtilResponsive.of(context);
     return SingleChildScrollView(
@@ -287,7 +282,6 @@ class _WPagoIdentityCardState extends State<WPagoIdentityCard> {
     if (value == null) {
       tieneFinger = false;
     } else {
-      print(value.toString());
       tieneFinger = true;
       provider.fingerWIdentityCard = value.toString();
     }

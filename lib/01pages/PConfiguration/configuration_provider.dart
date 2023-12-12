@@ -103,7 +103,7 @@ class ConfigurationProvider with ChangeNotifier {
       resp = ResulProvider(
         message: resul.getUserSessionInfoResult!.message!,
         state: RespProvider.incorrecto.toString(),
-        obj: resul.getUserSessionInfoResult!.code!,
+        obj: resul.getUserSessionInfoResult!.code,
       );
     }
   }
