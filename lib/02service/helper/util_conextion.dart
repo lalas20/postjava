@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:postjava/helper/util_preferences.dart';
+import 'package:postjava/helper/utilmethod.dart';
 
 class UtilConextion {
   static String errorInternet = "No tiene Acceso a Internet";
@@ -25,6 +26,8 @@ class UtilConextion {
   static String ping = 'rest/POS.Services.Services.IProdemPosServices/Ping';
   static String dTOWebPosDeviceInsert =
       'rest/POS.Services.Services.IProdemPosServices/DTOWebPosDeviceInsert';
+  static String verificPosDevice =
+      'rest/POS.Services.Services.IProdemPosServices/VerificPosDevice';
 
 //OperacionesController
   static String verifyUser = 'rest/VerifyUser';
@@ -67,6 +70,10 @@ class UtilConextion {
 
       if (response.statusCode == 200) {
         resul = true;
+      }
+      if (response.statusCode == 400) {
+        final error400 = response.body;
+        UtilMethod.imprimir(error400);
       }
     } catch (e) {
       if (e is SocketException) {

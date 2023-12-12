@@ -2,6 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
+import 'package:postjava/01pages/PHome/home_page_provider.dart';
 import 'package:postjava/01pages/PMovimientos/last_moves_provider.dart';
 import 'package:postjava/01pages/PPago/pago_provider.dart';
 import 'package:postjava/01pages/PPago/pago_view.dart';
@@ -19,7 +20,7 @@ import '01pages/PPago/tipopago_tarjetahuella.dart';
 import '01pages/Plogin/login_autentica.dart';
 import '01pages/emv_page.dart';
 import '01pages/helper/util_constante.dart';
-import '01pages/homepage.dart';
+import '01pages/PHome/homepage.dart';
 import 'helper/util_preferences.dart';
 
 void main() async {
@@ -31,7 +32,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => LoginProviders()),
       ChangeNotifierProvider(create: (_) => ConfigurationProvider()),
       ChangeNotifierProvider(create: (_) => PagoProvider()),
-      ChangeNotifierProvider(create: (_) => LastMovesProvider())
+      ChangeNotifierProvider(create: (_) => LastMovesProvider()),
+      ChangeNotifierProvider(create: (_) => HomePageProvider())
     ],
     child: const MyApp(),
   ));

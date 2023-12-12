@@ -24,19 +24,22 @@ class RequestDTOWebPosDevice {
   String? idWebPersonClient;
   String? operation;
   String? posData;
+  String? namePOS;
   RequestDTOWebPosDevice({
     this.codPosDevice,
     this.idWebPersonClient,
     this.idcState,
     this.operation,
     this.posData,
+    this.namePOS,
   });
   RequestDTOWebPosDevice.fromJson(Map<String, dynamic> json) {
     codPosDevice = json['CodPosDevice'];
-    idWebPersonClient = json['IdWebPersonClient'];
+    idWebPersonClient = json['IdWebPersonClient'].toString();
     idcState = json['IdcState'];
     operation = json['Operation'];
     posData = (json['PosData']);
+    namePOS = (json['NamePOS']);
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +49,7 @@ class RequestDTOWebPosDevice {
     data['IdcState'] = idcState;
     data['Operation'] = operation;
     data['PosData'] = posData;
+    data['NamePOS'] = namePOS;
     return data;
   }
 }

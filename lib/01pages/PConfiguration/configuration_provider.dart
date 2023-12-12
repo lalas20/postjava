@@ -54,6 +54,7 @@ class ConfigurationProvider with ChangeNotifier {
     vEntidad.idcState = Estado.configuracion.stateVal;
     vEntidad.idWebPersonClient = UtilPreferences.getIdWebPersonClient();
     vEntidad.operation = Estado.configuracion.stateTxt;
+    vEntidad.namePOS = pNamePos;
     vEntidad.posData = await posInfo(context);
 
     if (vEntidad.posData == '') {
@@ -72,6 +73,7 @@ class ConfigurationProvider with ChangeNotifier {
       );
       return;
     }
+    UtilPreferences.setCoddPosDevice(pAndroidID);
     UtilPreferences.setIdPosDevice(respuesta.object?.idWebPosDevice);
     UtilPreferences.setNamePos(pNamePos);
     UtilPreferences.setIdOperationEntity(pOperationEntity.idOperationEntity!);

@@ -5,7 +5,7 @@ import 'package:postjava/01pages/helper/util_constante.dart';
 import 'package:provider/provider.dart';
 
 import '../helper/utilmodal.dart';
-import '../homepage.dart';
+import '../PHome/homepage.dart';
 import 'login_provider.dart';
 
 class LoginAutentica extends StatefulWidget {
@@ -181,14 +181,14 @@ class _LoginAutenticaState extends State<LoginAutentica> {
                               color: Colors.black.withOpacity(0.3),
                               spreadRadius: 1,
                               blurRadius: 2,
-                              offset: Offset(0, 1))
+                              offset: const Offset(0, 1))
                         ]),
                     child: const Icon(
                       Icons.arrow_forward,
                       color: Colors.amber,
                     ),
                   )
-                : Center(),
+                : const Center(),
           ),
         ),
       ),
@@ -214,7 +214,7 @@ class _LoginAutenticaState extends State<LoginAutentica> {
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: UtilConstante.colorAppPrimario),
                 borderRadius: const BorderRadius.all(Radius.circular(35.0))),
-            contentPadding: EdgeInsets.all(10),
+            contentPadding: const EdgeInsets.all(10),
             hintText: hintText,
             hintStyle:
                 TextStyle(fontSize: 14, color: UtilConstante.colorAppPrimario)),

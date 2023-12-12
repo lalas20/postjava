@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:postjava/01pages/PConfiguration/configuration_provider.dart';
-import 'package:postjava/01pages/Plogin/login.dart';
+
 import 'package:postjava/01pages/Plogin/login_autentica.dart';
 import 'package:postjava/01pages/helper/util_responsive.dart';
 import 'package:postjava/01pages/helper/utilmodal.dart';
@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import '../../03dominio/user/resul_get_user_session_info.dart';
 import '../helper/util_constante.dart';
 import '../helper/wbtnconstante.dart';
-import '../homepage.dart';
+import '../PHome/homepage.dart';
 
 class ConfigurationView extends StatefulWidget {
   const ConfigurationView({super.key});

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:postjava/03dominio/pos/request_pos_data.dart';
 import 'package:postjava/03dominio/user/aditional_item.dart';
@@ -8,12 +9,54 @@ import 'package:postjava/03dominio/user/savings_account_extract_data_transaction
 import 'package:postjava/helper/util_preferences.dart';
 import 'package:postjava/helper/utilmethod.dart';
 
+import '../../../03dominio/pos/request_verific_pos_device.dart';
 import '../../../03dominio/user/credential_verify_user.dart';
 import '../../../03dominio/user/resul_get_user_session_info.dart';
 import '../../../03dominio/user/verify_user_result.dart';
 import '../../helper/util_conextion.dart';
 
 class SrvClientePos {
+  static Future<VerificPosDeviceResult> verificPosDevice(
+      {required RequestVerificPosDevice verificPosDevice}) async {
+    VerificPosDeviceResult respuesta = VerificPosDeviceResult();
+    dynamic jsonResponse;
+    try {
+      final vPing = await UtilConextion.internetConnectivityPing();
+      if (vPing == false) {
+        respuesta.codeBase = UtilConextion.errorInternet;
+        respuesta.state = 3;
+        respuesta.message = "No tiene acceso a internet";
+        return respuesta;
+      }
+      String vJSON = jsonEncode(verificPosDevice);
+      UtilMethod.imprimir(vJSON);
+
+      final response =
+          await UtilConextion.httpPost(UtilConextion.verificPosDevice, vJSON);
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        respuesta = VerificPosDeviceResult.fromJson(
+            jsonResponse['VerificPosDeviceResult']);
+      } else if (response.statusCode == 400) {
+        final error400 = response.body;
+        if (error400.contains('Token Expirado') ||
+            error400.contains("Excepted Token")) {
+          respuesta.code = '99';
+          respuesta.message = UtilMethod.vMensajeError404;
+          respuesta.state = 2;
+        } else {
+          respuesta = respuesta.errorRespuesta(response.statusCode);
+        }
+      } else {
+        respuesta = respuesta.errorRespuesta(response.statusCode);
+      }
+    } catch (e) {
+      respuesta.message = "error sub: ${e.toString()}";
+      respuesta.state = 3;
+    }
+    return respuesta;
+  }
+
   static Future<ResulDTOWebPosDevice> saveWebPosDevice(
       {required RequestDTOWebPosDevice posDevice}) async {
     ResulDTOWebPosDevice respuesta = ResulDTOWebPosDevice();
